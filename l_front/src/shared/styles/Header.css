@@ -1,0 +1,16 @@
+.Header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 16px 0 16px;
+}
+
+.logo {
+
+}
+
+.setting {
+    width: 24px;
+    height: 24px;
+    background-color: black;
+}
