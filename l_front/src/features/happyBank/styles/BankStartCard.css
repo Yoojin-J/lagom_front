@@ -1,0 +1,44 @@
+.bankStartCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: #fff;
+  border-radius: 14px;
+  padding: 16px;
+  margin: 16px 16px 0;
+  cursor: pointer;
+}
+
+.bankStartCard__avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: #E5E8EB;
+  flex-shrink: 0;
+}
+
+.bankStartCard__text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.bankStartCard__sub {
+  color: #6D7882;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.bankStartCard__title {
+  color: #131416;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.bankStartCard__arrow {
+  color: #C4C9CE;
+  font-size: 22px;
+  font-weight: 300;
+  line-height: 1;
+}

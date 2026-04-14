@@ -1,0 +1,9 @@
+.happyBankPage {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 80px;
+  background-color: #F7F8FA;
+  min-height: 100vh;
+  font-family: Pretendard, var(--sans);
+}
