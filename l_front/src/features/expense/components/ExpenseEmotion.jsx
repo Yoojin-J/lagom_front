@@ -23,34 +23,34 @@ const ExpenseEmotion = ({
     <div className='expense-section'>
       <div className='emotion-section'>
         <div className='emotion-label'>감정</div>
-        <div className='emotion-option-container'>
+        <ul className='emotion-option-container'>
           {type && emotionOptions.map((emo) => {
             const isSelected = selectedEmo === emo.value;
 
             return (
-              <div value={emo.value} className='emotion-btn' onClick={() => handleEmotion(emo.value)}>
+              <li value={emo.value} className='emotion-btn' onClick={() => handleEmotion(emo.value)}>
                 <div className={`emotion-icon ${isSelected ? 'selected' : ''}`}>{emo.icon}</div>
                 <div className={`emotion-name ${isSelected ? 'selected' : ''}`}>{emo.label}</div>
-              </div>
+              </li>
             );
           })}
-        </div>
+        </ul>
       </div>
       <div className='satisfaction-section'>
         <div className='satisfaction-label'>소비 만족도</div>
-        <div className='satisfaction-option-container'>
+        <ul className='satisfaction-option-container'>
           {type && satisfactionOptions.map((sat) => {
             const isSelected = selectedSat === sat.value;
 
             return (
-              <div value={sat.value} className='satisfaction-btn' onClick={() => handleSatisfaction(sat.value)}>
+              <li value={sat.value} className='satisfaction-btn' onClick={() => handleSatisfaction(sat.value)}>
                 <div className={`satisfaction-icon ${isSelected ? 'selected' : ''}`}>{sat.icon}</div>
                 <div className={`satisfaction-name ${isSelected ? 'selected' : ''}`}>{sat.label}</div>
                 <div className={`satisfaction-name ${isSelected ? 'selected' : ''}`}>{sat.percent}</div>
-              </div>
+              </li>
             );
           })}
-        </div>
+        </ul>
       </div>
     </div>
   )
