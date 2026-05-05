@@ -1,6 +1,5 @@
-
-
 .menu {
+    box-sizing: border-box;
     width: 100%;
     display: flex;
     padding: 23px 16px 0 16px;

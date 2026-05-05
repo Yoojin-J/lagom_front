@@ -34,7 +34,7 @@ const DatePickerCalendar = ({
         <div
           onClick={() => changeYear(currentYear - 1)}   // ← 1년 전
         >
-          <ChevronLeft />
+          <ChevronLeft stroke='#75C0D1' />
         </div>
 
         <div>
@@ -44,7 +44,7 @@ const DatePickerCalendar = ({
         <div
           onClick={() => changeYear(currentYear + 1)}   // ← 1년 후
         >
-          <ChevronRight />
+          <ChevronRight stroke='#75C0D1' />
         </div>
       </div>
     );

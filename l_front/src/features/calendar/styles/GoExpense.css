@@ -10,15 +10,14 @@
 }
 
 .go-expense {
-    position: fixed;
-    /* 화면에 고정 */
-    bottom: 0;
-    /* 아래쪽에 붙임 */
-    left: 0;
-    right: 0;
+    position: sticky;
+    bottom: 16px;
+    /* 바닥과 아이콘 띄움 정도 */
     width: 107px;
     /* height: 160px; */
     min-height: 45px;
+    margin-left: auto;
+    margin-right: 30px;
     display: inline-flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -61,6 +60,14 @@
     justify-content: center;
     align-items: center;
     gap: 8px;
+    color: var(--text-black, #1A1A1A);
+    text-align: center;
+    font-family: Pretendard;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 22px;
+    /* 137.5% */
 }
 
 .symbol-box {

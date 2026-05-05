@@ -135,7 +135,7 @@ const CalendarPage = () => {
 
 
   return (
-    <div className='calendar'>
+    <div className={`calendar ${isWeekView ? 'week' : 'month'}`}>
       <div className='calendar-header'>
         <DatePicker
           selectedDate={selectedDate}
