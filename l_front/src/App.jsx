@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom
 import './App.css'
 import Header from './shared/components/Header'
 import NavigationBar from './shared/components/NavigationBar'
+import CalendarPage from './features/calendar/CalendarPage';
 import HappyBankPage from './features/happyBank/page'
 import ExpensePage from './features/expense/ExpensePage'
 
@@ -26,7 +27,7 @@ function App() {
       <Router>
         <Routes>
           <Route element={<MainLayout />}>
-            {/* <Route path="/" element={<Home />} /> */}
+            <Route path="/" element={<CalendarPage />} />
             <Route path='/happyBank' element={<HappyBankPage />} />
           </Route>
 

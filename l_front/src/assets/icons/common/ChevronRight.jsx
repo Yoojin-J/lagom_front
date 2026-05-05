@@ -1,6 +1,6 @@
 import React from 'react'
 
-const ChevronRightP = ({ stroke = "white"}) => {
+const ChevronRight = ({ stroke = "white"}) => {
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -14,4 +14,4 @@ const ChevronRightP = ({ stroke = "white"}) => {
     )
 }
 
-export default ChevronRightP
+export default ChevronRight

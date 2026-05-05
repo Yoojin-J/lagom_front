@@ -25,11 +25,11 @@ const NavigationBar = ({ activeIndex, onTabChange }) => {
       <NavLink to="/" className={({ isActive }) => `menu-item ${isActive ? 'active' : ''}`}>
         감정가계부
       </NavLink>
-      <NavLink to="/happy-bank" className={({ isActive }) => `menu-item ${isActive ? 'active' : ''}`}>
+      <NavLink to="/happyBank" className={({ isActive }) => `menu-item ${isActive ? 'active' : ''}`}>
         행복통장
       </NavLink>
-      <NavLink>리포트</NavLink>
-      <NavLink>성취기록</NavLink>
+      <NavLink to="/report" className={({ isActive }) => `menu-item ${isActive ? 'active' : ''}`}>리포트</NavLink>
+      <NavLink to="/record" className={({ isActive }) => `menu-item ${isActive ? 'active' : ''}`}>성취기록</NavLink>
     </div>
   );
 };

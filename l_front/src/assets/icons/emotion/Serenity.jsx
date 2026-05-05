@@ -1,8 +1,8 @@
 import React from 'react'
 
-const Serenity = () => {
+const Serenity = ({ width = 28, height = 28 }) => {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
+    <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} viewBox="0 0 28 28" fill="none">
       <path d="M0 28H28V0H0V28Z" fill="url(#pattern0_981_2350)" />
       <defs>
         <pattern id="pattern0_981_2350" patternContentUnits="objectBoundingBox" width="1" height="1">
