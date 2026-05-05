@@ -1,4 +1,5 @@
 import '../styles/NavigationBar.css';
+import { NavLink } from 'react-router-dom';
 
 const menuItems = ['감정가계부', '행복통장', '리포트', '성취기록'];
 
@@ -8,16 +9,27 @@ const menuItems = ['감정가계부', '행복통장', '리포트', '성취기록
  */
 const NavigationBar = ({ activeIndex, onTabChange }) => {
   return (
-    <div className="menu">
-      {menuItems.map((item, index) => (
-        <div
-          key={index}
-          className={`menu-item ${activeIndex === index ? 'active' : ''}`}
-          onClick={() => onTabChange(index)}
-        >
-          {item}
-        </div>
-      ))}
+    // <div className="menu">
+    //   {menuItems.map((item, index) => (
+    //     <div
+    //       key={index}
+    //       className={`menu-item ${activeIndex === index ? 'active' : ''}`}
+    //       onClick={() => onTabChange(index)}
+    //     >
+    //       {item}
+    //     </div>
+    //   ))}
+    // </div>
+
+    <div className='menu'>
+      <NavLink to="/" className={({ isActive }) => `menu-item ${isActive ? 'active' : ''}`}>
+        감정가계부
+      </NavLink>
+      <NavLink to="/happy-bank" className={({ isActive }) => `menu-item ${isActive ? 'active' : ''}`}>
+        행복통장
+      </NavLink>
+      <NavLink>리포트</NavLink>
+      <NavLink>성취기록</NavLink>
     </div>
   );
 };
