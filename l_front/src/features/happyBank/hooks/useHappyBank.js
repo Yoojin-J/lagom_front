@@ -1,27 +1,41 @@
 import { useState } from 'react';
 
-/**
- * 행복통장 정보 조회/수정 훅
- * @returns {{ bankInfo: object|null, hasBank: boolean, createBank: Function }}
- */
 const useHappyBank = () => {
-  // TODO: API 연동 후 교체 (null = 미개설, object = 개설됨)
-  const [bankInfo, setBankInfo] = useState(null);
+  const [banks, setBanks] = useState([]);
 
+  // 새 통장 생성, 생성된 bankId 반환
   const createBank = ({ name, goalType, goalAmount, goalPeriod }) => {
-    setBankInfo({
-      name,
-      currentAmount: 0,
-      goalAmount: goalType === 'amount' ? Number(goalAmount) : 0,
-      goalPeriod: goalType === 'period' ? Number(goalPeriod) : null,
-      happySavings: 0,
-      becomeSavings: 0,
-      goalType,
-      startDate: '2026.04.14',
-    });
+    const today = new Date().toISOString().slice(0, 10).replace(/-/g, '.');
+    const id = Date.now();
+    setBanks((prev) => [
+      ...prev,
+      {
+        id,
+        name,
+        goalType,
+        goalAmount: Number(goalAmount),
+        goalPeriod: Number(goalPeriod),
+        startDate: today,
+      },
+    ]);
+    return id;
   };
 
-  return { bankInfo, hasBank: bankInfo !== null, createBank };
+  const updateBank = (id, { name, goalType, goalAmount, goalPeriod }) => {
+    setBanks((prev) =>
+      prev.map((b) =>
+        b.id === id
+          ? { ...b, name, goalType, goalAmount: Number(goalAmount), goalPeriod: Number(goalPeriod) }
+          : b
+      )
+    );
+  };
+
+  const deleteBank = (id) => {
+    setBanks((prev) => prev.filter((b) => b.id !== id));
+  };
+
+  return { banks, hasBank: banks.length > 0, createBank, updateBank, deleteBank };
 };
 
 export default useHappyBank;

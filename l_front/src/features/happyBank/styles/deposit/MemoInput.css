@@ -1,0 +1,112 @@
+.memoInput {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 16px;
+}
+
+.memoInput__label {
+  color: #6D7882;
+  font-family: Pretendard;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 130%;
+}
+
+.memoInput__count {
+  color: #B1B8BE;
+  font-family: Pretendard;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 120%;
+  transition: color 0.15s;
+}
+
+.memoInput__count--current {
+  color: #FFB0AD;
+}
+
+
+
+.memoInput__wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.memoInput__fieldRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.memoInput__field {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  padding: 4px 0 0 0;
+  background: transparent;
+  color: #131416;
+  font-family: Pretendard;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 130%;
+  caret-color: #FFB0AD;
+  resize: none;
+  overflow: hidden;
+}
+
+.memoInput__field::placeholder {
+  color: #B1B8BE;
+}
+
+.memoInput__deleteBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: none;
+  background: #B1B8BE;
+  color: #fff;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.memoInput__underline {
+  width: 100%;
+  height: 1px;
+  background: #F4F5F6;
+  transition: background 0.15s;
+}
+
+.memoInput__underline--active {
+  background: #FFB0AD;
+}
+
+.memoInput__underline--error {
+  background: #FF4D4D;
+}
+
+.memoInput__error {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin: 0;
+  color: #FF4D4D;
+  font-family: Pretendard;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 130%;
+}
+
+.memoInput__errorIcon {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}

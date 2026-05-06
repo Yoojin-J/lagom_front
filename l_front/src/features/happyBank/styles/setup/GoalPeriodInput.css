@@ -1,0 +1,119 @@
+.goalPeriodInput {
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.goalPeriodInput__label {
+  color: #6d7882;
+  font-family: Pretendard;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%;
+}
+
+.goalPeriodInput__wrapper {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.goalPeriodInput__fieldRow {
+  display: flex;
+  width: 100%;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.goalPeriodInput__field {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  padding: 0;
+  background: transparent;
+  color: #131416;
+  font-family: inherit;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%;
+  caret-color: #f7645f;
+}
+
+.goalPeriodInput__field::placeholder {
+  color: #b1b8be;
+}
+
+.goalPeriodInput__unit {
+  color: #b1b8be;
+  font-family: Pretendard;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.goalPeriodInput__clear {
+  display: inline-flex;
+  width: 24px;
+  height: 24px;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: #e6e8ea;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.goalPeriodInput__clear img {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+.goalPeriodInput__underline {
+  width: 100%;
+  height: 1px;
+  background: #f4f5f6;
+}
+
+.goalPeriodInput__wrapper--focused .goalPeriodInput__underline {
+  background: #ffb0ad;
+}
+
+.goalPeriodInput__wrapper--error .goalPeriodInput__underline {
+  background: #de3412;
+}
+
+.goalPeriodInput__message {
+  margin: 0;
+  color: #6d7882;
+  font-family: inherit;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 120%;
+}
+
+.goalPeriodInput__message--error {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #de3412;
+}
+
+.goalPeriodInput__message--error img {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}
