@@ -28,7 +28,7 @@ const ExpenseEmotion = ({
             const isSelected = selectedEmo === emo.value;
 
             return (
-              <li value={emo.value} className='emotion-btn' onClick={() => handleEmotion(emo.value)}>
+              <li key={emo.value} value={emo.value} className='emotion-btn' onClick={() => handleEmotion(emo.value)}>
                 <div className={`emotion-icon ${isSelected ? 'selected' : ''}`}>{emo.icon}</div>
                 <div className={`emotion-name ${isSelected ? 'selected' : ''}`}>{emo.label}</div>
               </li>
@@ -43,7 +43,7 @@ const ExpenseEmotion = ({
             const isSelected = selectedSat === sat.value;
 
             return (
-              <li value={sat.value} className='satisfaction-btn' onClick={() => handleSatisfaction(sat.value)}>
+              <li key={sat.value} value={sat.value} className='satisfaction-btn' onClick={() => handleSatisfaction(sat.value)}>
                 <div className={`satisfaction-icon ${isSelected ? 'selected' : ''}`}>{sat.icon}</div>
                 <div className={`satisfaction-name ${isSelected ? 'selected' : ''}`}>{sat.label}</div>
                 <div className={`satisfaction-name ${isSelected ? 'selected' : ''}`}>{sat.percent}</div>

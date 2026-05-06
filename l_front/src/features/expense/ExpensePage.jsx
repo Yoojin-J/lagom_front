@@ -39,6 +39,7 @@ import Satisfied from '../../assets/icons/satisfaction/Satisfied';
 import Excited from '../../assets/icons/satisfaction/Exited';
 
 import ChevronLeft from '../../assets/icons/common/ChevronLeft';
+import ExpenseDelete from './components/ExpenseDelete';
   
 const ExpensePage = () => {
   const location = useLocation();
@@ -60,6 +61,7 @@ const ExpensePage = () => {
     date: selectedDate,
     category: category,
   });
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
 
   // 거래유형에 따른 카테고리 목록
@@ -179,6 +181,12 @@ const ExpensePage = () => {
     }));
   };
 
+  
+  // 삭제하기 모달
+  const handleDeleteModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+
 
   // 전송
   const handleSubmit = async (e) => {
@@ -216,9 +224,13 @@ const ExpensePage = () => {
 
   return (
     <div className='expense-content'>
+      { isModalOpen && 
+      <ExpenseDelete 
+        handleDeleteModal={handleDeleteModal}
+      /> }
       <div className='header'>
         <ChevronLeft stroke='#B1B8BE' />
-        <div className='delete'>
+        <div className='delete' onClick={handleDeleteModal}>
           삭제하기
         </div>
       </div>

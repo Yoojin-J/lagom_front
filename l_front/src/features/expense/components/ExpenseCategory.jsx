@@ -1,6 +1,7 @@
-import React, { useState, Fragment } from 'react'
+import React, { useState, Fragment, useRef } from 'react'
 import DisClosure from '../../../assets/icons/common/DisClosure';
 import ChevronUp from '../../../assets/icons/common/ChevronUp';
+import { useOutsideClick } from '../hook/useOutsideClick';
 
 const ExpenseCategory = ({
   category,
@@ -12,6 +13,7 @@ const ExpenseCategory = ({
   IconComponent
 }) => {
   const [isVisibleC, setIsVisibleC] = useState(false);
+  const dropdownRef = useRef(null);
 
   const handleCat = () => {
     setIsVisibleC(!isVisibleC);
@@ -28,10 +30,14 @@ const ExpenseCategory = ({
     }));
   };
 
+  // 드랍다운 외 클릭시 드랍다운 꺼짐 
+  useOutsideClick(dropdownRef, () => setIsVisibleC(false));
+
   return (
     <div className='category-content'>
       <div className='label'>카테고리 설정</div>
       <div
+        ref={dropdownRef}
         className='category-down'
       >
         {!isVisibleC && <button
