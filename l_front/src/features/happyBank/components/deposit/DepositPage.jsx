@@ -1,20 +1,13 @@
 import { useState } from 'react';
-import SavingsTypeSelect from './SavingsTypeSelect';
-import AmountInput from './AmountInput';
-import MemoInput from './MemoInput';
-import HashtagInput from './HashtagInput';
-import useDeposit from '../../hooks/useDeposit';
 import Clover2 from '../../../../assets/Clover2.svg';
 import ChevronLeft from '../../../../assets/ChevronLeft.svg';
+import useDeposit from '../../hooks/useDeposit';
+import AmountInput from './AmountInput';
+import HashtagInput from './HashtagInput';
+import MemoInput from './MemoInput';
+import SavingsTypeSelect from './SavingsTypeSelect';
 import '../../styles/deposit/DepositPage.css';
 
-/**
- * 저금하기 페이지 레이아웃
- * @param {Function} onComplete - 저금 완료 후 콜백
- * @param {Function} onAddRecord - 기록 추가 콜백
- * @param {Function} onBack - 뒤로가기 콜백
- * @param {string} bankName - 통장 이름
- */
 function DepositPage({ onComplete, onAddRecord, onBack, bankName = '행복통장' }) {
   const [type, setType] = useState('happy');
   const [amount, setAmount] = useState('');
@@ -25,8 +18,11 @@ function DepositPage({ onComplete, onAddRecord, onBack, bankName = '행복통장
   const isValid = amount.length > 0 && memo.trim().length > 0;
 
   const onSubmit = async () => {
-    if (!isValid) return;
-    const hashtag = tags.map((t) => `#${t}`).join(' ');
+    if (!isValid) {
+      return;
+    }
+
+    const hashtag = tags.map((tag) => `#${tag}`).join(' ');
     const record = {
       id: Date.now(),
       type,
@@ -35,6 +31,7 @@ function DepositPage({ onComplete, onAddRecord, onBack, bankName = '행복통장
       hashtag,
       date: new Date().toISOString().slice(0, 10).replace(/-/g, '.'),
     };
+
     await handleSubmit(record);
     onAddRecord?.(record);
     onComplete?.();
@@ -43,7 +40,12 @@ function DepositPage({ onComplete, onAddRecord, onBack, bankName = '행복통장
   return (
     <div className="depositPage">
       <div className="depositPage__header">
-        <button className="depositPage__backBtn" onClick={onBack} type="button" aria-label="뒤로가기">
+        <button
+          className="depositPage__backBtn"
+          onClick={onBack}
+          type="button"
+          aria-label="뒤로가기"
+        >
           <img src={ChevronLeft} alt="뒤로" />
         </button>
       </div>
@@ -66,8 +68,9 @@ function DepositPage({ onComplete, onAddRecord, onBack, bankName = '행복통장
         className={`depositPage__submitBtn ${isValid ? 'depositPage__submitBtn--active' : ''}`}
         onClick={onSubmit}
         disabled={!isValid || isLoading}
+        type="button"
       >
-        {isLoading ? '저금 중...' : '확인'}
+        {isLoading ? '저장 중...' : '확인'}
       </button>
     </div>
   );

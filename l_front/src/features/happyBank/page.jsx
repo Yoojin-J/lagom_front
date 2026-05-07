@@ -1,39 +1,47 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import ChevronLeft from '../../assets/ChevronLeft.svg';
-import BankStartCard from './components/BankStartCard';
+import useAchievements from '../achievement/hooks/useAchievements';
 import AddBankButton from './components/AddBankButton';
 import BankCard from './components/BankCard';
+import BankStartCard from './components/BankStartCard';
 import BankSummaryCard from './components/BankSummaryCard';
+import DepositPage from './components/deposit/DepositPage';
+import EmptyBankState from './components/EmptyBankState';
+import BankSetupPage from './components/setup/BankSetupPage';
 import SavingsProgressPanel from './components/SavingsProgressPanel';
 import SavingsRecordList from './components/SavingsRecordList';
-import EmptyBankState from './components/EmptyBankState';
-import SavingsRecordModal from './components/detail/SavingsRecordModal';
 import GoalAchievedModal from './components/detail/GoalAchievedModal';
+import SavingsRecordModal from './components/detail/SavingsRecordModal';
+import useHappyBank from './hooks/useHappyBank';
+import useSavingsRecords from './hooks/useSavingsRecords';
 import './styles/page.css';
 
 function calcIsGoalReached(bank, currentAmount) {
   const { goalType, goalAmount, goalPeriod, startDate } = bank;
+
   if (goalType === 'amount') {
     return currentAmount >= (goalAmount ?? 0) && (goalAmount ?? 0) > 0;
   }
+
   const start = new Date(startDate.replace(/\./g, '-'));
   const daysElapsed = Math.floor((new Date() - start) / (1000 * 60 * 60 * 24));
   return daysElapsed >= goalPeriod * 30;
 }
 
-// ── 개별 통장 상세 뷰 ──────────────────────────────
 function BankDetailView({ bank, records, onBack, onSetup, onDeposit, onEdit, onComplete }) {
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [showGoalModal, setShowGoalModal] = useState(false);
 
-  const happySavings = records.filter((r) => r.type === 'happy').reduce((s, r) => s + r.amount, 0);
-  const becomeSavings = records.filter((r) => r.type === 'become').reduce((s, r) => s + r.amount, 0);
+  const happySavings = records.filter((record) => record.type === 'happy').reduce((sum, record) => sum + record.amount, 0);
+  const becomeSavings = records.filter((record) => record.type === 'become').reduce((sum, record) => sum + record.amount, 0);
   const currentAmount = happySavings + becomeSavings;
   const enrichedBank = { ...bank, currentAmount, happySavings, becomeSavings };
   const isGoalReached = calcIsGoalReached(bank, currentAmount);
 
   useEffect(() => {
-    if (isGoalReached) setShowGoalModal(true);
+    if (isGoalReached) {
+      setShowGoalModal(true);
+    }
   }, [isGoalReached]);
 
   return (
@@ -41,11 +49,7 @@ function BankDetailView({ bank, records, onBack, onSetup, onDeposit, onEdit, onC
       <button className="happyBankPage__back" type="button" onClick={onBack}>
         <img src={ChevronLeft} alt="뒤로" />
       </button>
-      <BankSummaryCard
-        bankInfo={enrichedBank}
-        onDeposit={onDeposit}
-        onEdit={onEdit}
-      />
+      <BankSummaryCard bankInfo={enrichedBank} onDeposit={onDeposit} onEdit={onEdit} />
       {records.length === 0 ? (
         <EmptyBankState onSetup={onSetup} onDeposit={onDeposit} />
       ) : (
@@ -56,22 +60,20 @@ function BankDetailView({ bank, records, onBack, onSetup, onDeposit, onEdit, onC
             goalAmount={bank.goalAmount}
             goalType={bank.goalType}
           />
-          <SavingsRecordList
-            records={records}
-            onRecordClick={setSelectedRecord}
-          />
+          <SavingsRecordList records={records} onRecordClick={setSelectedRecord} />
         </>
       )}
       {selectedRecord && (
-        <SavingsRecordModal
-          record={selectedRecord}
-          onClose={() => setSelectedRecord(null)}
-        />
+        <SavingsRecordModal record={selectedRecord} onClose={() => setSelectedRecord(null)} />
       )}
       {showGoalModal && (
         <GoalAchievedModal
           bankName={bank.name}
-          onConfirm={() => { setShowGoalModal(false); onComplete(); onBack(); }}
+          onConfirm={() => {
+            setShowGoalModal(false);
+            onComplete();
+            onBack();
+          }}
           onClose={() => setShowGoalModal(false)}
         />
       )}
@@ -79,48 +81,155 @@ function BankDetailView({ bank, records, onBack, onSetup, onDeposit, onEdit, onC
   );
 }
 
-// ── 메인 페이지 ────────────────────────────────────
-function HappyBankPage({ banks, hasBank, getRecords, initialBankId, onSetupOpen, onEditOpen, onDepositOpen, onComplete }) {
+function HappyBankPage({
+  banks,
+  hasBank,
+  getRecords,
+  initialBankId,
+  onSetupOpen,
+  onEditOpen,
+  onDepositOpen,
+  onComplete,
+}) {
+  const [currentView, setCurrentView] = useState('main');
   const [selectedBankId, setSelectedBankId] = useState(initialBankId ?? null);
 
-  const selectedBank = banks.find((b) => b.id === selectedBankId) ?? null;
+  const localHappyBank = useHappyBank();
+  const localSavingsRecords = useSavingsRecords();
+  const localAchievements = useAchievements();
 
-  // 통장 상세 뷰
-  if (selectedBank) {
-    return (
-      <BankDetailView
-        bank={selectedBank}
-        records={getRecords(selectedBank.id)}
-        onBack={() => setSelectedBankId(null)}
-        onSetup={onSetupOpen}
-        onDeposit={() => onDepositOpen(selectedBank.id)}
-        onEdit={() => onEditOpen(selectedBank.id)}
-        onComplete={() => { onComplete(selectedBank.id); setSelectedBankId(null); }}
-      />
-    );
-  }
+  const safeBanks = banks ?? localHappyBank.banks;
+  const safeHasBank = hasBank ?? localHappyBank.hasBank;
+  const safeGetRecords = getRecords ?? localSavingsRecords.getRecords;
+  const selectedBank = safeBanks.find((bank) => bank.id === selectedBankId) ?? null;
+  const useEmbeddedFlow = !onSetupOpen && !onEditOpen && !onDepositOpen && !onComplete;
 
-  // 통장 없음
-  if (!hasBank) {
+  const openSetup = () => {
+    if (useEmbeddedFlow) {
+      setCurrentView('setup');
+      return;
+    }
+    onSetupOpen?.();
+  };
+
+  const openEdit = (bankId) => {
+    if (useEmbeddedFlow) {
+      setSelectedBankId(bankId);
+      setCurrentView('edit');
+      return;
+    }
+    onEditOpen?.(bankId);
+  };
+
+  const openDeposit = (bankId) => {
+    if (useEmbeddedFlow) {
+      setSelectedBankId(bankId);
+      setCurrentView('deposit');
+      return;
+    }
+    onDepositOpen?.(bankId);
+  };
+
+  const handleCompleteInternal = (bankId) => {
+    if (useEmbeddedFlow) {
+      const bank = safeBanks.find((item) => item.id === bankId);
+      localAchievements.addAchievement({
+        bankInfo: bank,
+        records: safeGetRecords(bankId),
+      });
+      localHappyBank.deleteBank(bankId);
+      localSavingsRecords.resetRecords(bankId);
+      return;
+    }
+    onComplete?.(bankId);
+  };
+
+  const handleSetupComplete = (bankData) => {
+    localHappyBank.createBank(bankData);
+    setCurrentView('main');
+  };
+
+  const handleSetupCompleteAndDeposit = (bankData) => {
+    const bankId = localHappyBank.createBank(bankData);
+    setSelectedBankId(bankId);
+    setCurrentView('deposit');
+  };
+
+  const handleEditComplete = (bankData) => {
+    localHappyBank.updateBank(selectedBankId, bankData);
+    setCurrentView('main');
+  };
+
+  const handleDeleteBank = () => {
+    localHappyBank.deleteBank(selectedBankId);
+    setSelectedBankId(null);
+    setCurrentView('main');
+  };
+
+  if (useEmbeddedFlow && (currentView === 'setup' || currentView === 'edit')) {
     return (
-      <div className="happyBankPage">
-        <BankStartCard onClick={onSetupOpen} />
+      <div className="happyBankPageOverlay">
+        <BankSetupPage
+          mode={currentView === 'edit' ? 'edit' : 'create'}
+          initialData={selectedBank}
+          onComplete={currentView === 'edit' ? handleEditComplete : handleSetupComplete}
+          onCompleteAndDeposit={currentView === 'setup' ? handleSetupCompleteAndDeposit : undefined}
+          onDelete={handleDeleteBank}
+          onBack={() => setCurrentView('main')}
+        />
       </div>
     );
   }
 
-  // 통장 목록 뷰
+  if (useEmbeddedFlow && currentView === 'deposit') {
+    return (
+      <div className="happyBankPageOverlay">
+        <DepositPage
+          onComplete={() => setCurrentView('main')}
+          onAddRecord={(record) => localSavingsRecords.addRecord(selectedBankId, record)}
+          onBack={() => setCurrentView('main')}
+          bankName={selectedBank?.name ?? '행복통장'}
+        />
+      </div>
+    );
+  }
+
+  if (selectedBank) {
+    return (
+      <BankDetailView
+        bank={selectedBank}
+        records={safeGetRecords(selectedBank.id)}
+        onBack={() => setSelectedBankId(null)}
+        onSetup={openSetup}
+        onDeposit={() => openDeposit(selectedBank.id)}
+        onEdit={() => openEdit(selectedBank.id)}
+        onComplete={() => {
+          handleCompleteInternal(selectedBank.id);
+          setSelectedBankId(null);
+        }}
+      />
+    );
+  }
+
+  if (!safeHasBank) {
+    return (
+      <div className="happyBankPage">
+        <BankStartCard onClick={openSetup} />
+      </div>
+    );
+  }
+
   return (
     <div className="happyBankPage">
-      {banks.map((bank) => (
+      {safeBanks.map((bank) => (
         <BankCard
           key={bank.id}
           bank={bank}
-          records={getRecords(bank.id)}
+          records={safeGetRecords(bank.id)}
           onClick={() => setSelectedBankId(bank.id)}
         />
       ))}
-      <AddBankButton onClick={onSetupOpen} />
+      <AddBankButton onClick={openSetup} />
     </div>
   );
 }

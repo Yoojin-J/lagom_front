@@ -8,18 +8,17 @@ function calcPeriodInfo(startDate, goalPeriod) {
   return { daysElapsed, totalDays };
 }
 
-/**
- * 통장 목록에서 보이는 카드
- */
 function BankCard({ bank, records, onClick }) {
   const { name, goalType, goalAmount, goalPeriod, startDate } = bank;
 
-  const currentAmount = records.reduce((s, r) => s + r.amount, 0);
+  const currentAmount = records.reduce((sum, record) => sum + record.amount, 0);
   const periodInfo = goalType === 'period' ? calcPeriodInfo(startDate, goalPeriod) : null;
 
   const progressPercent =
     goalType === 'amount'
-      ? goalAmount > 0 ? Math.min((currentAmount / goalAmount) * 100, 100) : 0
+      ? goalAmount > 0
+        ? Math.min((currentAmount / goalAmount) * 100, 100)
+        : 0
       : Math.min((periodInfo.daysElapsed / periodInfo.totalDays) * 100, 100);
 
   return (

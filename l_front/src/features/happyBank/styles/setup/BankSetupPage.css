@@ -29,14 +29,18 @@
 }
 
 .bankSetupPage__backBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border: none;
   background: transparent;
-  color: #d2d4d6;
-  font-family: inherit;
-  font-size: 28px;
-  line-height: 1;
   cursor: pointer;
   padding: 0;
+}
+
+.bankSetupPage__backBtn img {
+  width: 24px;
+  height: 24px;
 }
 
 .bankSetupPage__deleteBtn {

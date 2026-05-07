@@ -1,13 +1,8 @@
 import { useRef, useState } from 'react';
-import GoalTabSwitch from './GoalTabSwitch';
-import GoalAmountInput from './GoalAmountInput';
-import GoalPeriodInput from './GoalPeriodInput';
-import SetupCompleteModal from './SetupCompleteModal';
-import DeleteBankModal from './DeleteBankModal';
-import '../../styles/setup/BankSetupPage.css';
+import ChevronLeft from '../../../../assets/ChevronLeft.svg';
 import Clover2 from '../../../../assets/Clover2.svg';
-import EditIcon from '../../../../assets/Edit.svg';
 import DeleteIcon from '../../../../assets/Delite.svg';
+import EditIcon from '../../../../assets/Edit.svg';
 import FeedbackIcon from '../../../../assets/Feedback Icon.svg';
 import {
   DEFAULT_BANK_NAME,
@@ -17,6 +12,12 @@ import {
   GOAL_PERIOD_MIN,
   MAX_NAME_LENGTH,
 } from '../../constants/setup';
+import DeleteBankModal from './DeleteBankModal';
+import GoalAmountInput from './GoalAmountInput';
+import GoalPeriodInput from './GoalPeriodInput';
+import GoalTabSwitch from './GoalTabSwitch';
+import SetupCompleteModal from './SetupCompleteModal';
+import '../../styles/setup/BankSetupPage.css';
 
 const SPECIAL_CHAR_REGEX = /[^가-힣a-zA-Z0-9\s]/;
 
@@ -79,11 +80,11 @@ function BankSetupPage({ mode = 'create', initialData, onComplete, onCompleteAnd
     window.setTimeout(() => inputRef.current?.focus(), 0);
   };
 
-  const handleNameChange = (e) => {
-    const nextValue = e.target.value;
+  const handleNameChange = (event) => {
+    const nextValue = event.target.value;
 
     if (SPECIAL_CHAR_REGEX.test(nextValue)) {
-      setNameError(`특수문자 제외, 공백 포함 최대 ${MAX_NAME_LENGTH}자로 작성해주세요`);
+      setNameError(`특수문자를 제외하고 ${MAX_NAME_LENGTH}자 이하로 입력해주세요.`);
     } else {
       setNameError('');
     }
@@ -140,8 +141,13 @@ function BankSetupPage({ mode = 'create', initialData, onComplete, onCompleteAnd
   return (
     <div className="bankSetupPage">
       <div className="bankSetupPage__header">
-        <button className="bankSetupPage__backBtn" onClick={onBack} type="button" aria-label="뒤로가기">
-          ‹
+        <button
+          className="bankSetupPage__backBtn"
+          onClick={onBack}
+          type="button"
+          aria-label="뒤로가기"
+        >
+          <img src={ChevronLeft} alt="뒤로" />
         </button>
         {isEditMode && (
           <button
@@ -185,7 +191,7 @@ function BankSetupPage({ mode = 'create', initialData, onComplete, onCompleteAnd
                 </span>
                 <button
                   className="bankSetupPage__iconButton"
-                  onMouseDown={(e) => e.preventDefault()}
+                  onMouseDown={(event) => event.preventDefault()}
                   onClick={handleNameClear}
                   type="button"
                   aria-label="통장 이름 지우기"

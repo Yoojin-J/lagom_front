@@ -9,13 +9,19 @@ function calcPeriodInfo(startDate, goalPeriod) {
   const daysRemaining = Math.max(totalDays - daysElapsed, 0);
   const end = new Date(start);
   end.setMonth(end.getMonth() + goalPeriod);
-  const fmt = (d) => d.toISOString().slice(0, 10).replace(/-/g, '.');
-  return { totalDays, daysElapsed: Math.min(daysElapsed, totalDays), daysRemaining, endDate: fmt(end), startDate: fmt(start) };
+  const formatDate = (date) => date.toISOString().slice(0, 10).replace(/-/g, '.');
+
+  return {
+    totalDays,
+    daysElapsed: Math.min(daysElapsed, totalDays),
+    daysRemaining,
+    endDate: formatDate(end),
+    startDate: formatDate(start),
+  };
 }
 
 function BankSummaryCard({ bankInfo, onDeposit, onEdit }) {
   const { name, currentAmount, goalType, goalAmount, goalPeriod, startDate } = bankInfo;
-
   const periodInfo = goalType === 'period' ? calcPeriodInfo(startDate, goalPeriod) : null;
 
   return (
@@ -47,7 +53,7 @@ function BankSummaryCard({ bankInfo, onDeposit, onEdit }) {
             <span className="bankSummaryCard__dday">D-{periodInfo.daysRemaining}</span>
           </div>
           <span className="bankSummaryCard__dateRange">
-            {periodInfo.startDate}-{periodInfo.endDate}
+            {periodInfo.startDate} - {periodInfo.endDate}
           </span>
         </div>
       ) : (
@@ -58,10 +64,7 @@ function BankSummaryCard({ bankInfo, onDeposit, onEdit }) {
       )}
 
       <div className="bankSummaryCard__actions">
-        <button
-          className="bankSummaryCard__btn bankSummaryCard__btn--takeout"
-          type="button"
-        >
+        <button className="bankSummaryCard__btn bankSummaryCard__btn--takeout" type="button">
           행복인출
         </button>
         <button

@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import AchievementList from './components/AchievementList';
 import EmptyAchievementState from './components/EmptyAchievementState';
+import useAchievements from './hooks/useAchievements';
 import './styles/page.css';
 
-function AchievementPage({ achievements }) {
+function AchievementPage() {
+  const { achievements } = useAchievements();
   const [selectedAchievement, setSelectedAchievement] = useState(null);
 
   return (
