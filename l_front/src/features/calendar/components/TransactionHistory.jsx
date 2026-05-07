@@ -24,6 +24,7 @@ import Angry from '../../../assets/icons/satisfaction/Angry';
 import Common from '../../../assets/icons/satisfaction/Common';
 import Satisfied from '../../../assets/icons/satisfaction/Satisfied';
 import Excited from '../../../assets/icons/satisfaction/Exited';
+import { useNavigate } from 'react-router-dom';
 
 const TransactionHistory = ({
   selectedDayTransactions,
@@ -45,6 +46,20 @@ const TransactionHistory = ({
   //   beauty: { label: '미용', icon: <Beauty /> },
   //   education: { label: '교육', icon: <Education /> },
   // };
+
+  const navigate = useNavigate();
+  const goEdit = (item) => {
+    // 첫 번째 인자는 이동할 경로, 
+    // 두 번째 인자의 state 속성에 보낼 객체를 담습니다.
+    navigate(`/expense/${item.expense_id}`, { 
+      state: { 
+        data: item, 
+        mode: 'edit' 
+      } 
+    });
+    
+    console.log(item);
+  };
 
   const category = {
     0: { label: '카테고리 없음', icon: <SystemMore width={24} height={24} />, color: { background: 'var(--Category-Light-pink, rgba(255, 176, 173, 0.20))' } },
@@ -106,7 +121,7 @@ const TransactionHistory = ({
       const sat = getSatisfaction(item.evaluation);
 
       return (
-        <li key={item.expense_id} className='transaction-detail-list'>
+        <li key={item.expense_id} className='transaction-detail-list' onClick={() => goEdit(item)}>
           <div className='category-icon' style={category.color}>
             {category.icon}
           </div>

@@ -2,30 +2,36 @@ import React from 'react'
 import DatePicker from './DatePickerExpense';
 
 const ExpenseFixSetting = ({
-  selectedPeriod,
-  setSelectedPeriod,
-  selectedCycle,
-  setSelectedCycle,
-  startDate,
-  setStartDate,
-  endDate,
-  setEndDate,
+  formData,
+  setFormData,
   weekList,
 }) => {
   const handlePeriod = (e) => {
     const period = e.currentTarget.dataset.value;
 
-    setSelectedPeriod(period);
+    setFormData(prev => ({
+      ...prev,
+      period: period,
+      // 매일/매주/매달 버튼 누를 때마다 주기 초기화
+      cycle: [],
+    }))
   };
 
   const handleCycle = (value) => {
-    setSelectedCycle((prev) => {
-      // 이미 선택되어 있다면 제거 (Filter)
-      if (prev.includes(value)) {
-        return prev.filter((item) => item !== value);
+    setFormData((prev) => {
+      // 1. 현재 배열 가져오기 (formData 내부의 selectedCycle)
+      const currentCycles = prev.cycle;
+
+      // 2. 새 배열 계산
+      const nextCycles = currentCycles.includes(value)
+        ? currentCycles.filter((item) => item !== value) // 제거
+        : [...currentCycles, value]; // 추가
+
+      // 3. 전체 객체 업데이트
+      return {
+        ...prev,           // 다른 필드들 유지
+        cycle: nextCycles // 변경된 배열로 덮어쓰기
       }
-      // 선택되어 있지 않다면 추가 (Spread)
-      return [...prev, value];
     });
   };
 
@@ -37,33 +43,33 @@ const ExpenseFixSetting = ({
         <div className='setting-bar'>
           <div
             data-value='day'
-            className={`tab ${selectedPeriod === 'day' ? 'selected' : ''}`}
+            className={`tab ${formData.period === 'day' ? 'selected' : ''}`}
             onClick={handlePeriod}
           >
             매일
           </div>
           <div
             data-value='week'
-            className={`tab ${selectedPeriod === 'week' ? 'selected' : ''}`}
+            className={`tab ${formData.period === 'week' ? 'selected' : ''}`}
             onClick={handlePeriod}
           >
             매주
           </div>
           <div
             data-value='month'
-            className={`tab ${selectedPeriod === 'month' ? 'selected' : ''}`}
+            className={`tab ${formData.period === 'month' ? 'selected' : ''}`}
             onClick={handlePeriod}
           >
             매월
           </div>
         </div>
-        {selectedPeriod === 'week' &&
+        {formData.period === 'week' &&
           <div className='cycle'>
-            {selectedPeriod && weekList.map((week) => {
+            {formData.period && weekList.map((week) => {
               return (
                 <div
                   key={week.value}
-                  className={`cycle-chip ${selectedCycle.includes(week.value) ? 'selected' : ''}`}
+                  className={`cycle-chip ${formData.cycle.includes(week.value) ? 'selected' : ''}`}
                   onClick={() => handleCycle(week.value)}
                 >
                   {week.label}
@@ -72,13 +78,13 @@ const ExpenseFixSetting = ({
             })}
           </div>}
 
-        {selectedPeriod === 'month' &&
+        {formData.period === 'month' &&
           <div className='cycle'>
-            {selectedPeriod && Array.from({ length: 31 }, (_, i) => {
+            {formData.period && Array.from({ length: 31 }, (_, i) => {
               return (
                 <div
                   key={i + 1}
-                  className={`cycle-chip ${selectedCycle.includes(i + 1) ? 'selected' : ''}`}
+                  className={`cycle-chip ${formData.cycle.includes(i + 1) ? 'selected' : ''}`}
                   onClick={() => handleCycle(i + 1)}
                 >
                   {i + 1}
@@ -91,8 +97,9 @@ const ExpenseFixSetting = ({
         <div className='label'>시작일</div>
         <div className='input-content'>
           <DatePicker
-            selectedDate={startDate}
-            setSelectedDate={setStartDate}
+            formData={formData}
+            setFormData={setFormData}
+            datetype={'startdate'}
           />
         </div>
       </div>
@@ -100,8 +107,9 @@ const ExpenseFixSetting = ({
         <div className='label'>종료일</div>
         <div className='input-content'>
           <DatePicker
-            selectedDate={endDate}
-            setSelectedDate={setEndDate}
+            formData={formData}
+            setFormData={setFormData}
+            datetype={'enddate'}
           />
         </div>
       </div>

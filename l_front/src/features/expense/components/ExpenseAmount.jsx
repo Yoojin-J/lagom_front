@@ -5,8 +5,6 @@ import Delite from '../../../assets/icons/common/Delite';
 import { useOutsideClick } from '../hook/useOutsideClick';
 
 const ExpenseAmount = ({
-  type,
-  setType,
   formData,
   setFormData,
   handleChange
@@ -19,13 +17,18 @@ const ExpenseAmount = ({
   };
 
   const handleTypeChange = (e) => {
-    const type = e.currentTarget.id;
+    const type = +e.currentTarget.id;
 
-    setType(type);
     setIsVisibleT(!isVisibleT);
     setFormData(prev => ({
       ...prev,
       type: type,
+
+      // type이 바뀔 때 함께 초기화
+      category: 0,
+      memo: '',
+      emotion: null,
+      evaluation: null,
     }));
   };
 
@@ -52,22 +55,22 @@ const ExpenseAmount = ({
             className="dropdown-button"
             onClick={HandleType}
           >
-            {type == "INCOME" ? "수입" : "지출"}
+            {formData.type == 1 ? "수입" : "지출"}
             <DisClosure fill='#E6E8EA' />
           </button>
           {isVisibleT && (
             <ul className="dropdown-list">
               <li
-                key="INCOME"
-                id="INCOME"
+                key={1}
+                id={1}
                 onClick={handleTypeChange}
               >
                 수입
               </li>
               <Devider width={100} />
               <li
-                key="EXPENSE"
-                id="EXPENSE"
+                key={0}
+                id={0}
                 onClick={handleTypeChange}
               >
                 지출

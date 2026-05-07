@@ -4,12 +4,10 @@ import ChevronUp from '../../../assets/icons/common/ChevronUp';
 import { useOutsideClick } from '../hook/useOutsideClick';
 
 const ExpenseCategory = ({
-  category,
-  setCategory,
-  categoryOptions,
+  formData,
   setFormData,
+  categoryOptions,
   targetCategory,
-  type,
   IconComponent
 }) => {
   const [isVisibleC, setIsVisibleC] = useState(false);
@@ -20,9 +18,8 @@ const ExpenseCategory = ({
   };
 
   const handleCatChange = (e) => {
-    const category = e.currentTarget.id;
+    const category = +e.currentTarget.id;
 
-    setCategory(category);
     setIsVisibleC(!isVisibleC);
     setFormData(prev => ({
       ...prev,
@@ -42,15 +39,15 @@ const ExpenseCategory = ({
       >
         {!isVisibleC && <button
           type="button"
-          className={`category-button ${category === 'none' ? '' : 'selected'}`}
+          className={`category-button ${formData.category === 0 ? '' : 'selected'}`}
           onClick={handleCat}
         >
-          {category === 'none' ? '카테고리 없음' : targetCategory?.label || category}
+          {formData.category === 0 ? '카테고리 없음' : targetCategory?.label || formData.category}
           <div className='chevron'><DisClosure fill='#E6E8EA' /></div>
         </button>}
         {isVisibleC && (
           <ul className="category-list">
-            {type && categoryOptions[type].map((cat, index, array) => {
+            {formData.type !== null && formData.type !== undefined && categoryOptions[formData.type].map((cat, index, array) => {
               const IconComponent = cat.icon;
 
               return (

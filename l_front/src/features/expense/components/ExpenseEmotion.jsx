@@ -1,22 +1,27 @@
 import React from 'react'
 
 const ExpenseEmotion = ({
-  selectedEmo,
-  setSelectedEmo,
-  selectedSat,
-  setSelectedSat,
-  type,
+  formData,
+  setFormData,
   emotionOptions,
   satisfactionOptions,
 }) => {
   const handleEmotion = (val) => {
     // 이미 선택된 걸 다시 누르면 null로 초기화(해제), 아니면 새로운 값 세팅
-    setSelectedEmo((prev) => (prev === val ? null : val));
+    // setSelectedEmo((prev) => (prev === val ? null : val));
+    setFormData((prev) => ({
+      ...prev, 
+      emotion: prev.emotion === val ? null : val 
+    }));
   };
 
   const handleSatisfaction = (val) => {
     // 이미 선택된 걸 다시 누르면 null로 초기화(해제), 아니면 새로운 값 세팅
-    setSelectedSat((prev) => (prev === val ? null : val));
+    // setSelectedSat((prev) => (prev === val ? null : val));
+    setFormData((prev) => ({
+      ...prev, //
+      evaluation: prev.evaluation === val ? null : val 
+    }));
   };
 
   return (
@@ -24,8 +29,8 @@ const ExpenseEmotion = ({
       <div className='emotion-section'>
         <div className='emotion-label'>감정</div>
         <ul className='emotion-option-container'>
-          {type && emotionOptions.map((emo) => {
-            const isSelected = selectedEmo === emo.value;
+          {formData.type === 0 && emotionOptions.map((emo) => {
+            const isSelected = formData.emotion === emo.value;
 
             return (
               <li key={emo.value} value={emo.value} className='emotion-btn' onClick={() => handleEmotion(emo.value)}>
@@ -39,8 +44,8 @@ const ExpenseEmotion = ({
       <div className='satisfaction-section'>
         <div className='satisfaction-label'>소비 만족도</div>
         <ul className='satisfaction-option-container'>
-          {type && satisfactionOptions.map((sat) => {
-            const isSelected = selectedSat === sat.value;
+          {formData.type === 0 && satisfactionOptions.map((sat) => {
+            const isSelected = formData.evaluation === sat.value;
 
             return (
               <li key={sat.value} value={sat.value} className='satisfaction-btn' onClick={() => handleSatisfaction(sat.value)}>

@@ -20,13 +20,13 @@ const GoExpense = () => {
 
   const handleIncomeClick = () => {
     navigate('/expense', {
-      state: { type: 'INCOME' }
+      state: { type: 1 }
     });
   };
 
   const handleExpenseClick = () => {
     navigate('/expense', {
-      state: { type: 'EXPENSE' }
+      state: { type: 0 }
     });
   };
 

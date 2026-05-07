@@ -47,6 +47,11 @@ button {
     align-self: stretch;
 }
 
+.expense-content>.header>.back-btn {
+    width: 24px;
+    height: 24px;
+}
+
 .expense-content>.header>.delete {
     box-sizing: border-box;
     display: flex;
