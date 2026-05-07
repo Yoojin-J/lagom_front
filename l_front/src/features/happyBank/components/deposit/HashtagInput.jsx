@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import FeedbackIcon from '../../../../assets/Feedback Icon.svg';
+import Delite from '../../../../assets/icons/common/Delite';
 import '../../styles/deposit/HashtagInput.css';
 
 const MAX_TAGS = 5;
@@ -76,7 +77,7 @@ function HashtagInput({ tags, onChange }) {
               onClick={handleDelete}
               aria-label="해시태그 전체 삭제"
             >
-              ×
+              <Delite />
             </button>
           )}
         </div>

@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import '../../styles/setup/GoalAmountInput.css';
-import DeleteIcon from '../../../../assets/Delite.svg';
+import Delite from '../../../../assets/icons/common/Delite';
 import FeedbackIcon from '../../../../assets/Feedback Icon.svg';
 import { GOAL_AMOUNT_MAX, GOAL_AMOUNT_MIN } from '../../constants/setup';
 
@@ -71,7 +71,7 @@ function GoalAmountInput({ value, onChange }) {
               type="button"
               aria-label="목표 금액 지우기"
             >
-              <img src={DeleteIcon} alt="" />
+              <Delite />
             </button>
           )}
         </div>

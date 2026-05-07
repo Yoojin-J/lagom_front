@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import '../../styles/setup/GoalPeriodInput.css';
-import DeleteIcon from '../../../../assets/Delite.svg';
+import Delite from '../../../../assets/icons/common/Delite';
 import FeedbackIcon from '../../../../assets/Feedback Icon.svg';
 import { GOAL_PERIOD_MAX, GOAL_PERIOD_MIN } from '../../constants/setup';
 
@@ -70,7 +70,7 @@ function GoalPeriodInput({ value, onChange }) {
               type="button"
               aria-label="목표 기간 지우기"
             >
-              <img src={DeleteIcon} alt="" />
+              <Delite />
             </button>
           )}
         </div>

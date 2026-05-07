@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import FeedbackIcon from '../../../../assets/Feedback Icon.svg';
 import '../../styles/deposit/AmountInput.css';
+import Delite from '../../../../assets/icons/common/Delite';
 
 const MAX_AMOUNT = 10_000_000;
 
@@ -35,7 +36,9 @@ function AmountInput({ value, onChange }) {
     <div className="amountInput">
       <label className="amountInput__label">금액</label>
       <div className="amountInput__wrapper">
-        <div className={`amountInput__fieldRow ${isFocused ? 'amountInput__fieldRow--active' : ''} ${hasError ? 'amountInput__fieldRow--error' : ''}`}>
+        <div className={`amountInput__fieldRow
+            ${isFocused ? 'amountInput__fieldRow--active' : ''}
+            ${hasError ? 'amountInput__fieldRow--error' : ''}`}>
           <input
             className="amountInput__field"
             type="text"
@@ -47,7 +50,8 @@ function AmountInput({ value, onChange }) {
             placeholder="0"
             aria-label="금액"
           />
-          <span className={`amountInput__unit ${value ? 'amountInput__unit--filled' : ''}`}>원</span>
+          <span className={`amountInput__unit
+            ${value ? 'amountInput__unit--filled' : ''}`}>원</span>
           {isFocused && value && (
             <button
               className="amountInput__deleteBtn"
@@ -56,14 +60,18 @@ function AmountInput({ value, onChange }) {
               onClick={handleDelete}
               aria-label="금액 삭제"
             >
-              ×
+              <Delite />
             </button>
           )}
         </div>
-        <div className={`amountInput__underline ${isFocused ? 'amountInput__underline--active' : ''} ${hasError ? 'amountInput__underline--error' : ''}`} />
+        <div className={`amountInput__underline
+            ${isFocused ? 'amountInput__underline--active' : ''}
+            ${hasError ? 'amountInput__underline--error' : ''}`} />
 
         {isFocused && (
-          <p className="amountInput__helper">1원부터 {(MAX_AMOUNT / 10000).toLocaleString()}만원까지 저금할 수 있어요</p>
+          <p className="amountInput__helper">
+            1원부터 {(MAX_AMOUNT / 10000).toLocaleString()}만원까지 저금할 수 있어요
+          </p>
         )}
         {hasError && (
           <p className="amountInput__error">

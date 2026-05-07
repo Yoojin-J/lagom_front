@@ -106,43 +106,26 @@
 
 .setupCompleteCheck__btn {
   display: flex;
-  width: 136px;
-  padding: 12px;
   justify-content: center;
   align-items: center;
   border-radius: 100px;
   background: var(--Gray-5, #F4F5F6);
   color: var(--Gray-60, #6D7882);
-  text-align: center;
-
-  /* Body semibold/medium */
   font-family: Pretendard;
   font-size: 16px;
-  font-style: normal;
   font-weight: 600;
-  line-height: 120%;
-  /* 19.2px */
   letter-spacing: -0.4px;
 }
 
 .setupCompleteDeposit__btn {
   display: flex;
-  width: 136px;
-  padding: 12px;
   justify-content: center;
   align-items: center;
   border-radius: 100px;
   background: var(--Primary-base, #FFB0AD);
-
   color: var(--Gray-0, #FFF);
-  text-align: center;
-
-  /* Body semibold/medium */
   font-family: Pretendard;
   font-size: 16px;
-  font-style: normal;
   font-weight: 600;
-  line-height: 120%;
-  /* 19.2px */
   letter-spacing: -0.4px;
 }

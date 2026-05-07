@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
-import ChevronLeft from '../../../../assets/ChevronLeft.svg';
+import ChevronLeftH from '../../../../assets/icons/common/ChevronLeft';
 import Clover2 from '../../../../assets/Clover2.svg';
-import DeleteIcon from '../../../../assets/Delite.svg';
+import Delite from '../../../../assets/icons/common/Delite';
 import EditIcon from '../../../../assets/Edit.svg';
 import FeedbackIcon from '../../../../assets/Feedback Icon.svg';
 import {
@@ -147,7 +147,7 @@ function BankSetupPage({ mode = 'create', initialData, onComplete, onCompleteAnd
           type="button"
           aria-label="뒤로가기"
         >
-          <img src={ChevronLeft} alt="뒤로" />
+          <ChevronLeftH />
         </button>
         {isEditMode && (
           <button
@@ -196,7 +196,7 @@ function BankSetupPage({ mode = 'create', initialData, onComplete, onCompleteAnd
                   type="button"
                   aria-label="통장 이름 지우기"
                 >
-                  <img src={DeleteIcon} alt="" />
+                  <Delite />
                 </button>
               </div>
             </div>

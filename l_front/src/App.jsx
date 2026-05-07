@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
+import { useState } from 'react';
 import './App.css'
 import Header from './shared/components/Header'
 import NavigationBar from './shared/components/NavigationBar'
@@ -16,6 +17,8 @@ const MainLayout = () => (
 );
 
 function App() {
+  const [activeTab, setActiveTab] = useState(0);
+
   return (
     <div className='app_content'>
       <Router>

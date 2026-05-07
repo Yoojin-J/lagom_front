@@ -1,8 +1,9 @@
+import Delite from '../../../../assets/icons/common/Delite';
 import '../../styles/detail/SavingsRecordModal.css';
 
 function SavingsRecordModal({ record, onClose }) {
   const { date, type, memo, hashtag, amount } = record;
-  const typeLabel = type === 'happy' ? '행복저금' : '행복되어 저금';
+  const typeLabel = type === 'happy' ? '행복저금' : '행복해지는 저금';
 
   return (
     <div className="savingsRecordModal__overlay" onClick={onClose}>
@@ -15,7 +16,7 @@ function SavingsRecordModal({ record, onClose }) {
             </span>
           </div>
           <button className="savingsRecordModal__close" onClick={onClose} type="button">
-            X
+            <Delite />
           </button>
         </div>
 

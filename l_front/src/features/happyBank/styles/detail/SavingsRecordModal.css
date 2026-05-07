@@ -178,3 +178,13 @@
   /* 16.8px */
   letter-spacing: -0.8px;
 }
+
+.savingsRecordModal__close {
+  display: flex;
+  width: 24px;
+  height: 24px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 100px;
+  background: var(--Gray-10, #E6E8EA);
+}

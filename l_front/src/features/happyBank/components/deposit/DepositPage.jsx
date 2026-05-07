@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Clover2 from '../../../../assets/Clover2.svg';
-import ChevronLeft from '../../../../assets/ChevronLeft.svg';
+import ChevronLeftH from '../../../../assets/icons/common/ChevronLeft';
 import useDeposit from '../../hooks/useDeposit';
 import AmountInput from './AmountInput';
 import HashtagInput from './HashtagInput';
@@ -46,7 +46,7 @@ function DepositPage({ onComplete, onAddRecord, onBack, bankName = '행복통장
           type="button"
           aria-label="뒤로가기"
         >
-          <img src={ChevronLeft} alt="뒤로" />
+          <ChevronLeftH />
         </button>
       </div>
 
@@ -65,7 +65,8 @@ function DepositPage({ onComplete, onAddRecord, onBack, bankName = '행복통장
       </div>
 
       <button
-        className={`depositPage__submitBtn ${isValid ? 'depositPage__submitBtn--active' : ''}`}
+        className={`depositPage__submitBtn 
+          ${isValid ? 'depositPage__submitBtn--active' : ''}`}
         onClick={onSubmit}
         disabled={!isValid || isLoading}
         type="button"

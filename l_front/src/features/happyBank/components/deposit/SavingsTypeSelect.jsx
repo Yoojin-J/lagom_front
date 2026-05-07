@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import Disclosure from '../../../../assets/Disclosure.svg';
+import DisClosure from '../../../../assets/icons/common/DisClosure';
 import Questionmark from '../../../../assets/Questionmark.svg';
 import '../../styles/deposit/SavingsTypeSelect.css';
 
@@ -49,11 +49,9 @@ function SavingsTypeSelect({ value, onChange }) {
           <span className="savingsTypeSelect__triggerLabel">{selected.label}</span>
           <span className="savingsTypeSelect__triggerDesc">{selected.description}</span>
         </button>
-        <img
-          className={`savingsTypeSelect__chevron ${isOpen ? 'savingsTypeSelect__chevron--open' : ''}`}
-          src={Disclosure}
-          alt=""
-        />
+        <span className={`savingsTypeSelect__chevron ${isOpen ? 'savingsTypeSelect__chevron--open' : ''}`}>
+          <DisClosure />
+        </span>
         <div className="savingsTypeSelect__underline" />
 
         {isOpen && (

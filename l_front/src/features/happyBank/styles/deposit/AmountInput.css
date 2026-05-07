@@ -60,19 +60,12 @@
 
 .amountInput__deleteBtn {
   display: flex;
-  align-items: center;
+  width: 24px;
+  height: 24px;
   justify-content: center;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: none;
-  background: #B1B8BE;
-  color: #fff;
-  font-size: 16px;
-  line-height: 1;
-  cursor: pointer;
-  flex-shrink: 0;
-  padding: 0;
+  align-items: center;
+  border-radius: 100px;
+  background: var(--Gray-10, #E6E8EA);
 }
 
 .amountInput__underline {

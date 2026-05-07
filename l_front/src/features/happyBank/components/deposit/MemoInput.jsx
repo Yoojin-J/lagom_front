@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import FeedbackIcon from '../../../../assets/Feedback Icon.svg';
+import Delite from '../../../../assets/icons/common/Delite';
 import '../../styles/deposit/MemoInput.css';
 
 const MAX_LENGTH = 100;
@@ -60,7 +61,7 @@ function MemoInput({ value, onChange }) {
               onClick={() => onChange('')}
               aria-label="메모 전체 삭제"
             >
-              ×
+              <Delite />
             </button>
           )}
         </div>
