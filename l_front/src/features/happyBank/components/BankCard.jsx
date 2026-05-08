@@ -1,4 +1,4 @@
-import Clover2 from '../../../assets/Clover2.svg';
+import Clover2 from '../../../assets/icons/happybank/Clover2';
 import '../styles/BankCard.css';
 
 function calcPeriodInfo(startDate, goalPeriod) {
@@ -26,7 +26,7 @@ function BankCard({ bank, records, onClick }) {
       <div className="bankCard__top">
         <div className="bankCard__titleGroup">
           <span className="bankCard__iconWrap">
-            <img src={Clover2} alt="" className="bankCard__icon" />
+            <Clover2 />
           </span>
           <span className="bankCard__name">{name}</span>
         </div>

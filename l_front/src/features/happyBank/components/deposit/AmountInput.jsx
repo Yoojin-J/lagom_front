@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import FeedbackIcon from '../../../../assets/Feedback Icon.svg';
+import Feedback from '../../../../assets/icons/common/Feedback';
 import '../../styles/deposit/AmountInput.css';
 import Delite from '../../../../assets/icons/common/Delite';
 
@@ -75,7 +75,7 @@ function AmountInput({ value, onChange }) {
         )}
         {hasError && (
           <p className="amountInput__error">
-            <img src={FeedbackIcon} alt="" className="amountInput__errorIcon" />
+            <Feedback className="amountInput__errorIcon" />
             1원부터 {(MAX_AMOUNT / 10000).toLocaleString()}만원까지 저금할 수 있어요
           </p>
         )}

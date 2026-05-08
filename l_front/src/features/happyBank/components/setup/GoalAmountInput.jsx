@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import '../../styles/setup/GoalAmountInput.css';
 import Delite from '../../../../assets/icons/common/Delite';
-import FeedbackIcon from '../../../../assets/Feedback Icon.svg';
+import Feedback from '../../../../assets/icons/common/Feedback';
 import { GOAL_AMOUNT_MAX, GOAL_AMOUNT_MIN } from '../../constants/setup';
 
 const AMOUNT_GUIDE_TEXT = '1원부터 nn만원까지 저금할 수 있어요';
@@ -80,7 +80,7 @@ function GoalAmountInput({ value, onChange }) {
 
       {showError ? (
         <p className="goalAmountInput__message goalAmountInput__message--error">
-          <img src={FeedbackIcon} alt="" />
+            <Feedback />
           <span>{AMOUNT_GUIDE_TEXT}</span>
         </p>
       ) : (

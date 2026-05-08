@@ -1,0 +1,18 @@
+import React from 'react'
+
+const Feedback = () => {
+    return(
+        <svg xmlns="http://www.w3.org/2000/svg" 
+        width="12" 
+        height="12" 
+        viewBox="0 0 12 12" 
+        fill="none"
+        >
+            <rect width="12" height="12" rx="6" fill="#DE3412"/>
+            <path d="M5.99927 3.5V6" stroke="white" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M5.99927 8.5H6.00656" stroke="white" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    )
+}
+
+export default Feedback

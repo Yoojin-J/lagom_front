@@ -1,3 +1,4 @@
+import Edit from '../../../../assets/icons/happybank/Edit';
 import '../../styles/setup/BankNameInput.css';
 
 /**
@@ -18,7 +19,9 @@ function BankNameInput({ value, onChange }) {
           placeholder="통장 이름을 입력하세요"
           maxLength={20}
         />
-        <span className="bankNameInput__icon">✏️</span>
+        <span className="bankNameInput__icon">
+          <Edit />
+        </span>
       </div>
     </div>
   );

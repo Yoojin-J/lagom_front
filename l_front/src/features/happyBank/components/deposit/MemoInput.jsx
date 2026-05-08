@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import FeedbackIcon from '../../../../assets/Feedback Icon.svg';
+import Feedback from '../../../../assets/icons/common/Feedback';
 import Delite from '../../../../assets/icons/common/Delite';
 import '../../styles/deposit/MemoInput.css';
 
@@ -68,7 +68,7 @@ function MemoInput({ value, onChange }) {
         <div className={`memoInput__underline ${isFocused ? 'memoInput__underline--active' : ''} ${hasError ? 'memoInput__underline--error' : ''}`} />
         {hasError && (
           <p className="memoInput__error">
-            <img src={FeedbackIcon} alt="" className="memoInput__errorIcon" />
+            <Feedback className="memoInput__errorIcon" />
             최대 {MAX_LENGTH}자까지 작성 가능합니다.
           </p>
         )}

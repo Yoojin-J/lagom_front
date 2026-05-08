@@ -1,9 +1,9 @@
 import { useRef, useState } from 'react';
-import ChevronLeftH from '../../../../assets/icons/common/ChevronLeft';
-import Clover2 from '../../../../assets/Clover2.svg';
+import ChevronLeft from '../../../../assets/icons/common/ChevronLeft';
+import Clover2 from '../../../../assets/icons/happybank/Clover2';
 import Delite from '../../../../assets/icons/common/Delite';
-import EditIcon from '../../../../assets/Edit.svg';
-import FeedbackIcon from '../../../../assets/Feedback Icon.svg';
+import EditIcon from '../../../../assets/icons/happybank/Edit';
+import Feedback from '../../../../assets/icons/common/Feedback';
 import {
   DEFAULT_BANK_NAME,
   GOAL_AMOUNT_MAX,
@@ -147,7 +147,7 @@ function BankSetupPage({ mode = 'create', initialData, onComplete, onCompleteAnd
           type="button"
           aria-label="뒤로가기"
         >
-          <ChevronLeftH />
+          <ChevronLeft />
         </button>
         {isEditMode && (
           <button
@@ -162,7 +162,7 @@ function BankSetupPage({ mode = 'create', initialData, onComplete, onCompleteAnd
 
       <div className="bankSetupPage__profile">
         <div className="bankSetupPage__avatar">
-          <img src={Clover2} alt="" />
+          <Clover2 fill="#FFF" />
         </div>
 
         {isEditingName ? (
@@ -202,7 +202,7 @@ function BankSetupPage({ mode = 'create', initialData, onComplete, onCompleteAnd
             </div>
             {nameError && (
               <p className="bankSetupPage__nameError">
-                <img src={FeedbackIcon} alt="" />
+                <Feedback />
                 <span>{nameError}</span>
               </p>
             )}
@@ -216,7 +216,7 @@ function BankSetupPage({ mode = 'create', initialData, onComplete, onCompleteAnd
               type="button"
               aria-label="통장 이름 수정"
             >
-              <img src={EditIcon} alt="" className="bankSetupPage__pencil" />
+              <EditIcon />
             </button>
           </div>
         )}

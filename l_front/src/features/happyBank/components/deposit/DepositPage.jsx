@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import Clover2 from '../../../../assets/Clover2.svg';
-import ChevronLeftH from '../../../../assets/icons/common/ChevronLeft';
+import Clover2 from '../../../../assets/icons/happybank/Clover2';
+import ChevronLeft from '../../../../assets/icons/common/ChevronLeft';
 import useDeposit from '../../hooks/useDeposit';
 import AmountInput from './AmountInput';
 import HashtagInput from './HashtagInput';
@@ -46,13 +46,13 @@ function DepositPage({ onComplete, onAddRecord, onBack, bankName = '행복통장
           type="button"
           aria-label="뒤로가기"
         >
-          <ChevronLeftH />
+          <ChevronLeft />
         </button>
       </div>
 
       <div className="depositPage__profile">
         <div className="depositPage__avatar">
-          <img src={Clover2} alt="" />
+          <Clover2  />
         </div>
         <span className="depositPage__bankName">{bankName}</span>
       </div>

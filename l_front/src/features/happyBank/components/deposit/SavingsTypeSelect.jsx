@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import DisClosure from '../../../../assets/icons/common/DisClosure';
-import Questionmark from '../../../../assets/Questionmark.svg';
+import Questionmark from '../../../../assets/icons/common/Questionmark';
 import '../../styles/deposit/SavingsTypeSelect.css';
 
 const OPTIONS = [
@@ -65,7 +65,7 @@ function SavingsTypeSelect({ value, onChange }) {
                 onClick={() => handleSelect(opt.value)}
               >
                 <span className="savingsTypeSelect__optionLabel">{opt.label}</span>
-                <img src={Questionmark} alt="" className="savingsTypeSelect__optionDescIcon" />
+                    <Questionmark className="savingsTypeSelect__optionIcon" />
                 <span className="savingsTypeSelect__optionDesc">{opt.description}</span>
               </li>
             ))}

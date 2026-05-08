@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import FeedbackIcon from '../../../../assets/Feedback Icon.svg';
+import Feedback from '../../../../assets/icons/common/Feedback';
 import Delite from '../../../../assets/icons/common/Delite';
 import '../../styles/deposit/HashtagInput.css';
 
@@ -84,7 +84,7 @@ function HashtagInput({ tags, onChange }) {
         <div className={`hashtagInput__underline ${isFocused ? 'hashtagInput__underline--active' : ''} ${hasError ? 'hashtagInput__underline--error' : ''}`} />
         {hasError && (
           <p className="hashtagInput__error">
-            <img src={FeedbackIcon} alt="" className="hashtagInput__errorIcon" />
+            <Feedback className="hashtagInput__errorIcon" />
             해시태그는 최대 {MAX_TAGS}개까지 입력 가능해요
           </p>
         )}

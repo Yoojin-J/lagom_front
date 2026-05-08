@@ -1,15 +1,11 @@
-import Symbol from '../../../assets/Symbol.svg';
+import Plus from '../../../assets/icons/common/Plus';
 import '../styles/AddBankButton.css';
 
 function AddBankButton({ onClick }) {
   return (
     <button className="addBankButton" type="button" onClick={onClick}>
       <span className="addBankButton__iconWrap">
-        <img
-          src={Symbol}
-          alt=""
-          className="addBankButton__icon"
-        />
+        <Plus />
       </span>
       통장 개설하기
     </button>

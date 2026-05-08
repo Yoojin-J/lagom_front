@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import '../../styles/setup/GoalPeriodInput.css';
 import Delite from '../../../../assets/icons/common/Delite';
-import FeedbackIcon from '../../../../assets/Feedback Icon.svg';
+import Feedback from '../../../../assets/icons/common/Feedback';
 import { GOAL_PERIOD_MAX, GOAL_PERIOD_MIN } from '../../constants/setup';
 
 const PERIOD_GUIDE_TEXT = '1개월부터 36개월까지 저금할 수 있어요';
@@ -79,7 +79,7 @@ function GoalPeriodInput({ value, onChange }) {
 
       {showError ? (
         <p className="goalPeriodInput__message goalPeriodInput__message--error">
-          <img src={FeedbackIcon} alt="" />
+           <Feedback />
           <span>{PERIOD_GUIDE_TEXT}</span>
         </p>
       ) : (
