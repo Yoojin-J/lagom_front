@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState, useMemo } from 'react'
+import { useNavigate, useParams } from 'react-router-dom';
 import testTransactions from '../../assets/data/expense3.json';
 import ListIcon from '../../assets/icons/calendar/List.jsx';
 import CalendarIcon from '../../assets/icons/calendar/Calendar.jsx';
@@ -10,9 +11,13 @@ import GoExpense from './components/GoExpense.jsx';
 import './styles/CalendarPage.css';
 import TransactionHistory from './components/TransactionHistory.jsx';
 import CalendarBody from './components/CalendarBody.jsx';
+import { useLedger } from './hook/useLedger.js';
+import { formatDate } from './hook/dateUtil.js';
 
 
 const CalendarPage = () => {
+  const navigate = useNavigate();
+  const { year, month } = useParams();
 
   const currentDate = new Date(); //오늘
   const [selectedDate, setSelectedDate] = useState(new Date); // 선택된 날짜
@@ -21,10 +26,16 @@ const CalendarPage = () => {
 
   const [weekStartDate, setWeekStartDate] = useState(null); // 한 주의 시작 날짜 구하기(월요일 날짜)
 
-  // 전체 거래 데이터 (배열 형태)
-  const [allTransactions, setAllTransactions] = useState([]);
   // 선택한 날짜의 거래 목록
-  const [selectedDayTransactions, setSelectedDayTransactions] = useState([]);
+  const [selectedDayTransactions, setSelectedDayTransactions] = useState({
+    dayItems: [],
+    dayIncome: 0,
+    dayExpense: 0
+  });
+  // 백엔드에서 가져온 데이터
+  const [rawData, setRawData] = useState([]);
+  // 가공된 데이터 가져오기
+  const { itemsByDate, totalIncome, totalExpense } = useLedger(rawData);
 
   // 한 주의 시작 날짜 가져오기 함수
   const getStartOfWeek = (date) => {
@@ -36,24 +47,15 @@ const CalendarPage = () => {
     return start;
   };
 
-  // 날짜 문자열 (YYYY-MM-DD)
-  const formatDateKey = (date) => {
-    const y = date.getFullYear();
-    const m = String(date.getMonth() + 1).padStart(2, '0');
-    const d = String(date.getDate()).padStart(2, '0');
-    return `${y}-${m}-${d}`;
-  };
-
   // 전체 거래 데이터 불러오기 (한 번만 실행)
   const fetchAllTransactions = () => {
     try {
-      const data = testTransactions;
-      setAllTransactions(data || []);
+      const res = testTransactions;
+      setRawData(res);
       console.log("testdata: ", testTransactions);
-      console.log("alltran: ", allTransactions);
     } catch (error) {
       console.error("거래 데이터 불러오기 실패", error);
-      setAllTransactions([]);
+      setRawData([]);
     }
   };
 
@@ -65,13 +67,20 @@ const CalendarPage = () => {
     fetchAllTransactions();   // 전체 데이터 불러오기
   }, []);
 
+  useEffect(() => {
+    console.log("itemsByDate: ", itemsByDate);
+    console.log("selectedDayTransactions: ", selectedDayTransactions);
+  }, [itemsByDate, selectedDayTransactions]);
+
   // 선택한 날짜 변경 시 해당 날짜 거래 내역 필터링
   useEffect(() => {
-    const dateKey = formatDateKey(selectedDate);
-    const filtered = allTransactions.filter(item => item.payment_at.substring(0, 10) === dateKey);
+    const dateKey = formatDate(selectedDate);
+    const filtered = itemsByDate[dateKey] || { dayItems: [], dayIncome: 0, dayExpense: 0 };
     setSelectedDayTransactions(filtered);
 
-  }, [selectedDate, allTransactions]);
+  }, [selectedDate, itemsByDate]);
+
+
 
   // ==================== 월 이동 ====================
   const moveToMonth = (newMonthDate) => {
@@ -96,42 +105,6 @@ const CalendarPage = () => {
     setIsWeekView(false);
     setWeekStartDate(null);
   };
-
-  
-
-  const getSummary = (transactions, period = 'day') => {
-    return transactions.reduce((acc, tx) => {
-      let key;
-
-      if (period === 'month') {
-        key = tx.payment_at.substring(0, 7);        // "2026-04"
-      } else if (period === 'year') {
-        key = tx.payment_at.substring(0, 4);        // "2026"
-      } else {
-        key = tx.payment_at.split('T')[0];          // "2026-04-13" (기존 일별)
-      }
-
-      const amount = tx.amount;
-      const type = tx.type;
-
-      if (!acc[key]) {
-        acc[key] = { income: 0, expense: 0 };
-      }
-
-      if (type === 1) {
-        acc[key].income += amount;
-      } else {
-        acc[key].expense += amount;
-      }
-
-      return acc;
-    }, {});
-  };
-
-  
-
-
-
 
 
   return (
@@ -159,13 +132,12 @@ const CalendarPage = () => {
         </div>
       </div>
 
-      {typeof getSummary === 'function' && selectedDate && (
-        <MonthlyAmount
-          allTransactions={allTransactions}
-          selectedDate={selectedDate}
-          getSummary={getSummary}
-        />
-      )}
+
+      <MonthlyAmount
+        totalIncome={totalIncome}
+        totalExpense={totalExpense}
+      />
+
 
       <CalendarBody
         isWeekView={isWeekView}
@@ -175,11 +147,9 @@ const CalendarPage = () => {
         selectedDate={selectedDate}
         setSelectedDate={setSelectedDate}
         currentDate={currentDate}
-        allTransactions={allTransactions}
-        formatDateKey={formatDateKey}
-        getSummary={getSummary}
         getStartOfWeek={getStartOfWeek}
         moveToMonth={moveToMonth}
+        itemsByDate={itemsByDate}
       />
 
       {isWeekView && (

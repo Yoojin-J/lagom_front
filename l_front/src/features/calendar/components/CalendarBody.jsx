@@ -1,4 +1,5 @@
 import React, { useState, useRef, useMemo } from 'react'
+import { formatDate } from '../hook/dateUtil.js';
 
 const CalendarBody = ({
   isWeekView,
@@ -8,11 +9,9 @@ const CalendarBody = ({
   selectedDate,
   setSelectedDate,
   currentDate,
-  allTransactions,
-  formatDateKey,
-  getSummary,
   getStartOfWeek,
   moveToMonth,
+  itemsByDate,
 }) => {
   // 캘린더 드래그로 넘기기
   const calendarRef = useRef(null);
@@ -80,7 +79,7 @@ const CalendarBody = ({
         days.push({
           fullDate: thisDay,
           weekday: weekdays[thisDay.getDay() === 0 ? 6 : thisDay.getDay() - 1],
-          dateKey: formatDateKey(thisDay),
+          dateKey: formatDate(thisDay),
         });
       }
     } else {
@@ -98,7 +97,7 @@ const CalendarBody = ({
         days.push({
           fullDate: thisDate,
           weekday: weekdays[thisDate.getDay() === 0 ? 6 : thisDate.getDay() - 1],
-          dateKey: formatDateKey(thisDate),
+          dateKey: formatDate(thisDate),
         });
       }
     }
@@ -107,12 +106,13 @@ const CalendarBody = ({
 
   // 특정 날짜의 수입/지출 
   const getDailyAmount = (dateKey) => {
-    const summary = getSummary(allTransactions, 'day');
-    const data = summary[dateKey] || { income: 0, expense: 0 };
+    const dayData = itemsByDate[dateKey] || { dayIncome: 0, dayExpense: 0, dayItems: [] };;
+    const dayIncome = dayData?.dayIncome;
+    const dayExpense = dayData?.dayExpense;
 
     return {
-      income: data.income.toLocaleString(),
-      expense: data.expense.toLocaleString()
+      income: dayIncome.toLocaleString(),
+      expense: dayExpense.toLocaleString()
     };
   };
 

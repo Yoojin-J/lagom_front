@@ -29,24 +29,6 @@ import { useNavigate } from 'react-router-dom';
 const TransactionHistory = ({
   selectedDayTransactions,
 }) => {
-  // const category = {
-  //   none: { label: '카테고리 없음', icon: <SystemMore /> },
-  //   salary: { label: '급여', icon: <Salary /> },
-  //   side_income: { label: '부수입', icon: <SideIncome /> },
-  //   allowance: { label: '용돈', icon: <Allowance /> },
-  //   bonus: { label: '상여금', icon: <Bonus /> },
-  //   investment: { label: '금융수입', icon: <Investment /> },
-  //   other_income: { label: '기타', icon: <SystemMore /> },
-  //   food: { label: '식비', icon: <Food /> },
-  //   housing: { label: '주거/통신', icon: <Housing /> },
-  //   transport: { label: '교통/차량', icon: <Transport /> },
-  //   medical: { label: '의료/건강', icon: <Medical /> },
-  //   leisure: { label: '문화/여가', icon: <Leisure /> },
-  //   shopping: { label: '쇼핑', icon: <Shopping /> },
-  //   beauty: { label: '미용', icon: <Beauty /> },
-  //   education: { label: '교육', icon: <Education /> },
-  // };
-
   const navigate = useNavigate();
   const goEdit = (item) => {
     // 첫 번째 인자는 이동할 경로, 
@@ -109,11 +91,11 @@ const TransactionHistory = ({
   };
 
   const renderTransactionList = () => {
-    if (selectedDayTransactions.length === 0) {
+    if (selectedDayTransactions.dayItems.length === 0) {
       return <div className='no-transacton'>없음</div>
     }
 
-    return selectedDayTransactions.map((item, index) => {
+    return selectedDayTransactions.dayItems.map((item, index) => {
       const amount = item.amount;
       const isIncome = item.type === 1;
       const category = getCategory(item.category);
@@ -145,7 +127,7 @@ const TransactionHistory = ({
   return (
     <div className='transaction-history'>
       <div className='section-header'>
-        총 {selectedDayTransactions.length}건의 거래
+        총 {selectedDayTransactions.dayItems.length}건의 거래
       </div>
       <ul className='transaction-list'>
         {renderTransactionList()}

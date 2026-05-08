@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import './App.css'
 import Header from './shared/components/Header'
 import NavigationBar from './shared/components/NavigationBar'
@@ -18,6 +18,9 @@ const MainLayout = () => (
 
 function App() {
   const [activeTab, setActiveTab] = useState(0);
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = String(now.getMonth() + 1).padStart(2, '0');
 
   return (
     <div className='app_content'>
@@ -27,7 +30,9 @@ function App() {
       <Router>
         <Routes>
           <Route element={<MainLayout />}>
-            <Route path="/" element={<CalendarPage />} />
+            <Route path="/" element={<Navigate to={`/calendar/${currentYear}/${currentMonth}`} replace />} />
+            <Route path="/calendar/:year/:month" element={<CalendarPage />} />
+            {/* <Route path="/" element={<CalendarPage />} /> */}
             <Route path='/happyBank' element={<HappyBankPage />} />
           </Route>
 
