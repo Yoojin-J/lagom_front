@@ -18,6 +18,11 @@ import { formatDate } from './hook/dateUtil.js';
 const CalendarPage = () => {
   const navigate = useNavigate();
   const { year, month } = useParams();
+  const isFirstRender = useRef(true); // 새로고침(첫 렌더링)인지 확인용
+
+  // 숫자로 변환 (값이 없을 경우를 대비해 현재 날짜를 초기값으로 설정)
+  const currentYear = parseInt(year) || new Date().getFullYear();
+  const currentMonth = parseInt(month) || new Date().getMonth() + 1;
 
   const currentDate = new Date(); //오늘
   const [selectedDate, setSelectedDate] = useState(new Date); // 선택된 날짜
@@ -59,13 +64,28 @@ const CalendarPage = () => {
     }
   };
 
-  // 컴포넌트 마운트 시 초기화
+
   useEffect(() => {
-    const initialWeekStart = getStartOfWeek(currentDate);
-    setWeekStartDate(initialWeekStart);
-    setSelectedDate(currentDate);
-    fetchAllTransactions();   // 전체 데이터 불러오기
-  }, []);
+    // 컴포넌트가 처음 나타날 때(새로고침 포함) 실행
+    if (isFirstRender.current) {
+      const todayYear = currentDate.getFullYear();
+      const todayMonth = String(currentDate.getMonth() + 1).padStart(2, '0');
+      const todayDay = String(currentDate.getDate()).padStart(2, '0');
+
+      // 현재 URL이 오늘 날짜와 다르다면 오늘 날짜로 강제 이동
+      if (currentYear !== todayYear || currentMonth !== todayMonth) {
+        navigate(`/calendar/${todayYear}/${todayMonth}`, { replace: true });
+      }
+
+      const initialWeekStart = getStartOfWeek(currentDate);
+      setWeekStartDate(initialWeekStart);
+      setSelectedDate(currentDate);
+      fetchAllTransactions();   // 전체 데이터 불러오기
+
+      isFirstRender.current = false;
+    }
+  }, []); // '마운트 시점'에만 동작
+
 
   useEffect(() => {
     console.log("itemsByDate: ", itemsByDate);
@@ -96,6 +116,7 @@ const CalendarPage = () => {
     setIsWeekView(false);
   };
 
+
   const showSelectedWeek = () => {
     setWeekStartDate(getStartOfWeek(selectedDate));
     setIsWeekView(true);
@@ -114,6 +135,8 @@ const CalendarPage = () => {
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
           moveToMonth={moveToMonth}
+          currentYear={currentYear}
+          currentMonth={currentMonth}
         />
 
         <div className='view-toggle'>
@@ -150,6 +173,8 @@ const CalendarPage = () => {
         getStartOfWeek={getStartOfWeek}
         moveToMonth={moveToMonth}
         itemsByDate={itemsByDate}
+        currentYear={currentYear}
+        currentMonth={currentMonth}
       />
 
       {isWeekView && (
