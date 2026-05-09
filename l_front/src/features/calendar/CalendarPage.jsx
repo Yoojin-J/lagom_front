@@ -69,12 +69,11 @@ const CalendarPage = () => {
     // 컴포넌트가 처음 나타날 때(새로고침 포함) 실행
     if (isFirstRender.current) {
       const todayYear = currentDate.getFullYear();
-      const todayMonth = String(currentDate.getMonth() + 1).padStart(2, '0');
-      const todayDay = String(currentDate.getDate()).padStart(2, '0');
+      const todayMonth = currentDate.getMonth() + 1;
 
       // 현재 URL이 오늘 날짜와 다르다면 오늘 날짜로 강제 이동
       if (currentYear !== todayYear || currentMonth !== todayMonth) {
-        navigate(`/calendar/${todayYear}/${todayMonth}`, { replace: true });
+        navigate(`/calendar/${todayYear}/${String(todayMonth).padStart(2, '0')}`, { replace: true });
       }
 
       const initialWeekStart = getStartOfWeek(currentDate);
@@ -125,6 +124,13 @@ const CalendarPage = () => {
   const showFullMonth = () => {
     setIsWeekView(false);
     setWeekStartDate(null);
+
+    const selectedYear = selectedDate.getFullYear();
+    const selectedMonth = selectedDate.getMonth() + 1;
+
+    if (currentYear !== selectedYear || currentMonth !== selectedMonth) {
+      navigate(`/calendar/${selectedYear}/${String(selectedMonth).padStart(2, '0')}`);
+    }
   };
 
 

@@ -118,13 +118,30 @@ const CalendarBody = ({
       }
     } else {
       // 월간 달력 로직 (기존 그대로)
+      // 선택한 날의 년, 월
+      const selectedYear = selectedDate.getFullYear();
+      const selectedMonth = selectedDate.getMonth();
+      console.log("selectedMonth",selectedMonth);
+      // url의 년, 월
       const year = currentYear;
       const month = currentMonth;
-      const daysInMonth = new Date(year, month, 0).getDate();
-      const firstDay = new Date(year, month - 1, 1).getDay();
-      const adjustedFirstDay = firstDay === 0 ? 6 : firstDay - 1;
+
+      let daysInMonth = new Date(year, month, 0).getDate();
+      let firstDay = new Date(year, month - 1, 1).getDay();
+      let adjustedFirstDay = firstDay === 0 ? 6 : firstDay - 1;
       console.log("year, month, daysInMonth, firstDay", year, month, daysInMonth, firstDay);
 
+      if (selectedYear === year && selectedMonth + 1 === month) {
+        daysInMonth = new Date(year, month, 0).getDate();
+        firstDay = new Date(year, month - 1, 1).getDay();
+        adjustedFirstDay = firstDay === 0 ? 6 : firstDay - 1;
+        console.log("year, month, daysInMonth, firstDay", year, month, daysInMonth, firstDay);
+      } else {
+        daysInMonth = new Date(selectedYear, selectedMonth, 0).getDate();
+        firstDay = new Date(selectedYear, selectedMonth, 1).getDay();
+        adjustedFirstDay = firstDay === 0 ? 6 : firstDay - 1;
+        console.log("year, month, daysInMonth, firstDay", year, month, daysInMonth, firstDay);
+      }
 
       for (let i = 0; i < adjustedFirstDay; i++) days.push(null);
 
@@ -156,6 +173,10 @@ const CalendarBody = ({
     if (!dayInfo) return;
 
     const clickedDate = dayInfo.fullDate;
+    // const clickedYear = clickedDate.getFullYear();
+    // const clickedMonth = clickedDate.getFullYear() === parseInt(year) && (clickedDate.getMonth() + 1) === parseInt(month)
+    //   ? month // 같은 달이면 유지 (또는 주간/월간 모드만 변경)
+    //   : clickedDate.getMonth() + 1; // 다른 달이면 해당 월로 설정
     setSelectedDate(clickedDate);
     sessionStorage.setItem('selectedDate', clickedDate);
 
