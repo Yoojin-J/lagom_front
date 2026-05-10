@@ -62,7 +62,6 @@ const CalendarBody = ({
       const prevMonth = currentMonth - 1;
       // 숫자를 2자리 문자열로 변환 (예: 2 -> "02")
       const formattedMonth = String(prevMonth).padStart(2, '0');
-      // console.log("currentYear, currentMonth", currentYear, currentMonth);
 
       navigate(`/calendar/${currentYear}/${formattedMonth}`);
       moveToMonth(new Date(currentYear, prevMonth - 1, 1))
@@ -89,6 +88,14 @@ const CalendarBody = ({
     newSelected.setDate(newSelected.getDate() - 7);
     setSelectedDate(newSelected);
     setWeekStartDate(getStartOfWeek(newSelected));
+
+    if (newSelected.getMonth() + 1 !== currentMonth) {
+      const newYear = newSelected.getFullYear();
+      const newMonth = newSelected.getMonth() + 1;
+      const formattedMonth = String(newMonth).padStart(2, '0');
+
+      navigate(`/calendar/${newYear}/${formattedMonth}`);
+    }
   };
 
   const goToNextWeek = () => {
@@ -96,6 +103,14 @@ const CalendarBody = ({
     newSelected.setDate(newSelected.getDate() + 7);
     setSelectedDate(newSelected);
     setWeekStartDate(getStartOfWeek(newSelected));
+
+    if (newSelected.getMonth() + 1 !== currentMonth) {
+      const newYear = newSelected.getFullYear();
+      const newMonth = newSelected.getMonth() + 1;
+      const formattedMonth = String(newMonth).padStart(2, '0');
+
+      navigate(`/calendar/${newYear}/${formattedMonth}`);
+    }
   };
 
   // 요일 표기 
@@ -174,6 +189,13 @@ const CalendarBody = ({
       setIsWeekView(true);           // 월간 → 주간으로 전환
     }
 
+    if (clickedDate.getMonth() + 1 !== currentMonth) {
+      const newYear = clickedDate.getFullYear();
+      const newMonth = clickedDate.getMonth() + 1;
+      const formattedMonth = String(newMonth).padStart(2, '0');
+
+      navigate(`/calendar/${newYear}/${formattedMonth}`);
+    }
     setWeekStartDate(getStartOfWeek(clickedDate));
   };
 

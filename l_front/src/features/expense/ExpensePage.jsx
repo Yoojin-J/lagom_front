@@ -49,6 +49,7 @@ const ExpensePage = () => {
   const type = location.state?.type;
   const editData = location.state?.data;
   const isEditMode = location.state?.mode === 'edit';
+  const isReEva = location.state?.mode === 'reevaluated';
   const [formData, setFormData] = useState({
     title: '',
     type: 1,
@@ -144,7 +145,7 @@ const ExpensePage = () => {
 
   useEffect(() => {
     // 수정 모드이고 넘어온 데이터가 있다면 state에 세팅
-    if (isEditMode && editData && Object.keys(editData).length > 0) {
+    if ((isEditMode || isReEva) && editData && Object.keys(editData).length > 0) {
       console.log("받은 editData: ", editData);
       setFormData(prev => ({
         ...prev,

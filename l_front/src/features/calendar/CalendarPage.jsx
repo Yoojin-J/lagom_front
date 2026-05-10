@@ -2,11 +2,9 @@ import React, { useRef, useEffect, useState, useMemo } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
 // import testTransactions from '../../assets/data/expense3.json';
 import testTransactions from '../../assets/data/expense4.json';
-
+import testReEvaTransactions from '../../assets/data/expense5.json';
 import ListIcon from '../../assets/icons/calendar/List.jsx';
 import CalendarIcon from '../../assets/icons/calendar/Calendar.jsx';
-import AlertRoundFillIcon from '../../assets/icons/calendar/AlertRoundFill.jsx';
-import ChevronRight from '../../assets/icons/common/ChevronRight.jsx';
 import DatePicker from './components/DatePickerCalendar.jsx';
 import MonthlyAmount from './components/MonthlyAmount.jsx';
 import GoExpense from './components/GoExpense.jsx';
@@ -16,6 +14,7 @@ import CalendarBody from './components/CalendarBody.jsx';
 import { useLedger } from './hook/useLedger.js';
 import { formatDate } from './hook/dateUtil.js';
 import { useExtendedRange } from './hook/useExtendedRange.js'
+import AlertBanner from './components/AlertBanner.jsx';
 
 
 const CalendarPage = () => {
@@ -42,10 +41,14 @@ const CalendarPage = () => {
     dayIncome: 0,
     dayExpense: 0
   });
+
   // 백엔드에서 가져온 데이터
   const [rawData, setRawData] = useState([]);
   // 가공된 데이터 가져오기
   const { itemsByDate, totalIncome, totalExpense } = useLedger(rawData, currentMonth);
+
+  // 백엔드에서 가져온 데이터 (오늘 기준 3일 이내, )
+  const [reEvaData, setReEvaData] = useState([]);
 
   // 한 주의 시작 날짜 가져오기 함수
   const getStartOfWeek = (date) => {
@@ -58,7 +61,7 @@ const CalendarPage = () => {
   };
 
   // 전체 거래 데이터 불러오기 (한 번만 실행)
-  const fetchAllTransactions = () => {
+  const fetchData = () => {
     try {
       // const res = axios.get('/api/ledger', { params: { start, end } })
       console.log("전체데이터불러오기");
@@ -69,6 +72,18 @@ const CalendarPage = () => {
     } catch (error) {
       console.error("거래 데이터 불러오기 실패", error);
       setRawData([]);
+    }
+  };
+
+  const fetchReevaluatedData = () => {
+    try {
+      // 오늘 기준으로 3일전까지의 내역 중 is_reevaluated가 false인 값 가져오기 
+      // const res = axios.get('')
+      const res = testReEvaTransactions;
+      setReEvaData(res);
+      console.log(res);
+    } catch (error) {
+      setReEvaData([]);
     }
   };
 
@@ -89,12 +104,13 @@ const CalendarPage = () => {
       setSelectedDate(currentDate);
 
       isFirstRender.current = false;
+      fetchReevaluatedData(); // 재평가해야되는 내역들
       console.log("마운트 시점에만 동작");
     }
   }, []); // '마운트 시점'에만 동작
 
   useEffect(() => {
-    fetchAllTransactions();   // 전체 데이터 불러오기
+    fetchData();   // 전체 데이터 불러오기
     console.log("itemsByDate: ", itemsByDate);
     console.log("달 수입, 지출", totalIncome, totalExpense);
     console.log("year, month, currentYear, currentMonth", year, month, currentYear, currentMonth);
@@ -205,11 +221,11 @@ const CalendarPage = () => {
 
       {isWeekView && (
         <div className='transaction-section'>
-          <div className='alert-CTA-banner'>
-            <AlertRoundFillIcon className='alert-icon' />
-            <div className='alert-text'>재평가 하지 않은 기록이 n건 있어요!</div>
-            <ChevronRight className='left-icon' />
-          </div>
+          {reEvaData.length !== 0 && 
+            <AlertBanner 
+              reEvaData={reEvaData}
+            />
+          }
           <TransactionHistory
             selectedDayTransactions={selectedDayTransactions}
           />
