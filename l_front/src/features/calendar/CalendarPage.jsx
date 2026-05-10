@@ -1,6 +1,8 @@
 import React, { useRef, useEffect, useState, useMemo } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
-import testTransactions from '../../assets/data/expense3.json';
+// import testTransactions from '../../assets/data/expense3.json';
+import testTransactions from '../../assets/data/expense4.json';
+
 import ListIcon from '../../assets/icons/calendar/List.jsx';
 import CalendarIcon from '../../assets/icons/calendar/Calendar.jsx';
 import AlertRoundFillIcon from '../../assets/icons/calendar/AlertRoundFill.jsx';
@@ -13,6 +15,7 @@ import TransactionHistory from './components/TransactionHistory.jsx';
 import CalendarBody from './components/CalendarBody.jsx';
 import { useLedger } from './hook/useLedger.js';
 import { formatDate } from './hook/dateUtil.js';
+import { useExtendedRange } from './hook/useExtendedRange.js'
 
 
 const CalendarPage = () => {
@@ -23,6 +26,8 @@ const CalendarPage = () => {
   // 숫자로 변환 (값이 없을 경우를 대비해 현재 날짜를 초기값으로 설정)
   const currentYear = parseInt(year) || new Date().getFullYear();
   const currentMonth = parseInt(month) || new Date().getMonth() + 1;
+
+  const { start, end } = useExtendedRange(currentYear, currentMonth);
 
   const currentDate = new Date(); //오늘
   const [selectedDate, setSelectedDate] = useState(new Date); // 선택된 날짜
@@ -40,7 +45,7 @@ const CalendarPage = () => {
   // 백엔드에서 가져온 데이터
   const [rawData, setRawData] = useState([]);
   // 가공된 데이터 가져오기
-  const { itemsByDate, totalIncome, totalExpense } = useLedger(rawData);
+  const { itemsByDate, totalIncome, totalExpense } = useLedger(rawData, currentMonth);
 
   // 한 주의 시작 날짜 가져오기 함수
   const getStartOfWeek = (date) => {
@@ -55,9 +60,12 @@ const CalendarPage = () => {
   // 전체 거래 데이터 불러오기 (한 번만 실행)
   const fetchAllTransactions = () => {
     try {
+      // const res = axios.get('/api/ledger', { params: { start, end } })
+      console.log("전체데이터불러오기");
+
       const res = testTransactions;
       setRawData(res);
-      console.log("testdata: ", testTransactions);
+      // console.log("testdata: ", testTransactions);
     } catch (error) {
       console.error("거래 데이터 불러오기 실패", error);
       setRawData([]);
@@ -79,17 +87,29 @@ const CalendarPage = () => {
       const initialWeekStart = getStartOfWeek(currentDate);
       setWeekStartDate(initialWeekStart);
       setSelectedDate(currentDate);
-      fetchAllTransactions();   // 전체 데이터 불러오기
 
       isFirstRender.current = false;
+      console.log("마운트 시점에만 동작");
     }
   }, []); // '마운트 시점'에만 동작
 
+  useEffect(() => {
+    fetchAllTransactions();   // 전체 데이터 불러오기
+    console.log("itemsByDate: ", itemsByDate);
+    console.log("달 수입, 지출", totalIncome, totalExpense);
+    console.log("year, month, currentYear, currentMonth", year, month, currentYear, currentMonth);
+  }, [start, end])  // 범위가 계산된 뒤에 불러오기
 
   useEffect(() => {
-    console.log("itemsByDate: ", itemsByDate);
-    console.log("selectedDayTransactions: ", selectedDayTransactions);
-  }, [itemsByDate, selectedDayTransactions]);
+    // console.log("year, month, currentYear, currentMonth", year, month, currentYear, currentMonth);
+    console.log("달 수입, 지출", totalIncome, totalExpense);
+  }, [totalIncome, totalExpense])
+
+
+  // useEffect(() => {
+  //   console.log("itemsByDate: ", itemsByDate);
+  //   console.log("selectedDayTransactions: ", selectedDayTransactions);
+  // }, [itemsByDate, selectedDayTransactions]);
 
   // 선택한 날짜 변경 시 해당 날짜 거래 내역 필터링
   useEffect(() => {

@@ -62,7 +62,7 @@ const CalendarBody = ({
       const prevMonth = currentMonth - 1;
       // 숫자를 2자리 문자열로 변환 (예: 2 -> "02")
       const formattedMonth = String(prevMonth).padStart(2, '0');
-      console.log("currentYear, currentMonth", currentYear, currentMonth);
+      // console.log("currentYear, currentMonth", currentYear, currentMonth);
 
       navigate(`/calendar/${currentYear}/${formattedMonth}`);
       moveToMonth(new Date(currentYear, prevMonth - 1, 1))
@@ -77,7 +77,6 @@ const CalendarBody = ({
       const nextMonth = currentMonth + 1;
       // 숫자를 2자리 문자열로 변환 (예: 2 -> "02")
       const formattedMonth = String(nextMonth).padStart(2, '0');
-      console.log("currentYear, currentMonth", currentYear, currentMonth);
 
       navigate(`/calendar/${currentYear}/${formattedMonth}`);
       moveToMonth(new Date(currentYear, nextMonth - 1, 1))
@@ -121,7 +120,6 @@ const CalendarBody = ({
       // 선택한 날의 년, 월
       const selectedYear = selectedDate.getFullYear();
       const selectedMonth = selectedDate.getMonth();
-      console.log("selectedMonth",selectedMonth);
       // url의 년, 월
       const year = currentYear;
       const month = currentMonth;
@@ -129,18 +127,15 @@ const CalendarBody = ({
       let daysInMonth = new Date(year, month, 0).getDate();
       let firstDay = new Date(year, month - 1, 1).getDay();
       let adjustedFirstDay = firstDay === 0 ? 6 : firstDay - 1;
-      console.log("year, month, daysInMonth, firstDay", year, month, daysInMonth, firstDay);
 
       if (selectedYear === year && selectedMonth + 1 === month) {
         daysInMonth = new Date(year, month, 0).getDate();
         firstDay = new Date(year, month - 1, 1).getDay();
         adjustedFirstDay = firstDay === 0 ? 6 : firstDay - 1;
-        console.log("year, month, daysInMonth, firstDay", year, month, daysInMonth, firstDay);
       } else {
         daysInMonth = new Date(selectedYear, selectedMonth, 0).getDate();
         firstDay = new Date(selectedYear, selectedMonth, 1).getDay();
         adjustedFirstDay = firstDay === 0 ? 6 : firstDay - 1;
-        console.log("year, month, daysInMonth, firstDay", year, month, daysInMonth, firstDay);
       }
 
       for (let i = 0; i < adjustedFirstDay; i++) days.push(null);
@@ -173,18 +168,12 @@ const CalendarBody = ({
     if (!dayInfo) return;
 
     const clickedDate = dayInfo.fullDate;
-    // const clickedYear = clickedDate.getFullYear();
-    // const clickedMonth = clickedDate.getFullYear() === parseInt(year) && (clickedDate.getMonth() + 1) === parseInt(month)
-    //   ? month // 같은 달이면 유지 (또는 주간/월간 모드만 변경)
-    //   : clickedDate.getMonth() + 1; // 다른 달이면 해당 월로 설정
     setSelectedDate(clickedDate);
-    sessionStorage.setItem('selectedDate', clickedDate);
 
     if (!isWeekView) {
       setIsWeekView(true);           // 월간 → 주간으로 전환
     }
 
-    // weekStartDate도 즉시 업데이트 (주간뷰일 때 바로 반영되게)
     setWeekStartDate(getStartOfWeek(clickedDate));
   };
 
