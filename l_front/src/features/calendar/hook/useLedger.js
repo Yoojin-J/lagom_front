@@ -10,6 +10,8 @@ export const useLedger = (records, currentMonth) => {
     let totalIncome = 0;
     let totalExpense = 0;
 
+    // 백에서 해당 년도에 맞는 달 기록을 가져오는거니까 year는 확인 안해도 괜찮지 않을까...
+    // 지금은 임시데이터라서 그러는거고... 
     console.log("useLedger currentMonth", currentMonth);
 
     const itemsByDate = records.reduce((acc, cur) => {

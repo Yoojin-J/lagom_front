@@ -63,6 +63,8 @@ const CalendarPage = () => {
   // 전체 거래 데이터 불러오기 (한 번만 실행)
   const fetchData = () => {
     try {
+      // 5월 기록을 가져올 때 4월 마지막 주, 6월 첫째 주 기록도 같이 가져오기 위해 계산된 값을 보냄
+      // 엔드포인트는 백에 따라 달라질 수 있음 
       // const res = axios.get('/api/ledger', { params: { start, end } })
       console.log("전체데이터불러오기");
 
@@ -77,7 +79,7 @@ const CalendarPage = () => {
 
   const fetchReevaluatedData = () => {
     try {
-      // 오늘 기준으로 3일전까지의 내역 중 is_reevaluated가 false인 값 가져오기 
+      // 오늘 기준으로 3일전까지의 내역 중 부정적 감정 + 높은 만족도 + is_reevaluated가 false인 값 가져오기, 프론트에서 보내는 값 없음
       // const res = axios.get('')
       const res = testReEvaTransactions;
       setReEvaData(res);

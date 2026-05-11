@@ -74,8 +74,9 @@ const DatePickerCalendar = ({
         ref={datePickerRef}
         selected={currentDate}
         onChange={(date) => {
+          const year = date.getFullYear();
           const month = date.getMonth() + 1;
-          if (month !== currentMonth) { handleDateChange(date) };
+          if (year !== currentYear || month !== currentMonth) { handleDateChange(date) };
         }}
         dateFormat={"yyyy년 MM월"}
         showMonthYearPicker

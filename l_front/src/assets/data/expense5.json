@@ -1,5 +1,22 @@
 [
     {
+        "expense_id": 1020,
+        "title": "5월 용돈",
+        "type": 0,
+        "amount": 500000,
+        "payment_at": "2026-05-01T10:00:00",
+        "category": 0,
+        "memo": "부모님 최고",
+        "emotion": 5,
+        "evaluation": 75,
+        "is_reevaluated": false,
+        "isFix": false,
+        "period": "day",
+        "cycle": [],
+        "startdate": null,
+        "enddate": null
+    },
+    {
         "expense_id": 1021,
         "title": "5월 용돈",
         "type": 1,

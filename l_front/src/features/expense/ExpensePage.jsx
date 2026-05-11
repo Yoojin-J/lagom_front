@@ -64,8 +64,10 @@ const ExpensePage = () => {
     cycle: [],
     startdate: null,
     enddate: null,
+    is_reevaluated: true,
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [preEva, setPreEva] = useState(null);
 
 
   // 거래유형에 따른 카테고리 목록
@@ -155,8 +157,13 @@ const ExpensePage = () => {
         enddate: editData.startdate ? new Date(editData.startdate) : null,
       }));
     }
+
+    if (isReEva) {
+      setPreEva(editData.evaluation);
+    }
+
     console.log("editData => formData:", formData);
-  }, [editData, isEditMode]);
+  }, [editData, isEditMode, isReEva]);
 
   useEffect(() => {
     console.log("업데이트된 formData:", formData);
@@ -165,6 +172,10 @@ const ExpensePage = () => {
   useEffect(() => {
     console.log("업데이트된 type:", formData.type);
   }, [formData.type]); // formData가 바뀔 때마다 찍힘
+
+  useEffect(() => {
+    console.log("업데이트된 preEva:", preEva);
+  }, [preEva]); // formData가 바뀔 때마다 찍힘
 
 
   // 카테고리와 내역명 옆 아이콘 동기화
@@ -202,6 +213,35 @@ const ExpensePage = () => {
   // 전송
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (isReEva) {
+      setFormData(prev => ({
+        ...prev,
+        is_reevaluated: true,
+      }));
+
+
+      // 재평가 엔드포인트 전달 
+      try {
+
+      } catch (error) {
+
+      }
+    }
+
+    if ((formData.emotion === 3 || formData.emotion === 4 || formData.emotion === 5) && (formData.evaluation === 75 || formData.evaluation === 100)) {
+      setFormData(prev => ({
+        ...prev,
+        is_reevaluated: false,
+      }));
+
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        is_reevaluated: true,
+      }));
+    }
+
     // try {
     //   const response = await uploadExpense(formData);
     //   console.log('전송 성공:', response);
@@ -209,6 +249,11 @@ const ExpensePage = () => {
     //   console.error('전송 실패:', error);
     // }
 
+    try {
+
+    } catch (error) {
+
+    }
     console.log(formData);
   };
 
@@ -280,6 +325,8 @@ const ExpensePage = () => {
               setFormData={setFormData}
               emotionOptions={emotionOptions}
               satisfactionOptions={satisfactionOptions}
+              isEditMode={isEditMode}
+              isReEva={isReEva}
             />
           }
         </div>

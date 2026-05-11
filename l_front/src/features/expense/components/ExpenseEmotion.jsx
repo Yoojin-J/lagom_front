@@ -6,6 +6,8 @@ const ExpenseEmotion = ({
   setFormData,
   emotionOptions,
   satisfactionOptions,
+  isEditMode,
+  isReEva,
 }) => {
   const handleEmotion = (val) => {
     // 이미 선택된 걸 다시 누르면 null로 초기화(해제), 아니면 새로운 값 세팅
@@ -65,7 +67,7 @@ const ExpenseEmotion = ({
           })}
         </ul>
       </div>
-      { (formData.emotion === 3 || formData.emotion === 4 || formData.emotion === 5) && (formData.evaluation === 0 || formData.evaluation === 25) &&
+      {(!isEditMode && !isReEva) && (formData.emotion === 3 || formData.emotion === 4 || formData.emotion === 5) && (formData.evaluation === 0 || formData.evaluation === 25) &&
         <div className='alert-banner'>
           <div className='alert-text'>
             <div className='text1'>현재 소비 감정, 만족도가 낮아요</div>
