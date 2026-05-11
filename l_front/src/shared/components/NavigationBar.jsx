@@ -22,7 +22,7 @@ const NavigationBar = ({ activeIndex, onTabChange }) => {
     // </div>
 
     <div className='menu'>
-      <NavLink to="/" className={({ isActive }) => `menu-item ${isActive ? 'active' : ''}`}>
+      <NavLink to="/calendar" className={({ isActive }) => `menu-item ${isActive ? 'active' : ''}`}>
         감정가계부
       </NavLink>
       <NavLink to="/happyBank" className={({ isActive }) => `menu-item ${isActive ? 'active' : ''}`}>
