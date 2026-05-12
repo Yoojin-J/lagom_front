@@ -76,7 +76,7 @@ function BankDetailView({ bank, records, onBack, onDeposit, onWithdraw, onEdit, 
 // ── 메인 페이지 ───────────────────────────────────
 function HappyBankPage() {
   const { banks, hasBank, createBank, updateBank, deleteBank } = useHappyBank();
-  const { addRecord, getRecords, resetRecords } = useSavingsRecords();
+  const { addRecord, getRecords, removeRecord, resetRecords } = useSavingsRecords();
   const { addAchievement } = useAchievements();
 
   const [currentView, setCurrentView] = useState('main');
@@ -128,6 +128,7 @@ function HappyBankPage() {
           bankInfo={selectedBank}
           records={getRecords(selectedBankId)}
           onBack={() => setCurrentView('detail')}
+          onDelete={(recordId) => { removeRecord(selectedBankId, recordId); setCurrentView('detail'); }}
         />
       </div>
     );

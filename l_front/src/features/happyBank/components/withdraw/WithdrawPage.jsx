@@ -1,8 +1,9 @@
-import { useMemo, useRef } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import html2canvas from 'html2canvas';
 import ChevronLeft from '../../../../assets/icons/common/ChevronLeft';
 import stickerImg from '../../../../assets/images/sticker.png';
 import '../../styles/withdraw/WithdrawPage.css';
+import '../../styles/setup/DeleteBankModal.css';
 
 function makeBarcodePattern(seed) {
   const pattern = [
@@ -70,9 +71,10 @@ function formatReceiptTime(record) {
   return date.toTimeString().slice(0, 8);
 }
 
-function WithdrawPage({ onBack, bankInfo, records = [] }) {
+function WithdrawPage({ onBack, bankInfo, records = [], onDelete }) {
   const exportRef = useRef(null);
   const isDownloadingRef = useRef(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const randomRecord = useMemo(() => {
     if (records.length === 0) return null;
@@ -196,7 +198,7 @@ function WithdrawPage({ onBack, bankInfo, records = [] }) {
         >
           <ChevronLeft />
         </button>
-        <button className="withdrawPage__deleteBtn" type="button">
+        <button className="withdrawPage__deleteBtn" type="button" onClick={() => setShowDeleteModal(true)}>
           삭제하기
         </button>
       </div>
@@ -222,6 +224,26 @@ function WithdrawPage({ onBack, bankInfo, records = [] }) {
       >
         다운로드
       </button>
+
+      {showDeleteModal && (
+        <div className="deleteBankModal__overlay">
+          <div className="deleteBankModal">
+            <h2 className="deleteBankModal__title">기록을 삭제할까요?</h2>
+            <p className="deleteBankModal__desc">
+              삭제한 기록은 다시 되돌릴 수 없어요.<br />
+              기록을 삭제하시겠습니까?
+            </p>
+            <div className="deleteBankModal__actions">
+              <button className="deleteBankModal__btn deleteBankModal__btn--cancel" type="button" onClick={() => setShowDeleteModal(false)}>
+                취소
+              </button>
+              <button className="deleteBankModal__btn deleteBankModal__btn--delete" type="button" onClick={() => { setShowDeleteModal(false); onDelete?.(randomRecord.id); }}>
+                삭제하기
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="withdrawPage__exportCapture" aria-hidden="true">
         <div className="withdrawPage__exportCanvas" ref={exportRef}>

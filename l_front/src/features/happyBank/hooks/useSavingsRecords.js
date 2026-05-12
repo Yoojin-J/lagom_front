@@ -26,6 +26,15 @@ const useSavingsRecords = () => {
 
   const getRecords = (bankId) => recordsByBank[String(bankId)] ?? recordsByBank[bankId] ?? [];
 
+  const removeRecord = (bankId, recordId) => {
+    setRecordsByBank((prev) => {
+      const key = String(bankId);
+      const next = { ...prev, [key]: (prev[key] ?? []).filter((r) => r.id !== recordId) };
+      save(next);
+      return next;
+    });
+  };
+
   const resetRecords = (bankId) => {
     setRecordsByBank((prev) => {
       const next = { ...prev };
@@ -36,7 +45,7 @@ const useSavingsRecords = () => {
     });
   };
 
-  return { addRecord, getRecords, resetRecords };
+  return { addRecord, getRecords, removeRecord, resetRecords };
 };
 
 export default useSavingsRecords;
