@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import DatePicker from './components/DatePickerExpense';
 import './styles/ExpensePage.css';
 import ExpenseTitle from './components/ExpenseTitle';
@@ -42,9 +42,10 @@ import ChevronLeft from '../../assets/icons/common/ChevronLeft';
 import ExpenseDelete from './components/ExpenseDelete';
 
 const ExpensePage = () => {
-  // 초기화 여부를 확인하는 flag 변수나 조건을 사용
   const location = useLocation();
   const navigate = useNavigate();
+  // 수정, 삭제를 위한 id
+  const { id } = useParams();
   // navigate로 보낸 state 꺼내기 (데이터가 없을 경우를 대비해 옵셔널 체이닝 ?. 사용)
   const type = location.state?.type;
   const editData = location.state?.data;
@@ -165,17 +166,17 @@ const ExpensePage = () => {
     console.log("editData => formData:", formData);
   }, [editData, isEditMode, isReEva]);
 
-  useEffect(() => {
-    console.log("업데이트된 formData:", formData);
-  }, [formData]); // formData가 바뀔 때마다 찍힘
+  // useEffect(() => {
+  //   console.log("업데이트된 formData:", formData);
+  // }, [formData]); // formData가 바뀔 때마다 찍힘
 
-  useEffect(() => {
-    console.log("업데이트된 type:", formData.type);
-  }, [formData.type]); // formData가 바뀔 때마다 찍힘
+  // useEffect(() => {
+  //   console.log("업데이트된 type:", formData.type);
+  // }, [formData.type]); // formData가 바뀔 때마다 찍힘
 
-  useEffect(() => {
-    console.log("업데이트된 preEva:", preEva);
-  }, [preEva]); // formData가 바뀔 때마다 찍힘
+  // useEffect(() => {
+  //   console.log("업데이트된 preEva:", preEva);
+  // }, [preEva]); // formData가 바뀔 때마다 찍힘
 
 
   // 카테고리와 내역명 옆 아이콘 동기화
@@ -214,27 +215,31 @@ const ExpensePage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // 재평가 모드일 때 + 행복 저금으로 안 가고 저장할 때
     if (isReEva) {
       setFormData(prev => ({
         ...prev,
         is_reevaluated: true,
       }));
 
-
-      // 재평가 엔드포인트 전달 
+      // 엔드포인트로 보낸 후 함수 끝나야됨 
       try {
-
+        const response = await axios.put(`http://localhost:8080/update/${id}`, formData);
+        return;
       } catch (error) {
-
+        console.log(error)
+        return;
       }
     }
 
+    // 가계부 작성 또는 수정 상태 일 때 
+    // 부정적 감정 + 높은 만족도일 시 재평가를 위해 is_reevaluated: false로 바꾸기
+    // 아니면 is_reevaluated를 true로 (기본 true)
     if ((formData.emotion === 3 || formData.emotion === 4 || formData.emotion === 5) && (formData.evaluation === 75 || formData.evaluation === 100)) {
       setFormData(prev => ({
         ...prev,
         is_reevaluated: false,
       }));
-
     } else {
       setFormData(prev => ({
         ...prev,
@@ -242,18 +247,21 @@ const ExpensePage = () => {
       }));
     }
 
-    // try {
-    //   const response = await uploadExpense(formData);
-    //   console.log('전송 성공:', response);
-    // } catch (error) {
-    //   console.error('전송 실패:', error);
-    // }
-
     try {
-
+      if (isEditMode) {
+        // 가계부 수정
+        const response = await axios.put(`http://localhost:8080/update/${id}`, formData);
+      } else {
+        // 가계부 작성
+        const response = await axios.post('http://localhost:8080/', formData);
+      }
+      navigate('/calendar');
+      return;
     } catch (error) {
-
+      console.log(error);
+      return;
     }
+
     console.log(formData);
   };
 
@@ -264,6 +272,7 @@ const ExpensePage = () => {
       {isModalOpen &&
         <ExpenseDelete
           handleDeleteModal={handleDeleteModal}
+          id={id}
         />}
       <div className='header'>
         <div className='back-btn' onClick={handleBack}>
@@ -327,6 +336,7 @@ const ExpensePage = () => {
               satisfactionOptions={satisfactionOptions}
               isEditMode={isEditMode}
               isReEva={isReEva}
+              id={id}
             />
           }
         </div>

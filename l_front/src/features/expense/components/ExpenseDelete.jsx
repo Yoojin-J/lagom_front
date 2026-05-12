@@ -3,18 +3,19 @@ import '../styles/ExpenseDelete.css'
 
 const ExpenseDelete = ({
   handleDeleteModal,
+  id,
 }) => {
 
   const deleteExpense = async (id) => {
     // try {
     //   // 1. 백엔드(json-server)에 DELETE 요청 전송
-    //   const response = await axios.delete(`${API_URL}/${id}`);
+    //   const response = await axios.delete(`http://localhost:8080/delete/${id}`);
 
     //   if (response.status === 200 || response.status === 204) {
     //     console.log(`${id}번 게시물이 삭제되었습니다.`);
 
-    //     // 2. 요청 성공 후 프론트엔드 상태(State)에서도 삭제 반영 필요
-    //     // 예: setPosts(prev => prev.filter(post => post.id !== id));
+    //        navigate('/calendar');
+
 
     //     return true;
     //   }
@@ -36,7 +37,7 @@ const ExpenseDelete = ({
         </div>
         <div className='modal-btn-contents'>
           <div className='cancel' onClick={handleDeleteModal}>취소</div>
-          <div className='confirm' onClick={() => {deleteExpense()}}>삭제하기</div>
+          <div className='confirm' onClick={() => {deleteExpense(id)}}>삭제하기</div>
         </div>
       </div>
     </div>
