@@ -65,7 +65,7 @@ function SavingsTypeSelect({ value, onChange }) {
                 onClick={() => handleSelect(opt.value)}
               >
                 <span className="savingsTypeSelect__optionLabel">{opt.label}</span>
-                    <Questionmark className="savingsTypeSelect__optionIcon" />
+                <span className="savingsTypeSelect__optionDescIcon"><Questionmark /></span>
                 <span className="savingsTypeSelect__optionDesc">{opt.description}</span>
               </li>
             ))}

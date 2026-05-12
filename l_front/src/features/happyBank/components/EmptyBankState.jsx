@@ -1,10 +1,12 @@
 import AddBankButton from './AddBankButton';
 import '../styles/EmptyBankState.css';
+import Devider from '../../../assets/icons/common/Devider';
 
-function EmptyBankState({ onSetup, onDeposit }) {
+function EmptyBankState({ onSetup }) {
   return (
     <div className="emptyBankState">
-      <AddBankButton onClick={onSetup ?? onDeposit} />
+      <Devider width={343} fill="#E6E8EA" />
+      {onSetup && <AddBankButton onClick={onSetup} />}
 
       <div className="emptyBankState__content">
         <span className="emptyBankState__clover" aria-hidden="true" />

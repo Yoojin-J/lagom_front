@@ -5,7 +5,7 @@ function AddBankButton({ onClick }) {
   return (
     <button className="addBankButton" type="button" onClick={onClick}>
       <span className="addBankButton__iconWrap">
-        <Plus />
+        <Plus fill="#FFF" />
       </span>
       통장 개설하기
     </button>

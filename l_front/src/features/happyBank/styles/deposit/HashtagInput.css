@@ -37,12 +37,14 @@
 }
 
 .hashtagInput__tagText {
-  color: #131416;
+  color: var(--Gray-95, #131416);
+
+  /* Body Medium/medium */
   font-family: Pretendard;
   font-size: 16px;
-  font-weight: 400;
-  line-height: 130%;
-  white-space: nowrap;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%; /* 20.8px */
 }
 
 .hashtagInput__inputWrapper {
@@ -102,10 +104,6 @@
   color: #FFB0AD;
 }
 
-.hashtagInput__count--error {
-  color: #FF4D4D;
-}
-
 .hashtagInput__deleteBtn {
   display: flex;
   width: 24px;
@@ -141,10 +139,4 @@
   font-size: 13px;
   font-weight: 400;
   line-height: 130%;
-}
-
-.hashtagInput__errorIcon {
-  width: 12px;
-  height: 12px;
-  flex-shrink: 0;
 }

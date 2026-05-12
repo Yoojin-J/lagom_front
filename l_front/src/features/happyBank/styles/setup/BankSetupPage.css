@@ -8,7 +8,6 @@
   display: flex;
   width: 375px;
   max-width: 100%;
-  min-height: 536px;
   padding: 48px 16px;
   flex: 1;
   flex-direction: column;

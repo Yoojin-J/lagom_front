@@ -32,12 +32,13 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
+  padding: 6px 0;
 }
 
 .memoInput__fieldRow {
   display: flex;
   align-items: flex-end;
-  gap: 6px;
+  gap: 4px;
 }
 
 .memoInput__field {
@@ -45,20 +46,34 @@
   min-width: 0;
   border: none;
   outline: none;
-  padding: 4px 0 0 0;
   background: transparent;
-  color: #131416;
+  padding: 0;
+
+  color: var(--Gray-95, #131416);
+
+  /* Body Medium/medium */
   font-family: Pretendard;
   font-size: 16px;
-  font-weight: 400;
+  font-style: normal;
+  font-weight: 500;
   line-height: 130%;
+  /* 20.8px */
+
   caret-color: #FFB0AD;
   resize: none;
   overflow: hidden;
 }
 
 .memoInput__field::placeholder {
-  color: #B1B8BE;
+  color: var(--Gray-30, #B1B8BE);
+
+  /* Body Medium/medium */
+  font-family: Pretendard;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%;
+  /* 20.8px */
 }
 
 .memoInput__deleteBtn {

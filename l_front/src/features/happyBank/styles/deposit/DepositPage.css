@@ -94,6 +94,7 @@
 }
 
 .depositPage__submitBtn {
+  flex-shrink: 0;
   margin: 24px 16px;
   height: 52px;
   border: none;

@@ -6,11 +6,13 @@
 }
 
 .amountInput__label {
-  color: #6D7882;
+  color: var(--Gray-60, #6D7882);
+  font-feature-settings: 'liga' off, 'clig' off;
   font-family: Pretendard;
   font-size: 14px;
+  font-style: normal;
   font-weight: 500;
-  line-height: 130%;
+  line-height: 120%; /* 16.8px */
 }
 
 .amountInput__wrapper {
@@ -32,26 +34,34 @@
   outline: none;
   padding: 4px 0;
   background: transparent;
-  color: #131416;
+  
+  color: var(--Gray-95, #131416);
+
   font-family: Pretendard;
-  font-size: 24px;
+  font-size: 16px;
+  font-style: normal;
   font-weight: 500;
-  line-height: 130%;
+  line-height: 130%; /* 20.8px */
+
   caret-color: #FFB0AD;
 }
 
 .amountInput__field::placeholder {
-  color: #B1B8BE;
+  color: var(--Gray-30, #B1B8BE);
+  font-family: Pretendard;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%; 
 }
 
 .amountInput__unit {
-  color: #B1B8BE;
+  color: var(--Gray-30, #B1B8BE);
   font-family: Pretendard;
-  font-size: 24px;
+  font-size: 16px;
+  font-style: normal;
   font-weight: 500;
-  line-height: 130%;
-  white-space: nowrap;
-  flex-shrink: 0;
+  line-height: 130%; /* 20.8px */
 }
 
 .amountInput__unit--filled {
@@ -84,12 +94,14 @@
 }
 
 .amountInput__helper {
-  margin: 0;
-  color: #6D7882;
+  color: var(--Gray-60, #6D7882);
+
+  /* Body Medium/xsmall */
   font-family: Pretendard;
-  font-size: 13px;
-  font-weight: 400;
-  line-height: 130%;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 120%; /* 14.4px */
 }
 
 .amountInput__error {

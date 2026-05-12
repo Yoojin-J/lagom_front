@@ -58,18 +58,10 @@ line-height: 130%; /* 20.8px */
 .bankSummaryCard__editBtn {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
-  padding: 6px 2px;
+  padding: 0;
   border: none;
   background: transparent;
   cursor: pointer;
-}
-
-.bankSummaryCard__editBtn span {
-  width: 4px;
-  height: 4px;
-  border-radius: 999px;
-  background: #c4c9ce;
 }
 
 .bankSummaryCard__amounts {
@@ -110,25 +102,30 @@ line-height: 130%; /* 20.8px */
 }
 
 .bankSummaryCard__dday {
-  display: inline-flex;
-  padding: 2px 8px;
-  align-items: center;
-  border-radius: 100px;
+  display: flex;
+  padding: 2px 8px 3px 8px;
+  flex-direction: column;
+  align-items: flex-start;
+  border-radius: 20px;
   background: var(--Secondary-surface, #EDF6F8);
-  color: var(--Secondary-text, #268097);
+
+  color: var(--Secondary-base, #75C0D1);
   font-family: Pretendard;
   font-size: 12px;
+  font-style: normal;
   font-weight: 600;
-  line-height: 120%;
+  line-height: 120%; /* 14.4px */
 }
 
 .bankSummaryCard__dateRange {
-  color: var(--Gray-60, #6D7882);
+  color: var(--Gray-30, #B1B8BE);
+
+  /* Body Regular/xsmall */
   font-family: Pretendard;
   font-size: 12px;
+  font-style: normal;
   font-weight: 400;
-  line-height: 120%;
-  white-space: nowrap;
+  line-height: 130%; /* 15.6px */
 }
 
 .bankSummaryCard__progressTrack {

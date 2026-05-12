@@ -8,8 +8,8 @@ import MemoInput from './MemoInput';
 import SavingsTypeSelect from './SavingsTypeSelect';
 import '../../styles/deposit/DepositPage.css';
 
-function DepositPage({ onComplete, onAddRecord, onBack, bankName = '행복통장' }) {
-  const [type, setType] = useState('happy');
+function DepositPage({ onComplete, onAddRecord, onBack, bankName = '행복통장', initialType = 'happy' }) {
+  const [type, setType] = useState(initialType);
   const [amount, setAmount] = useState('');
   const [memo, setMemo] = useState('');
   const [tags, setTags] = useState([]);
@@ -52,7 +52,7 @@ function DepositPage({ onComplete, onAddRecord, onBack, bankName = '행복통장
 
       <div className="depositPage__profile">
         <div className="depositPage__avatar">
-          <Clover2  />
+          <Clover2 width={28.33} height={29.73} fill="#FFF"  />
         </div>
         <span className="depositPage__bankName">{bankName}</span>
       </div>

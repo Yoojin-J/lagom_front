@@ -75,7 +75,9 @@
   font-family: Pretendard;
   font-size: 12px;
   font-weight: 500;
+  font-style: normal;
   line-height: 120%;
+  font-feature-settings: 'liga' off, 'clig' off;
 }
 
 .savingsRecordModal__type--happy {

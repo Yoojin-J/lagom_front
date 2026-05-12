@@ -50,4 +50,6 @@
   min-height: 100vh;
   background: #fff;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }

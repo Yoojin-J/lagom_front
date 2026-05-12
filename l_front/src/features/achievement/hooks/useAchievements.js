@@ -41,7 +41,7 @@ const useAchievements = () => {
           becomeSavings,
           goalType: bankInfo.goalType,
           goalAmount: bankInfo.goalAmount,
-          goalPeriod: bankInfo.goalPeriod,
+          goalDate: bankInfo.goalDate,
           records,
         },
       ];

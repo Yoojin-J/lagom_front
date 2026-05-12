@@ -2,14 +2,12 @@ import { useRef, useState } from 'react';
 import ChevronLeft from '../../../../assets/icons/common/ChevronLeft';
 import Clover2 from '../../../../assets/icons/happybank/Clover2';
 import Delite from '../../../../assets/icons/common/Delite';
-import EditIcon from '../../../../assets/icons/happybank/Edit';
+import Edit from '../../../../assets/icons/happybank/Edit';
 import Feedback from '../../../../assets/icons/common/Feedback';
 import {
   DEFAULT_BANK_NAME,
   GOAL_AMOUNT_MAX,
   GOAL_AMOUNT_MIN,
-  GOAL_PERIOD_MAX,
-  GOAL_PERIOD_MIN,
   MAX_NAME_LENGTH,
 } from '../../constants/setup';
 import DeleteBankModal from './DeleteBankModal';
@@ -27,7 +25,7 @@ function getInitialFormState(initialData) {
       bankName: DEFAULT_BANK_NAME,
       activeTab: 'amount',
       goalAmount: '',
-      goalPeriod: '',
+      goalDate: '',
     };
   }
 
@@ -35,7 +33,7 @@ function getInitialFormState(initialData) {
     bankName: initialData.name || DEFAULT_BANK_NAME,
     activeTab: initialData.goalType || 'amount',
     goalAmount: initialData.goalAmount ? String(initialData.goalAmount) : '',
-    goalPeriod: initialData.goalPeriod ? String(initialData.goalPeriod) : '',
+    goalDate: initialData.goalDate || '',
   };
 }
 
@@ -46,22 +44,20 @@ function BankSetupPage({ mode = 'create', initialData, onComplete, onCompleteAnd
   const [nameError, setNameError] = useState('');
   const [activeTab, setActiveTab] = useState(initialFormState.activeTab);
   const [goalAmount, setGoalAmount] = useState(initialFormState.goalAmount);
-  const [goalPeriod, setGoalPeriod] = useState(initialFormState.goalPeriod);
+  const [goalDate, setGoalDate] = useState(initialFormState.goalDate);
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const inputRef = useRef(null);
   const isEditMode = mode === 'edit';
 
   const goalAmountNumber = Number(goalAmount);
-  const goalPeriodNumber = Number(goalPeriod);
   const isAmountValid =
     goalAmount.length > 0 &&
     goalAmountNumber >= GOAL_AMOUNT_MIN &&
     goalAmountNumber <= GOAL_AMOUNT_MAX;
   const isPeriodValid =
-    goalPeriod.length > 0 &&
-    goalPeriodNumber >= GOAL_PERIOD_MIN &&
-    goalPeriodNumber <= GOAL_PERIOD_MAX;
+    goalDate.length > 0 &&
+    new Date(goalDate.replace(/\./g, '-')) > new Date();
 
   const isValid =
     bankName.trim().length > 0 &&
@@ -72,7 +68,7 @@ function BankSetupPage({ mode = 'create', initialData, onComplete, onCompleteAnd
     name: bankName.trim() || DEFAULT_BANK_NAME,
     goalType: activeTab,
     goalAmount,
-    goalPeriod,
+    goalDate,
   };
 
   const handleEditStart = () => {
@@ -162,7 +158,7 @@ function BankSetupPage({ mode = 'create', initialData, onComplete, onCompleteAnd
 
       <div className="bankSetupPage__profile">
         <div className="bankSetupPage__avatar">
-          <Clover2 fill="#FFF" />
+          <Clover2 width={28.33} height={29.73} fill="#FFF" />
         </div>
 
         {isEditingName ? (
@@ -216,7 +212,7 @@ function BankSetupPage({ mode = 'create', initialData, onComplete, onCompleteAnd
               type="button"
               aria-label="통장 이름 수정"
             >
-              <EditIcon />
+              <Edit stroke="#B1B8BE" />
             </button>
           </div>
         )}
@@ -227,7 +223,7 @@ function BankSetupPage({ mode = 'create', initialData, onComplete, onCompleteAnd
         {activeTab === 'amount' ? (
           <GoalAmountInput value={goalAmount} onChange={setGoalAmount} />
         ) : (
-          <GoalPeriodInput value={goalPeriod} onChange={setGoalPeriod} />
+          <GoalPeriodInput value={goalDate} onChange={setGoalDate} />
         )}
       </div>
 

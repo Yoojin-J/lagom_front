@@ -26,7 +26,7 @@ function BankCard({ bank, records, onClick }) {
       <div className="bankCard__top">
         <div className="bankCard__titleGroup">
           <span className="bankCard__iconWrap">
-            <Clover2 />
+            <Clover2 width={12.6} height={13.2} fill="#FFF" />
           </span>
           <span className="bankCard__name">{name}</span>
         </div>

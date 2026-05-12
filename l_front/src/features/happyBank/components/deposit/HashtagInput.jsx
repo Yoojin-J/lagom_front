@@ -84,7 +84,7 @@ function HashtagInput({ tags, onChange }) {
         <div className={`hashtagInput__underline ${isFocused ? 'hashtagInput__underline--active' : ''} ${hasError ? 'hashtagInput__underline--error' : ''}`} />
         {hasError && (
           <p className="hashtagInput__error">
-            <Feedback className="hashtagInput__errorIcon" />
+            <Feedback />
             해시태그는 최대 {MAX_TAGS}개까지 입력 가능해요
           </p>
         )}

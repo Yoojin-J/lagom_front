@@ -26,39 +26,43 @@
 .goalPeriodInput__fieldRow {
   display: flex;
   width: 100%;
-  align-items: baseline;
+  align-items: center;
   gap: 8px;
 }
 
-.goalPeriodInput__field {
+.goalPeriodInput__display {
+  position: relative;
   flex: 1;
   min-width: 0;
-  border: none;
-  outline: none;
-  padding: 0;
-  background: transparent;
+  cursor: pointer;
+}
+
+.goalPeriodInput__placeholder {
+  color: var(--Gray-30, #B1B8BE);
+  font-family: "Noto Sans KR";
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 130%;
+}
+
+.goalPeriodInput__value {
   color: #131416;
-  font-family: inherit;
+  font-family: "Noto Sans KR";
   font-size: 24px;
   font-style: normal;
   font-weight: 500;
   line-height: 130%;
-  caret-color: #f7645f;
 }
 
-.goalPeriodInput__field::placeholder {
-  color: #b1b8be;
-}
-
-.goalPeriodInput__unit {
-  color: #b1b8be;
-  font-family: Pretendard;
-  font-size: 24px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 130%;
-  white-space: nowrap;
-  flex-shrink: 0;
+.goalPeriodInput__hiddenInput {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  border: none;
 }
 
 .goalPeriodInput__clear {
@@ -75,10 +79,11 @@
   flex-shrink: 0;
 }
 
-.goalPeriodInput__clear img {
-  width: 24px;
-  height: 24px;
-  display: block;
+.goalPeriodInput__chevron {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  pointer-events: none;
 }
 
 .goalPeriodInput__underline {
