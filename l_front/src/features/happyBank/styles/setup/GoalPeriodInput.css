@@ -7,6 +7,31 @@
   gap: 8px;
 }
 
+/* DatePickerExpense trigger 스타일 오버라이드 */
+.goalPeriodInput .custom-input {
+  height: auto;
+  width: 100%;
+  justify-content: space-between;
+  font-family: Pretendard;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 130%;
+  color: #131416;
+}
+
+.goalPeriodInput .custom-input.none {
+  color: var(--Gray-30, #B1B8BE);
+}
+
+.goalPeriodInput .disclosure {
+  display: flex;
+  width: 24px;
+  height: 24px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
 .goalPeriodInput__label {
   color: #6d7882;
   font-family: Pretendard;

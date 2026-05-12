@@ -1,72 +1,87 @@
-import { useRef } from 'react';
-import '../../styles/setup/GoalPeriodInput.css';
-import Delite from '../../../../assets/icons/common/Delite';
+import { useState, useRef, forwardRef } from 'react';
+import DatePicker from 'react-datepicker';
+import { ko } from 'date-fns/locale/ko';
+import { getMonth, getYear } from 'date-fns';
+import ChevronLeft from '../../../../assets/icons/common/ChevronLeft';
+import ChevronRight from '../../../../assets/icons/common/ChevronRight';
 import DisClosure from '../../../../assets/icons/common/DisClosure';
+import '../../../expense/styles/ExpensePage.css';
+import '../../styles/setup/GoalPeriodInput.css';
 
-const toInputFormat = (v) => (v ? v.replace(/\./g, '-') : '');
-const toStoreFormat = (v) => (v ? v.replace(/-/g, '.') : '');
+const toDate = (v) => (v ? new Date(v.replace(/\./g, '-')) : null);
+const toStoreFormat = (date) =>
+  date ? date.toISOString().slice(0, 10).replace(/-/g, '.') : '';
+
+const CustomInput = forwardRef(({ value, onClick, placeholder }, ref) => (
+  <div className={`custom-input ${value ? '' : 'none'}`} onClick={onClick} ref={ref}>
+    {value || placeholder}
+    <div className="disclosure"><DisClosure fill="#E6E8EA" /></div>
+  </div>
+));
+
+const CustomHeader = ({ date, changeMonth }) => {
+  const currentYear = getYear(date);
+  const currentMonth = getMonth(date);
+  return (
+    <div className="header">
+      <div onClick={() => changeMonth(currentMonth - 1)}>
+        <ChevronLeft stroke="#75C0D1" />
+      </div>
+      <div>{currentYear} . {currentMonth + 1}</div>
+      <div onClick={() => changeMonth(currentMonth + 1)}>
+        <ChevronRight stroke="#75C0D1" />
+      </div>
+    </div>
+  );
+};
 
 function GoalPeriodInput({ value, onChange }) {
-  const inputRef = useRef(null);
+  const datePickerRef = useRef(null);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const tomorrow = new Date(today.getTime() + 86400000);
 
-  const today = new Date().toISOString().slice(0, 10);
-  const hasValue = !!value;
-  const isInvalid = hasValue && toInputFormat(value) <= today;
+  const [tempDate, setTempDate] = useState(toDate(value));
+  const isInvalid = value && toDate(value) <= today;
 
-  const handleChange = (e) => {
-    onChange(toStoreFormat(e.target.value));
+  const handleConfirm = () => {
+    onChange(toStoreFormat(tempDate));
+    datePickerRef.current?.setOpen(false);
   };
 
-  const handleClear = () => {
-    onChange('');
-  };
-
-  const handleClick = () => {
-    inputRef.current?.showPicker?.();
-  };
-
-  const formatDisplay = (v) => {
-    if (!v) return '';
-    return v.replace(/\./g, '/');
+  const handleCancel = () => {
+    setTempDate(toDate(value));
+    datePickerRef.current?.setOpen(false);
   };
 
   return (
     <div className="goalPeriodInput">
       <label className="goalPeriodInput__label">만기일</label>
       <div className={`goalPeriodInput__wrapper ${isInvalid ? 'goalPeriodInput__wrapper--error' : ''}`}>
-        <div className="goalPeriodInput__fieldRow">
-          <div className="goalPeriodInput__display" onClick={handleClick}>
-            {hasValue ? (
-              <span className="goalPeriodInput__value">{formatDisplay(value)}</span>
-            ) : (
-              <span className="goalPeriodInput__placeholder">년/월/일</span>
-            )}
-            <input
-              ref={inputRef}
-              className="goalPeriodInput__hiddenInput"
-              type="date"
-              value={toInputFormat(value)}
-              min={today}
-              onChange={handleChange}
-              aria-label="만기일"
-            />
+        <DatePicker
+          locale={ko}
+          ref={datePickerRef}
+          selected={tempDate}
+          onChange={(date) => setTempDate(date)}
+          dateFormat="yyyy/MM/dd"
+          minDate={tomorrow}
+          placeholderText="년/월/일"
+          popperPlacement="auto"
+          showPopperArrow={false}
+          shouldCloseOnSelect={false}
+          fixedHeight={false}
+          popperProps={{ strategy: 'fixed' }}
+          popperClassName="date-picker-popper"
+          wrapperClassName="date-picker-wrapper"
+          renderCustomHeader={CustomHeader}
+          customInput={<CustomInput />}
+        >
+          <div className="devider" />
+          <div className="btn-content">
+            <button type="button" className="cancle" onClick={handleCancel}>취소</button>
+            <button type="button" className="confirm" onClick={handleConfirm}>확인</button>
           </div>
-          {hasValue ? (
-            <button
-              className="goalPeriodInput__clear"
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={handleClear}
-              type="button"
-              aria-label="만기일 지우기"
-            >
-              <Delite />
-            </button>
-          ) : (
-            <span className="goalPeriodInput__chevron" onClick={handleClick}>
-              <DisClosure />
-            </span>
-          )}
-        </div>
+        </DatePicker>
         <div className="goalPeriodInput__underline" />
       </div>
       {isInvalid && (

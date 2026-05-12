@@ -1,5 +1,6 @@
 import '../../styles/detail/GoalAchievedModal.css';
 
+// 행복통장 목표 달성했을 때 나타나는 모달 (성취기록관으로 이동할지?)
 function GoalAchievedModal({ bankName, onConfirm, onClose }) {
   return (
     <div className="goalAchievedModal__overlay" onClick={onClose}>

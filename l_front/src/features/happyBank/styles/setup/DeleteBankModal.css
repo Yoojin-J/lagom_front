@@ -21,27 +21,31 @@
 }
 
 .deleteBankModal__title {
-color: var(--Gray-95, #131416);
+  padding-top: 6px;
+  color: var(--Gray-95, #131416);
 
-/* Body semibold/large */
-font-family: Pretendard;
-font-size: 18px;
-font-style: normal;
-font-weight: 600;
-line-height: 120%; /* 21.6px */
-letter-spacing: -0.8px;
+  /* Body semibold/large */
+  font-family: Pretendard;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 120%;
+  /* 21.6px */
+  letter-spacing: -0.8px;
 }
 
 .deleteBankModal__desc {
-color: var(--Gray-95, #131416);
-text-align: center;
+  padding-bottom: 6px;
+  color: var(--Gray-95, #131416);
+  text-align: center;
 
-/* Body Regular/medium */
-font-family: Pretendard;
-font-size: 16px;
-font-style: normal;
-font-weight: 400;
-line-height: 130%; /* 20.8px */
+  /* Body Regular/medium */
+  font-family: Pretendard;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 130%;
+  /* 20.8px */
 }
 
 .deleteBankModal__actions {
@@ -52,39 +56,41 @@ line-height: 130%; /* 20.8px */
 }
 
 .deleteBankModal__btn {
-display: flex;
-width: 136px;
-padding: 12px;
-justify-content: center;
-align-items: center;
+  display: flex;
+  width: 136px;
+  padding: 12px;
+  justify-content: center;
+  align-items: center;
 }
 
 .deleteBankModal__btn--cancel {
-border-radius: 100px;
-background: var(--Gray-5, #F4F5F6);
-color: var(--Gray-60, #6D7882);
-text-align: center;
+  border-radius: 100px;
+  background: var(--Gray-5, #F4F5F6);
+  color: var(--Gray-60, #6D7882);
+  text-align: center;
 
-/* Body semibold/medium */
-font-family: Pretendard;
-font-size: 16px;
-font-style: normal;
-font-weight: 600;
-line-height: 120%; /* 19.2px */
-letter-spacing: -0.4px;
+  /* Body semibold/medium */
+  font-family: Pretendard;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 120%;
+  /* 19.2px */
+  letter-spacing: -0.4px;
 }
 
 .deleteBankModal__btn--delete {
-border-radius: 100px;
-background: var(--Primary-base, #FFB0AD);
-color: var(--Gray-0, #FFF);
-text-align: center;
+  border-radius: 100px;
+  background: var(--Primary-base, #FFB0AD);
+  color: var(--Gray-0, #FFF);
+  text-align: center;
 
-/* Body semibold/medium */
-font-family: Pretendard;
-font-size: 16px;
-font-style: normal;
-font-weight: 600;
-line-height: 120%; /* 19.2px */
-letter-spacing: -0.4px;
+  /* Body semibold/medium */
+  font-family: Pretendard;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 120%;
+  /* 19.2px */
+  letter-spacing: -0.4px;
 }
