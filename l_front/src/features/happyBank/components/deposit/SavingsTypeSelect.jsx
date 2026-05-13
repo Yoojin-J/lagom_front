@@ -4,15 +4,10 @@ import Questionmark from '../../../../assets/icons/common/Questionmark';
 import '../../styles/deposit/SavingsTypeSelect.css';
 
 const OPTIONS = [
-  { value: 'happy',  label: '행복저금',      description: '행복할 때 저금해요!' },
+  { value: 'happy', label: '행복저금', description: '행복할 때 저금해요!' },
   { value: 'become', label: '행복해지는 저금', description: '소비 후 후회했을 때 저금해요!' },
 ];
 
-/**
- * 저금 유형 선택 커스텀 드롭다운
- * @param {'happy'|'become'} value
- * @param {Function} onChange
- */
 function SavingsTypeSelect({ value, onChange }) {
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef(null);

@@ -2,10 +2,6 @@ import '../styles/BankStartCard.css';
 import Clover2 from "../../../assets/icons/happybank/Clover2";
 import ChevronRight from "../../../assets/icons/common/ChevronRight";
 
-/**
- * 행복통장 미개설 상태 진입 카드
- * @param {Function} onClick - 카드 클릭 시 통장 개설 페이지로 이동
- */
 function BankStartCard({ onClick }) {
   return (
     <div className="bankStartCard" onClick={onClick}>

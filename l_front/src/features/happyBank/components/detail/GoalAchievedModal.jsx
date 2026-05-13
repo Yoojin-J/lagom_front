@@ -5,7 +5,6 @@ function GoalAchievedModal({ bankName, onConfirm, onClose }) {
   return (
     <div className="goalAchievedModal__overlay" onClick={onClose}>
       <div className="goalAchievedModal" onClick={(e) => e.stopPropagation()}>
-        <span className="goalAchievedModal__icon">🎉</span>
         <div className="goalAchievedModal__textGroup">
           <h2 className="goalAchievedModal__title">목표 달성!</h2>
           <p className="goalAchievedModal__desc">

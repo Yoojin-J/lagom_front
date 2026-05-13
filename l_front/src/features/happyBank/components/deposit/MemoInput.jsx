@@ -5,11 +5,6 @@ import '../../styles/deposit/MemoInput.css';
 
 const MAX_LENGTH = 100;
 
-/**
- * 메모 입력 필드
- * @param {string} value
- * @param {Function} onChange
- */
 function MemoInput({ value, onChange }) {
   const [isFocused, setIsFocused] = useState(false);
   const [isTouched, setIsTouched] = useState(false);
@@ -46,6 +41,8 @@ function MemoInput({ value, onChange }) {
             placeholder="메모할 내용을 적어주세요."
             maxLength={MAX_LENGTH}
             rows={1}
+            lang="ko"
+            inputMode="text"
             aria-label="메모"
           />
           {showCounter && (

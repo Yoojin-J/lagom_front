@@ -5,11 +5,7 @@ import '../../styles/deposit/HashtagInput.css';
 
 const MAX_TAGS = 5;
 
-/**
- * 해시태그 입력 필드 (Enter/Space로 태그 추가, Backspace로 마지막 태그 삭제)
- * @param {string[]} tags - 해시태그 배열 (# 제외)
- * @param {Function} onChange - 태그 배열 변경 핸들러
- */
+
 function HashtagInput({ tags, onChange }) {
   const [inputValue, setInputValue] = useState('');
   const [isFocused, setIsFocused] = useState(false);

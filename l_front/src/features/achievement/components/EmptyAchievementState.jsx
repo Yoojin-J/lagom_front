@@ -1,5 +1,6 @@
 import '../styles/EmptyAchievementState.css';
 
+// 성취 기록관에 기록된 저금이 없을 때
 function EmptyAchievementState() {
   return (
     <div className="emptyAchievementState">

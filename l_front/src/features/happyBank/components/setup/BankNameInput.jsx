@@ -1,11 +1,7 @@
 import Edit from '../../../../assets/icons/happybank/Edit';
 import '../../styles/setup/BankNameInput.css';
 
-/**
- * 통장 이름 입력 필드 (이름 + 연필 아이콘)
- * @param {string} value - 입력값
- * @param {Function} onChange - 변경 핸들러
- */
+
 function BankNameInput({ value, onChange }) {
   return (
     <div className="bankNameInput">

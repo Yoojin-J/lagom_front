@@ -45,10 +45,6 @@
   box-sizing: border-box;
 }
 
-.goalAchievedModal__icon {
-  font-size: 40px;
-}
-
 .goalAchievedModal__textGroup {
   display: flex;
   flex-direction: column;
@@ -58,6 +54,7 @@
 
 .goalAchievedModal__title {
   margin: 0;
+  padding-top: 10px;
   color: var(--Gray-95, #131416);
   font-family: Pretendard;
   font-size: 18px;
@@ -67,13 +64,15 @@
 }
 
 .goalAchievedModal__desc {
+  padding-bottom: 6px;
   margin: 0;
-  color: var(--Gray-60, #6D7882);
+  align-self: stretch;
+  color: var(--Gray-95, #131416);
   text-align: center;
   font-family: Pretendard;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 400;
-  line-height: 150%;
+  line-height: 130%;
 }
 
 .goalAchievedModal__actions {

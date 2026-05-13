@@ -25,6 +25,7 @@ function DepositPage({ onComplete, onAddRecord, onBack, bankName = '행복통장
     const hashtag = tags.map((tag) => `#${tag}`).join(' ');
     const record = {
       id: Date.now(),
+      createdAt: new Date().toISOString(), // API 연동 시 서버 응답값으로 교체 예정
       type,
       amount: Number(amount),
       memo,

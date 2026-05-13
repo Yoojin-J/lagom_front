@@ -5,11 +5,6 @@ import Delite from '../../../../assets/icons/common/Delite';
 
 const MAX_AMOUNT = 10_000_000;
 
-/**
- * 금액 입력 필드
- * @param {string} value - 입력값 (숫자 문자열)
- * @param {Function} onChange - 변경 핸들러
- */
 function AmountInput({ value, onChange }) {
   const [isFocused, setIsFocused] = useState(false);
   const [isTouched, setIsTouched] = useState(false);

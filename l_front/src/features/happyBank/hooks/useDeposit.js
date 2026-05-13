@@ -1,9 +1,5 @@
 import { useState } from 'react';
 
-/**
- * 입금(저금하기) 제출 로직 훅
- * @returns {{ isLoading: boolean, handleSubmit: Function }}
- */
 const useDeposit = () => {
   const [isLoading, setIsLoading] = useState(false);
 

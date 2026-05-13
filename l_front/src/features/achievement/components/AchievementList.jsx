@@ -1,6 +1,7 @@
 import AchievementListItem from './AchievementListItem';
 import '../styles/AchievementList.css';
 
+// 성취 기록관 회차별 리스트
 function AchievementList({ achievements, onItemClick }) {
   return (
     <div className="achievementList">

@@ -1,10 +1,5 @@
 import '../../styles/setup/GoalTabSwitch.css';
 
-/**
- * 목표금액 / 목표기간 탭 전환
- * @param {'amount'|'period'} activeTab - 현재 활성 탭
- * @param {Function} onTabChange - 탭 변경 핸들러
- */
 function GoalTabSwitch({ activeTab, onTabChange }) {
   return (
     <div className="goalTabSwitch">

@@ -1,10 +1,5 @@
 import '../../styles/setup/SetupCompleteModal.css';
 
-/**
- * 통장 개설 완료 모달
- * @param {string} bankName - 개설된 통장 이름
- * @param {Function} onConfirm - 확인 버튼 클릭
- */
 function SetupCompleteModal({ bankName, onConfirm, onDeposit }) {
   return (
     <div className="setupCompleteModal__overlay">
