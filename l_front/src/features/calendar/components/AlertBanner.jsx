@@ -12,7 +12,8 @@ const AlertBanner = ({
     // 1. 데이터가 있는지, 배열이 비어있지 않은지 안전하게 확인
     if (reEvaData && reEvaData.length > 0) {
       // 2. 첫 번째 요소의 pk 추출
-      const firstPk = reEvaData[0].expense_id;
+      const firstPk = reEvaData[0].expenseId
+;
 
       // 3. /expense/:pk 경로로 이동
       navigate(`/expense/${firstPk}`, {

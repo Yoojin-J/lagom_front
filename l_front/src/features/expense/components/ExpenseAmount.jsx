@@ -55,7 +55,7 @@ const ExpenseAmount = ({
             className="dropdown-button"
             onClick={HandleType}
           >
-            {formData.type == 1 ? "수입" : "지출"}
+            {formData.type === "INCOME" ? "수입" : "지출"}
             <DisClosure fill='#E6E8EA' />
           </button>
           {isVisibleT && (

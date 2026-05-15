@@ -8,8 +8,8 @@ export const useReviewLedger = (records) => {
     }
 
     const itemsByDate = records.reduce((acc, cur) => {
-      const month = new Date(cur.payment_at).getMonth() + 1;
-      const dateKey = formatDate(cur.payment_at); // "2026-05-01" 형태
+      const month = new Date(cur.paymentAt).getMonth() + 1;
+      const dateKey = formatDate(cur.paymentAt); // "2026-05-01" 형태
 
       if (!acc[dateKey]) {
         acc[dateKey] = { dayItems: [] };

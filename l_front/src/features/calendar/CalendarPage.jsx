@@ -3,6 +3,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 // import testTransactions from '../../assets/data/expense3.json';
 import testTransactions from '../../assets/data/expense4.json';
 import testReEvaTransactions from '../../assets/data/expense5.json';
+import testMonth from '../../assets/data/expense6.json';
+import testWeek from '../../assets/data/expense7.json';
+import testDay from '../../assets/data/expense8.json';
+import testReEva from '../../assets/data/expense9.json';
 import ListIcon from '../../assets/icons/calendar/List.jsx';
 import CalendarIcon from '../../assets/icons/calendar/Calendar.jsx';
 import DatePicker from './components/DatePickerCalendar.jsx';
@@ -26,26 +30,12 @@ const CalendarPage = () => {
   const currentYear = parseInt(year) || new Date().getFullYear();
   const currentMonth = parseInt(month) || new Date().getMonth() + 1;
 
-  const { start, end } = useExtendedRange(currentYear, currentMonth);
-
   const currentDate = new Date(); //오늘
   const [selectedDate, setSelectedDate] = useState(new Date); // 선택된 날짜
 
   const [isWeekView, setIsWeekView] = useState(true); // 주간달력인가요? true 디폴트
 
   const [weekStartDate, setWeekStartDate] = useState(null); // 한 주의 시작 날짜 구하기(월요일 날짜)
-
-  // 선택한 날짜의 거래 목록
-  const [selectedDayTransactions, setSelectedDayTransactions] = useState({
-    dayItems: [],
-    dayIncome: 0,
-    dayExpense: 0
-  });
-
-  // 백엔드에서 가져온 데이터
-  const [rawData, setRawData] = useState([]);
-  // 가공된 데이터 가져오기
-  const { itemsByDate, totalIncome, totalExpense } = useLedger(rawData, currentMonth);
 
   // 백엔드에서 가져온 데이터 (오늘 기준 3일 이내, )
   const [reEvaData, setReEvaData] = useState([]);
@@ -60,31 +50,81 @@ const CalendarPage = () => {
     return start;
   };
 
+  // monthly 데이터
+  const [monthData, setMonthData] = useState();
+  // weekly 데이터
+  const [weekData, setWeekData] = useState();
+  const [dayData, setDayData] = useState();
+
   // 전체 거래 데이터 불러오기 (한 번만 실행)
   const fetchData = async () => {
     try {
-      // 5월 기록을 가져올 때 4월 마지막 주, 6월 첫째 주 기록도 같이 가져오기 위해 계산된 값을 보냄
-      // start 가져올 데이터 시작 날 new Date(), end 가져올 데이터 마지막 날 new Date()
-      // 엔드포인트는 백에 따라 달라질 수 있음 
-      // const res = await axios.get('/api/ledger', { params: { start, end } })
-      console.log("전체데이터불러오기");
+      // GET /expenses/calendar/monthly?userId=1&year=2026&month=3
+      // const response = await axios.get('/expenses/calendar/weekly', {
+      //   params: {
+      //     userId: userId, // 1
+      //     year: currentYear,
+      //     month: currentMonth 
+      //   }
+      // });
+      // setMonthData(response);
 
-      const res = testTransactions;
-      setRawData(res);
-      // console.log("testdata: ", testTransactions);
+      setMonthData(testMonth)
+      console.log("전체데이터불러오기: ", testMonth);
+
     } catch (error) {
       console.error("거래 데이터 불러오기 실패", error);
       setRawData([]);
     }
   };
 
+  const getWeekData = async () => {
+    try {
+      const date = formatDate(selectedDate);
+      //GET /expenses/calendar/weekly?userId=1&date=2026-03-21
+      //   const response = await axios.get('/expenses/calendar/weekly', {
+      //   params: {
+      //     userId: userId, // 1
+      //     date: date      // '2026-03-21'
+      //   }
+      // });
+      // setWeekData(response);
+      setWeekData(testWeek);
+      console.log("주간데이터가져오기: ", testWeek);
+    } catch (error) {
+
+    }
+  };
+  const getDayData = async () => {
+    try {
+      const date = formatDate(selectedDate);
+      //GET /expenses/daily?userId=1&date=2026-03-21
+      //   const response = await axios.get('/expenses/calendar/daily', {
+      //   params: {
+      //     userId: userId, // 1
+      //     date: date      // '2026-03-21'
+      //   }
+      // });
+      // setDayData(response);
+      setDayData(testDay);
+      console.log("하루 상세 기록: ", testDay);
+    } catch (error) {
+
+    }
+  };
+
   const fetchReevaluatedData = async () => {
     try {
-      // 오늘 기준으로 3일전까지의 내역 중 부정적 감정 + 높은 만족도 + is_reevaluated가 false인 값 가져오기, 프론트에서 보내는 값 없음
-      // const res = await axios.get('/api/ledger')
-      const res = testReEvaTransactions;
-      setReEvaData(res);
-      console.log(res);
+      // 재평가가 필요한 데이터 불러오기 
+      //GET /expenses/reevaluation?userId={id}
+      //   const response = await axios.get('/expenses/reevaluation', {
+      //   params: {
+      //     userId: userId, // 1
+      //   }
+      // });
+      const res = testReEva;
+      setReEvaData(res.items);
+      console.log("재평가대상",res.items);
     } catch (error) {
       setReEvaData([]);
     }
@@ -107,36 +147,20 @@ const CalendarPage = () => {
       setSelectedDate(currentDate);
 
       isFirstRender.current = false;
+
       fetchReevaluatedData(); // 재평가해야되는 내역들
       console.log("마운트 시점에만 동작");
     }
   }, []); // '마운트 시점'에만 동작
 
   useEffect(() => {
-    fetchData();   // 전체 데이터 불러오기
-    console.log("itemsByDate: ", itemsByDate);
-    console.log("달 수입, 지출", totalIncome, totalExpense);
-    console.log("year, month, currentYear, currentMonth", year, month, currentYear, currentMonth);
-  }, [start, end])  // 범위가 계산된 뒤에 불러오기
+    fetchData();
+  }, [currentYear, currentMonth])
 
   useEffect(() => {
-    // console.log("year, month, currentYear, currentMonth", year, month, currentYear, currentMonth);
-    console.log("달 수입, 지출", totalIncome, totalExpense);
-  }, [totalIncome, totalExpense])
-
-
-  // useEffect(() => {
-  //   console.log("itemsByDate: ", itemsByDate);
-  //   console.log("selectedDayTransactions: ", selectedDayTransactions);
-  // }, [itemsByDate, selectedDayTransactions]);
-
-  // 선택한 날짜 변경 시 해당 날짜 거래 내역 필터링
-  useEffect(() => {
-    const dateKey = formatDate(selectedDate);
-    const filtered = itemsByDate[dateKey] || { dayItems: [], dayIncome: 0, dayExpense: 0 };
-    setSelectedDayTransactions(filtered);
-
-  }, [selectedDate, itemsByDate]);
+    getWeekData();
+    getDayData();
+  }, [selectedDate])
 
 
 
@@ -202,8 +226,7 @@ const CalendarPage = () => {
 
 
       <MonthlyAmount
-        totalIncome={totalIncome}
-        totalExpense={totalExpense}
+        monthData={monthData}
       />
 
 
@@ -217,20 +240,22 @@ const CalendarPage = () => {
         currentDate={currentDate}
         getStartOfWeek={getStartOfWeek}
         moveToMonth={moveToMonth}
-        itemsByDate={itemsByDate}
         currentYear={currentYear}
         currentMonth={currentMonth}
+        monthData={monthData}
+        weekData={weekData}
       />
 
       {isWeekView && (
         <div className='transaction-section'>
-          {reEvaData.length !== 0 && 
-            <AlertBanner 
+          {reEvaData.length !== 0 &&
+            <AlertBanner
               reEvaData={reEvaData}
             />
           }
           <TransactionHistory
-            selectedDayTransactions={selectedDayTransactions}
+            dayData={dayData}
+            selectedDate={selectedDate}
           />
         </div>
       )}

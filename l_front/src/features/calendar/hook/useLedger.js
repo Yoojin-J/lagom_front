@@ -15,11 +15,11 @@ export const useLedger = (records, currentMonth) => {
     console.log("useLedger currentMonth", currentMonth);
 
     const itemsByDate = records.reduce((acc, cur) => {
-      const month = new Date(cur.payment_at).getMonth() + 1;
+      const month = new Date(cur.paymentAt).getMonth() + 1;
       // console.log(new Date(cur.payment_at));
       // console.log("useLedger month currentMonth", month, currentMonth);
 
-      const dateKey = formatDate(cur.payment_at); // "2026-05-01" 형태
+      const dateKey = formatDate(cur.paymentAt); // "2026-05-01" 형태
 
       if (!acc[dateKey]) {
         acc[dateKey] = { dayItems: [], dayIncome: 0, dayExpense: 0 };
@@ -27,7 +27,7 @@ export const useLedger = (records, currentMonth) => {
 
       acc[dateKey].dayItems.push(cur);
 
-      if (cur.type === 1) {
+      if (cur.type === "INCOME") {
         acc[dateKey].dayIncome += cur.amount;
         if (month !== currentMonth) return acc;
 

@@ -18,7 +18,7 @@ const ExpenseCategory = ({
   };
 
   const handleCatChange = (e) => {
-    const category = +e.currentTarget.id;
+    const category = e.currentTarget.id;
 
     setIsVisibleC(!isVisibleC);
     setFormData(prev => ({
@@ -47,7 +47,7 @@ const ExpenseCategory = ({
         </button>}
         {isVisibleC && (
           <ul className="category-list">
-            {formData.type !== null && formData.type !== undefined && categoryOptions[formData.type].map((cat, index, array) => {
+            {formData.type && categoryOptions[formData.type].map((cat, index, array) => {
               const IconComponent = cat.icon;
 
               return (

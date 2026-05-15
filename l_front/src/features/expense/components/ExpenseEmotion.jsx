@@ -59,7 +59,7 @@ const ExpenseEmotion = ({
       <div className='emotion-section'>
         <div className='emotion-label'>감정</div>
         <ul className='emotion-option-container'>
-          {formData.type === 0 && emotionOptions.map((emo) => {
+          {formData.type === "EXPENSE" && emotionOptions.map((emo) => {
             const isSelected = formData.emotion === emo.value;
 
             return (
@@ -74,7 +74,7 @@ const ExpenseEmotion = ({
       <div className='satisfaction-section'>
         <div className='satisfaction-label'>소비 만족도</div>
         <ul className='satisfaction-option-container'>
-          {formData.type === 0 && satisfactionOptions.map((sat) => {
+          {formData.type === "EXPENSE" && satisfactionOptions.map((sat) => {
             const isSelected = formData.evaluation === sat.value;
 
             return (

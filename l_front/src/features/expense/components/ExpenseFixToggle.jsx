@@ -9,7 +9,7 @@ const ExpenseFixToggle = ({
   const handleFix = () => {
     setFormData(prev => ({
       ...prev,
-      isFix: !prev.isFix
+      is_recurring: !prev.is_recurring
     }))
   };
 
@@ -20,7 +20,7 @@ const ExpenseFixToggle = ({
         <div className='sub'>매 주기마다 자동으로 기록돼요</div>
       </div>
       <div className='toggle-row-img' onClick={handleFix}>
-        {formData.isFix ? <ToggleOn /> : <ToggleOff />}
+        {formData.is_recurring ? <ToggleOn /> : <ToggleOff />}
       </div>
     </div>
   )

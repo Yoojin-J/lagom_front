@@ -53,18 +53,18 @@ const ExpensePage = () => {
   const isReEva = location.state?.mode === 'reevaluated';
   const [formData, setFormData] = useState({
     title: '',
-    type: 1,
+    type: "INCOME",
     amount: '',
-    payment_at: new Date(),
+    paymentAt: new Date(),
     category: 0,
     memo: '',
     emotion: null,
     evaluation: null,
-    isFix: false,
-    period: 'day',
-    cycle: [],
-    startdate: null,
-    enddate: null,
+    is_recurring: false,
+    repeat_cycle: 'DAILY',
+    repeat_days: [],
+    repeat_start_date: null,
+    repeat_end_date: null,
     is_reevaluated: true,
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -73,46 +73,46 @@ const ExpensePage = () => {
 
   // 거래유형에 따른 카테고리 목록
   const categoryOptions = {
-    1: [
-      { value: 0, label: '카테고리 없음', icon: SystemMore },
-      { value: 1, label: '급여', icon: Salary, color: { background: 'var(--Category-Purple-2, #ABD8E3)' } },
-      { value: 2, label: '부수입', icon: SideIncome, color: { background: 'var(--Category-Deep-Blue, #B7CFD6)' } },
-      { value: 3, label: '용돈', icon: Allowance, color: { background: 'var(--Category-Green-2, #7EC88E)' } },
-      { value: 4, label: '상여금', icon: Bonus, color: { background: 'var(--Category-Purple-3, #D6B7FF)' } },
-      { value: 5, label: '금융수입', icon: Investment, color: { background: 'var(--Category-Deep-Blue-2, #9FBFC9)' } },
-      { value: 6, label: '기타', icon: SystemMore },
+    "INCOME": [
+      { value: "NONE", label: '카테고리 없음', icon: SystemMore },
+      { value: "SALARY", label: '급여', icon: Salary, color: { background: 'var(--Category-Purple-2, #ABD8E3)' } },
+      { value: "SIDEINCOME", label: '부수입', icon: SideIncome, color: { background: 'var(--Category-Deep-Blue, #B7CFD6)' } },
+      { value: "ALLOWANCE", label: '용돈', icon: Allowance, color: { background: 'var(--Category-Green-2, #7EC88E)' } },
+      { value: "BONUS", label: '상여금', icon: Bonus, color: { background: 'var(--Category-Purple-3, #D6B7FF)' } },
+      { value: "INVESTMENT", label: '금융수입', icon: Investment, color: { background: 'var(--Category-Deep-Blue-2, #9FBFC9)' } },
+      { value: "ETC", label: '기타', icon: SystemMore },
     ],
-    0: [
-      { value: 0, label: '카테고리 없음', icon: SystemMore },
-      { value: 7, label: '식비', icon: Food, color: { background: 'var(--Category-Blue, #9ED2FA)' } },
-      { value: 8, label: '주거/통신', icon: Housing, color: { background: 'var(--Category-Purple, #E2CCFF)' } },
-      { value: 9, label: '교통/차량', icon: Transport, color: { background: 'var(--Category-Mint, #B5E2DF)' } },
-      { value: 10, label: '의료/건강', icon: Medical, color: { background: 'var(--Category-Green, #A9DAB4)' } },
-      { value: 11, label: '문화/여가', icon: Leisure, color: { background: 'var(--Category-Pink, #FFCAC8)' } },
-      { value: 12, label: '쇼핑', icon: Shopping, color: { background: 'var(--Category-Peach, #F7AFA1)' } },
-      { value: 13, label: '미용', icon: Beauty, color: { background: 'var(--Category-Lavender, #EFCAF2)' } },
-      { value: 14, label: '교육', icon: Education, color: { background: 'var(--Category-Gray, #CDD1D5)' } },
-      { value: 6, label: '기타', icon: SystemMore },
+    "EXPENSE": [
+      { value: "NONE", label: '카테고리 없음', icon: SystemMore },
+      { value: "FOOD", label: '식비', icon: Food, color: { background: 'var(--Category-Blue, #9ED2FA)' } },
+      { value: "HOUSING", label: '주거/통신', icon: Housing, color: { background: 'var(--Category-Purple, #E2CCFF)' } },
+      { value: "TRANSPORT", label: '교통/차량', icon: Transport, color: { background: 'var(--Category-Mint, #B5E2DF)' } },
+      { value: "MEDICAL", label: '의료/건강', icon: Medical, color: { background: 'var(--Category-Green, #A9DAB4)' } },
+      { value: "LEISURE", label: '문화/여가', icon: Leisure, color: { background: 'var(--Category-Pink, #FFCAC8)' } },
+      { value: "SHOPPING", label: '쇼핑', icon: Shopping, color: { background: 'var(--Category-Peach, #F7AFA1)' } },
+      { value: "BEAUTY", label: '미용', icon: Beauty, color: { background: 'var(--Category-Lavender, #EFCAF2)' } },
+      { value: "EDUCATION", label: '교육', icon: Education, color: { background: 'var(--Category-Gray, #CDD1D5)' } },
+      { value: "ETC", label: '기타', icon: SystemMore },
     ]
   };
 
   // 감정 목록
   const emotionOptions = [
-    { value: 0, label: '기쁨', icon: <Happy /> },
-    { value: 1, label: '설렘', icon: <Excitement /> },
-    { value: 2, label: '평온', icon: <Serenity /> },
-    { value: 3, label: '우울', icon: <Depressed /> },
-    { value: 4, label: '스트레스', icon: <Stress /> },
-    { value: 5, label: '충동', icon: <Impulse /> },
+    { value: "HAPPY", label: '기쁨', icon: <Happy /> },
+    { value: "EXCITEMENT", label: '설렘', icon: <Excitement /> },
+    { value: "SERENITY", label: '평온', icon: <Serenity /> },
+    { value: "DEPRESSED", label: '우울', icon: <Depressed /> },
+    { value: "STRESS", label: '스트레스', icon: <Stress /> },
+    { value: "IMPULSE", label: '충동', icon: <Impulse /> },
   ];
 
   // 소비 만족도 목록
   const satisfactionOptions = [
     { value: 0, label: '매우 불만족', percent: '0%', icon: <Mad isActive={formData.evaluation === 'mad'} /> },
-    { value: 25, label: '불만족', percent: '25%', icon: <Angry isActive={formData.evaluation === 'angry'} /> },
-    { value: 50, label: '보통', percent: '50%', icon: <Common isActive={formData.evaluation === 'common'} /> },
-    { value: 75, label: '만족', percent: '75%', icon: <Satisfied isActive={formData.evaluation === 'satisfied'} /> },
-    { value: 100, label: '매우 만족', percent: '100%', icon: <Excited isActive={formData.evaluation === 'excited'} /> },
+    { value: 1, label: '불만족', percent: '25%', icon: <Angry isActive={formData.evaluation === 'angry'} /> },
+    { value: 2, label: '보통', percent: '50%', icon: <Common isActive={formData.evaluation === 'common'} /> },
+    { value: 3, label: '만족', percent: '75%', icon: <Satisfied isActive={formData.evaluation === 'satisfied'} /> },
+    { value: 4, label: '매우 만족', percent: '100%', icon: <Excited isActive={formData.evaluation === 'excited'} /> },
   ];
 
   // selectedCycle에서 사용하는 기간 리스트(매주)
@@ -136,7 +136,7 @@ const ExpensePage = () => {
   // navigate로 전달된 state를 formData에 반영 (한 번만 실행되도록)
   // 가계부 페이지에서 INCOME이냐 EXPENSE이냐를 선택하고 오기 때문에
   useEffect(() => {
-    if (type !== undefined && type !== null) {
+    if (type) {
       setFormData(prev => ({
         ...prev,
         type: type   // formData.type 업데이트
@@ -153,9 +153,9 @@ const ExpensePage = () => {
       setFormData(prev => ({
         ...prev,
         ...editData,
-        payment_at: new Date(editData.payment_at),
-        startdate: editData.startdate ? new Date(editData.startdate) : null,
-        enddate: editData.startdate ? new Date(editData.startdate) : null,
+        paymentAt: new Date(editData.paymentAt),
+        repeat_start_date: editData.repeat_start_date ? new Date(editData.repeat_start_date) : null,
+        repeat_end_date: editData.repeat_end_date ? new Date(editData.repeat_end_date) : null,
       }));
     }
 
@@ -165,18 +165,6 @@ const ExpensePage = () => {
 
     console.log("editData => formData:", formData);
   }, [editData, isEditMode, isReEva]);
-
-  // useEffect(() => {
-  //   console.log("업데이트된 formData:", formData);
-  // }, [formData]); // formData가 바뀔 때마다 찍힘
-
-  // useEffect(() => {
-  //   console.log("업데이트된 type:", formData.type);
-  // }, [formData.type]); // formData가 바뀔 때마다 찍힘
-
-  // useEffect(() => {
-  //   console.log("업데이트된 preEva:", preEva);
-  // }, [preEva]); // formData가 바뀔 때마다 찍힘
 
 
   // 카테고리와 내역명 옆 아이콘 동기화
@@ -224,7 +212,10 @@ const ExpensePage = () => {
 
       // 엔드포인트로 보낸 후 함수 끝나야됨 
       try {
-        const response = await axios.put(`http://localhost:8080/update/${id}`, formData);
+        // PATCH /expenses/{id}/reevaluate?evaluation=1
+        // const response = await axios.patch(`/expenses/${id}/reevaluate?evaluation=${formData.evaluation}`, {})
+        console.log("보낸 데이터", formData);
+
         return;
       } catch (error) {
         console.log(error)
@@ -250,19 +241,22 @@ const ExpensePage = () => {
     try {
       if (isEditMode) {
         // 가계부 수정
-        const response = await axios.put(`http://localhost:8080/update/${id}`, formData);
+        // const response = await axios.put(`/expense/${id}`, formData);
+        console.log("보낸 데이터", formData);
+
       } else {
         // 가계부 작성
-        const response = await axios.post('http://localhost:8080/', formData);
+        // const response = await axios.post('/expenses', formData);
+        console.log("보낸 데이터", formData);
+
       }
-      navigate('/calendar');
+      navigate('/');
       return;
     } catch (error) {
       console.log(error);
       return;
     }
 
-    console.log(formData);
   };
 
 
@@ -316,14 +310,14 @@ const ExpensePage = () => {
               <DatePicker
                 formData={formData}
                 setFormData={setFormData}
-                datetype={'payment_at'}
+                datetype={'paymentAt'}
               />
             </div>
           </div>
 
           {/* ExpenseMemo : 메모(memo) */}
           {/* ExpenseEmotion : 감정(selectedEmo), 소비만족도(selectedSat) */}
-          {formData.type === 1 ?
+          {formData.type === "INCOME" ?
             <ExpenseMemo
               formData={formData}
               setFormData={setFormData}
@@ -349,7 +343,7 @@ const ExpensePage = () => {
           />
 
           {/* ExpenseFixSetting : 매일/매주/매달(selectedPeriod), 날짜설정(selectedCycle), 시작일(startDate), 종료일(endDate) */}
-          {formData.isFix &&
+          {formData.is_recurring &&
             <ExpenseFixSetting
               formData={formData}
               setFormData={setFormData}

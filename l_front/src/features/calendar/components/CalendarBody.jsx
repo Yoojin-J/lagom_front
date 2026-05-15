@@ -1,6 +1,7 @@
 import React, { useState, useRef, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { formatDate } from '../hook/dateUtil.js';
+import { useDaysMap } from '../hook/useDaysMap.js';
 
 const CalendarBody = ({
   isWeekView,
@@ -12,9 +13,10 @@ const CalendarBody = ({
   currentDate,
   getStartOfWeek,
   moveToMonth,
-  itemsByDate,
   currentYear,
-  currentMonth
+  currentMonth,
+  monthData,
+  weekData,
 }) => {
   const navigate = useNavigate();
   // 캘린더 드래그로 넘기기
@@ -22,6 +24,9 @@ const CalendarBody = ({
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [translateX, setTranslateX] = useState(0);
+
+  const monthdata = useDaysMap(monthData?.days);
+  const weekdata = useDaysMap(weekData?.days);
 
   // 드래그 이벤트
   const handleMouseDown = (e) => {
@@ -169,9 +174,9 @@ const CalendarBody = ({
 
   // 특정 날짜의 수입/지출 
   const getDailyAmount = (dateKey) => {
-    const dayData = itemsByDate[dateKey] || { dayIncome: 0, dayExpense: 0, dayItems: [] };;
-    const dayIncome = dayData?.dayIncome;
-    const dayExpense = dayData?.dayExpense;
+    const dayData = isWeekView ? weekdata[dateKey] || { income: 0, expense: 0 } : monthdata[dateKey] || { income: 0, expense: 0 };
+    const dayIncome = dayData?.income;
+    const dayExpense = dayData?.expense;
 
     return {
       income: dayIncome.toLocaleString(),

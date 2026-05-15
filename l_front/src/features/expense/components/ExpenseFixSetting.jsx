@@ -11,16 +11,16 @@ const ExpenseFixSetting = ({
 
     setFormData(prev => ({
       ...prev,
-      period: period,
+      repeat_cycle: period,
       // 매일/매주/매달 버튼 누를 때마다 주기 초기화
-      cycle: [],
+      repeat_days: [],
     }))
   };
 
   const handleCycle = (value) => {
     setFormData((prev) => {
       // 1. 현재 배열 가져오기 (formData 내부의 selectedCycle)
-      const currentCycles = prev.cycle;
+      const currentCycles = prev.repeat_days;
 
       // 2. 새 배열 계산
       const nextCycles = currentCycles.includes(value)
@@ -30,7 +30,7 @@ const ExpenseFixSetting = ({
       // 3. 전체 객체 업데이트
       return {
         ...prev,           // 다른 필드들 유지
-        cycle: nextCycles // 변경된 배열로 덮어쓰기
+        repeat_days: nextCycles // 변경된 배열로 덮어쓰기
       }
     });
   };
@@ -43,33 +43,33 @@ const ExpenseFixSetting = ({
         <div className='setting-bar'>
           <div
             data-value='day'
-            className={`tab ${formData.period === 'day' ? 'selected' : ''}`}
+            className={`tab ${formData.repeat_cycle === 'DAILY' ? 'selected' : ''}`}
             onClick={handlePeriod}
           >
             매일
           </div>
           <div
             data-value='week'
-            className={`tab ${formData.period === 'week' ? 'selected' : ''}`}
+            className={`tab ${formData.repeat_cycle === 'WEEKLY' ? 'selected' : ''}`}
             onClick={handlePeriod}
           >
             매주
           </div>
           <div
             data-value='month'
-            className={`tab ${formData.period === 'month' ? 'selected' : ''}`}
+            className={`tab ${formData.repeat_cycle === 'MONTHLY' ? 'selected' : ''}`}
             onClick={handlePeriod}
           >
             매월
           </div>
         </div>
-        {formData.period === 'week' &&
+        {formData.repeat_cycle === 'WEEKLY' &&
           <div className='cycle'>
-            {formData.period && weekList.map((week) => {
+            {formData.repeat_cycle && weekList.map((week) => {
               return (
                 <div
                   key={week.value}
-                  className={`cycle-chip ${formData.cycle.includes(week.value) ? 'selected' : ''}`}
+                  className={`cycle-chip ${formData.repeat_days.includes(week.value) ? 'selected' : ''}`}
                   onClick={() => handleCycle(week.value)}
                 >
                   {week.label}
@@ -78,13 +78,13 @@ const ExpenseFixSetting = ({
             })}
           </div>}
 
-        {formData.period === 'month' &&
+        {formData.repeat_cycle === 'MONTHLY' &&
           <div className='cycle'>
-            {formData.period && Array.from({ length: 31 }, (_, i) => {
+            {formData.repeat_cycle && Array.from({ length: 31 }, (_, i) => {
               return (
                 <div
                   key={i + 1}
-                  className={`cycle-chip ${formData.cycle.includes(i + 1) ? 'selected' : ''}`}
+                  className={`cycle-chip ${formData.repeat_days.includes(i + 1) ? 'selected' : ''}`}
                   onClick={() => handleCycle(i + 1)}
                 >
                   {i + 1}
@@ -99,7 +99,7 @@ const ExpenseFixSetting = ({
           <DatePicker
             formData={formData}
             setFormData={setFormData}
-            datetype={'startdate'}
+            datetype={'repeat_start_date'}
           />
         </div>
       </div>
@@ -109,7 +109,7 @@ const ExpenseFixSetting = ({
           <DatePicker
             formData={formData}
             setFormData={setFormData}
-            datetype={'enddate'}
+            datetype={'repeat_end_date'}
           />
         </div>
       </div>

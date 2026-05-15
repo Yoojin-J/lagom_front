@@ -9,7 +9,7 @@ const ExpenseDelete = ({
   const deleteExpense = async (id) => {
     // try {
     //   // 1. 백엔드(json-server)에 DELETE 요청 전송
-    //   const response = await axios.delete(`http://localhost:8080/delete/${id}`);
+    //   const response = await axios.delete(`/expense/${id}`);
 
     //   if (response.status === 200 || response.status === 204) {
     //     console.log(`${id}번 게시물이 삭제되었습니다.`);

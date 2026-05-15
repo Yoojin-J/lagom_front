@@ -27,15 +27,24 @@ import Excited from '../../../assets/icons/satisfaction/Exited';
 import { useNavigate } from 'react-router-dom';
 
 const TransactionHistory = ({
-  selectedDayTransactions,
+  dayData,
+  selectedDate,
 }) => {
   const navigate = useNavigate();
+  const newData = (item) => ({
+      ...item,
+      paymentAt: selectedDate,
+    });
+
+
   const goEdit = (item) => {
+    const daydata = newData(item);
+
     // 첫 번째 인자는 이동할 경로, 
     // 두 번째 인자의 state 속성에 보낼 객체를 담습니다.
-    navigate(`/expense/${item.expense_id}`, { 
+    navigate(`/expense/${item.expenseId}`, { 
       state: { 
-        data: item, 
+        data: daydata, 
         mode: 'edit' 
       } 
     });
@@ -44,38 +53,38 @@ const TransactionHistory = ({
   };
 
   const category = {
-    0: { label: '카테고리 없음', icon: <SystemMore width={24} height={24} />, color: { background: 'var(--Category-Light-pink, rgba(255, 176, 173, 0.20))' } },
-    1: { label: '급여', icon: <Salary width={24} height={24} />, color: { background: 'var(--Category-Purple-2, #ABD8E3)' } },
-    2: { label: '부수입', icon: <SideIncome width={24} height={24} />, color: { background: 'var(--Category-Deep-Blue, #B7CFD6)' } },
-    3: { label: '용돈', icon: <Allowance width={24} height={24} />, color: { background: 'var(--Category-Green-2, #7EC88E)' } },
-    4: { label: '상여금', icon: <Bonus width={24} height={24} />, color: { background: 'var(--Category-Purple-3, #D6B7FF)' } },
-    5: { label: '금융수입', icon: <Investment width={24} height={24} />, color: { background: 'var(--Category-Deep-Blue-2, #9FBFC9)' } },
-    6: { label: '기타', icon: <SystemMore width={24} height={24} /> },
-    7: { label: '식비', icon: <Food width={24} height={24} />, color: { background: 'var(--Category-Blue, #9ED2FA)' } },
-    8: { label: '주거/통신', icon: <Housing width={24} height={24} />, color: { background: 'var(--Category-Purple, #E2CCFF)' } },
-    9: { label: '교통/차량', icon: <Transport width={24} height={24} />, color: { background: 'var(--Category-Mint, #B5E2DF)' } },
-    10: { label: '의료/건강', icon: <Medical width={24} height={24} />, color: { background: 'var(--Category-Green, #A9DAB4)' } },
-    11: { label: '문화/여가', icon: <Leisure width={24} height={24} />, color: { background: 'var(--Category-Pink, #FFCAC8)' } },
-    12: { label: '쇼핑', icon: <Shopping width={24} height={24} />, color: { background: 'var(--Category-Peach, #F7AFA1)' } },
-    13: { label: '미용', icon: <Beauty width={24} height={24} />, color: { background: 'var(--Category-Lavender, #EFCAF2)' } },
-    14: { label: '교육', icon: <Education width={24} height={24} />, color: { background: 'var(--Category-Gray, #CDD1D5)' } },
+    "NONE": { label: '카테고리 없음', icon: <SystemMore width={24} height={24} />, color: { background: 'var(--Category-Light-pink, rgba(255, 176, 173, 0.20))' } },
+    "SALARY": { label: '급여', icon: <Salary width={24} height={24} />, color: { background: 'var(--Category-Purple-2, #ABD8E3)' } },
+    "SIDEINCOME": { label: '부수입', icon: <SideIncome width={24} height={24} />, color: { background: 'var(--Category-Deep-Blue, #B7CFD6)' } },
+    "ALLOWANCE": { label: '용돈', icon: <Allowance width={24} height={24} />, color: { background: 'var(--Category-Green-2, #7EC88E)' } },
+    "BONUS": { label: '상여금', icon: <Bonus width={24} height={24} />, color: { background: 'var(--Category-Purple-3, #D6B7FF)' } },
+    "INVESTMENT": { label: '금융수입', icon: <Investment width={24} height={24} />, color: { background: 'var(--Category-Deep-Blue-2, #9FBFC9)' } },
+    "ETC": { label: '기타', icon: <SystemMore width={24} height={24} /> },
+    "FOOD": { label: '식비', icon: <Food width={24} height={24} />, color: { background: 'var(--Category-Blue, #9ED2FA)' } },
+    "HOUSING": { label: '주거/통신', icon: <Housing width={24} height={24} />, color: { background: 'var(--Category-Purple, #E2CCFF)' } },
+    "TRANSPORT": { label: '교통/차량', icon: <Transport width={24} height={24} />, color: { background: 'var(--Category-Mint, #B5E2DF)' } },
+    "MEDICAL": { label: '의료/건강', icon: <Medical width={24} height={24} />, color: { background: 'var(--Category-Green, #A9DAB4)' } },
+    "LEISURE": { label: '문화/여가', icon: <Leisure width={24} height={24} />, color: { background: 'var(--Category-Pink, #FFCAC8)' } },
+    "SHOPPING": { label: '쇼핑', icon: <Shopping width={24} height={24} />, color: { background: 'var(--Category-Peach, #F7AFA1)' } },
+    "BEAUTY": { label: '미용', icon: <Beauty width={24} height={24} />, color: { background: 'var(--Category-Lavender, #EFCAF2)' } },
+    "EDUCATION": { label: '교육', icon: <Education width={24} height={24} />, color: { background: 'var(--Category-Gray, #CDD1D5)' } },
   };
 
   const emotion = {
-    0: { label: '기쁨', icon: <Happy width={12} height={12} /> },
-    1: { label: '설렘', icon: <Excitement width={12} height={12} /> },
-    2: { label: '평온', icon: <Serenity width={12} height={12} /> },
-    3: { label: '우울', icon: <Depressed width={12} height={12} /> },
-    4: { label: '스트레스', icon: <Stress width={12} height={12} /> },
-    5: { label: '충동', icon: <Impulse width={12} height={12} /> },
+    "HAPPY": { label: '기쁨', icon: <Happy width={12} height={12} /> },
+    "EXCITEMENT": { label: '설렘', icon: <Excitement width={12} height={12} /> },
+    "SERENITY": { label: '평온', icon: <Serenity width={12} height={12} /> },
+    "DEPRESSED": { label: '우울', icon: <Depressed width={12} height={12} /> },
+    "STRESS": { label: '스트레스', icon: <Stress width={12} height={12} /> },
+    "IMPULSE": { label: '충동', icon: <Impulse width={12} height={12} /> },
   };
 
   const satisfaction = {
     0: { label: '매우 불만족', icon: <Mad /> },
-    25: { label: '불만족', icon: <Angry /> },
-    50: { label: '보통', icon: <Common /> },
-    75: { label: '만족', icon: <Satisfied /> },
-    100: {label: '매우 만족', icon: <Excited /> },
+    1: { label: '불만족', icon: <Angry /> },
+    2: { label: '보통', icon: <Common /> },
+    3: { label: '만족', icon: <Satisfied /> },
+    4: {label: '매우 만족', icon: <Excited /> },
   }; 
 
   const getCategory = (categoryName) => {
@@ -91,19 +100,19 @@ const TransactionHistory = ({
   };
 
   const renderTransactionList = () => {
-    if (selectedDayTransactions.dayItems.length === 0) {
+    if (dayData?.length === 0) {
       return <div className='no-transacton'>없음</div>
     }
 
-    return selectedDayTransactions.dayItems.map((item, index) => {
+    return dayData?.map((item, index) => {
       const amount = item.amount;
-      const isIncome = item.type === 1;
+      const isIncome = item.type === "INCOME";
       const category = getCategory(item.category);
       const emo = getEmotion(item.emotion);
       const sat = getSatisfaction(item.evaluation);
 
       return (
-        <li key={item.expense_id} className='transaction-detail-list' onClick={() => goEdit(item)}>
+        <li key={item.expenseId} className='transaction-detail-list' onClick={() => goEdit(item)}>
           <div className='category-icon' style={category.color}>
             {category.icon}
           </div>
@@ -127,7 +136,7 @@ const TransactionHistory = ({
   return (
     <div className='transaction-history'>
       <div className='section-header'>
-        총 {selectedDayTransactions.dayItems.length}건의 거래
+        총 {dayData?.length}건의 거래
       </div>
       <ul className='transaction-list'>
         {renderTransactionList()}
