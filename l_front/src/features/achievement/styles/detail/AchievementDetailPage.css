@@ -26,6 +26,7 @@
 }
 
 .achievementDetailPage__title {
+  text-align: left;
   margin: 0;
   color: var(--Gray-95, #131416);
   font-family: Pretendard;
@@ -45,7 +46,7 @@
 
 .achievementDetailPage__total {
   margin: 0;
-  color: var(--Primary-text, #F7645F);
+  color: var(--Gray-95, #131416);
   font-family: Pretendard;
   font-size: 16px;
   font-weight: 700;

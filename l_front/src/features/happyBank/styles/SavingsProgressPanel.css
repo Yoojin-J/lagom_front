@@ -16,15 +16,20 @@
 }
 
 .savingsProgressPanel__label {
-  margin: 0;
-  color: #383d42;
-  font-family: Pretendard;
+  text-align: left;
+  color: var(--Gray-95, #131416);
+
+  /* Body Medium/small */
+  font-family: "Noto Sans KR";
   font-size: 14px;
-  font-weight: 600;
+  font-style: normal;
+  font-weight: 500;
   line-height: 130%;
+  /* 18.2px */
 }
 
 .savingsProgressPanel__amount {
+  text-align: left;
   color: var(--Gray-95, #131416);
 
   /* Body Bold/medium */
