@@ -17,7 +17,7 @@
   padding: 20px 16px;
   box-sizing: border-box;
   background-color: #F4F5F6;
-  flex: 1;
+  min-height: 100vh;
   animation: pageFadeIn 0.3s ease;
 }
 

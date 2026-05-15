@@ -1,8 +1,4 @@
 .app_content {
   width: 375px;
   margin: 0 auto;
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
 }

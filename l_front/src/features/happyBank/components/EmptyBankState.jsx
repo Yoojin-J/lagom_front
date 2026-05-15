@@ -1,6 +1,7 @@
 import AddBankButton from './AddBankButton';
 import '../styles/EmptyBankState.css';
 import Devider from '../../../assets/icons/common/Devider';
+import Clover2 from '../../../assets/icons/happybank/Clover2';
 
 function EmptyBankState({ onSetup }) {
   return (
@@ -10,6 +11,7 @@ function EmptyBankState({ onSetup }) {
 
       <div className="emptyBankState__content">
         <span className="emptyBankState__clover" aria-hidden="true" />
+        <Clover2 width={37} height={37} fill="#B1B8BE" />
         <p className="emptyBankState__message">첫 행복의 순간을 기록해보세요!</p>
       </div>
     </div>

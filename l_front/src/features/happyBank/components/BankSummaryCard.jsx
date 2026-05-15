@@ -9,8 +9,8 @@ function calcPeriodInfo(startDate, goalDate) {
   const today = new Date();
   // 최솟값 1로 막아 0으로 나누는 상황 방지
   const totalDays = Math.max(Math.floor((end - start) / (1000 * 60 * 60 * 24)), 1);
-  // 경과일은 0~totalDays 범위로 클램핑 (만기 초과 또는 시작 전 방지)
-  const daysElapsed = Math.min(Math.max(Math.floor((today - start) / (1000 * 60 * 60 * 24)), 0), totalDays);
+  // 시작일 당일을 1일로 카운트, totalDays 범위로 만듦
+  const daysElapsed = Math.min(Math.max(Math.floor((today - start) / (1000 * 60 * 60 * 24)) + 1, 1), totalDays);
   // 남은 일수가 음수가 되지 않도록 처리
   const daysRemaining = Math.max(Math.floor((end - today) / (1000 * 60 * 60 * 24)), 0);
   const formatDate = (date) => date.toISOString().slice(0, 10).replace(/-/g, '.');

@@ -17,6 +17,7 @@
   min-height: 100vh;
   background: #fff;
   box-sizing: border-box;
+  text-align: left;
 }
 
 .depositPage__header {

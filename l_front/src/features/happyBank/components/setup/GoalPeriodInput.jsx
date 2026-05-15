@@ -63,7 +63,7 @@ function GoalPeriodInput({ value, onChange }) {
           ref={datePickerRef}
           selected={tempDate}
           onChange={(date) => setTempDate(date)}
-          dateFormat="yyyy/MM/dd"
+          dateFormat="yyyy년 MM월 dd일"
           minDate={tomorrow}
           placeholderText="년/월/일"
           popperPlacement="auto"

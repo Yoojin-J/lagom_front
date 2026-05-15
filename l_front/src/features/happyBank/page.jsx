@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import useAchievements from '../achievement/hooks/useAchievements';
 import AddBankButton from './components/AddBankButton';
 import BankStartCard from './components/BankStartCard';
@@ -92,6 +93,7 @@ function BankDetailView({ bank, records, onBack, onDeposit, onWithdraw, onEdit, 
 // 화면 전환은 react-router 대신 currentView 상태로 관리
 // 이유: 행복통장 내 화면들이 모두 /happyBank 경로 안에서 동작하므로 URL 변경 없이 뷰만 전환
 function HappyBankPage() {
+  const location = useLocation();
   const { banks, hasBank, createBank, updateBank, deleteBank } = useHappyBank();
   const { addRecord, getRecords, removeRecord, resetRecords } = useSavingsRecords();
   const { addAchievement } = useAchievements();
@@ -99,8 +101,22 @@ function HappyBankPage() {
   // currentView: 'main' | 'setup' | 'edit' | 'deposit' | 'withdraw' | 'detail'
   const [currentView, setCurrentView] = useState('main');
   const [selectedBankId, setSelectedBankId] = useState(null);
+  const [depositInitialType, setDepositInitialType] = useState('happy');
   // 저금 기록이 없을 때 행복인출 시 빈 상태 모달 표시 여부
   const [showWithdrawEmpty, setShowWithdrawEmpty] = useState(false);
+
+  // 리포트 페이지 넛지 배너에서 진입 시 초기 뷰 설정
+  useEffect(() => {
+    const state = location.state;
+    if (!state) return;
+    if (state.initialView === 'setup') {
+      setCurrentView('setup');
+    } else if (state.initialView === 'deposit' && state.bankId) {
+      setSelectedBankId(state.bankId);
+      setDepositInitialType(state.defaultType ?? 'happy');
+      setCurrentView('deposit');
+    }
+  }, []);
 
   const selectedBank = banks.find((b) => b.id === selectedBankId) ?? null;
 
@@ -162,9 +178,10 @@ function HappyBankPage() {
       <div className="happyBankPageOverlay">
         <DepositPage
           bankName={selectedBank?.name ?? '행복통장'}
+          initialType={depositInitialType}
           onAddRecord={(record) => addRecord(selectedBankId, record)}
-          onComplete={() => setCurrentView('detail')}
-          onBack={() => setCurrentView('detail')}
+          onComplete={() => { setDepositInitialType('happy'); setCurrentView('detail'); }}
+          onBack={() => { setDepositInitialType('happy'); setCurrentView('detail'); }}
         />
       </div>
     );

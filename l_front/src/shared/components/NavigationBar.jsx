@@ -7,7 +7,7 @@ function NavigationBar() {
       <NavLink to="/" className={({ isActive }) => `menu-item ${isActive ? 'active' : ''}`}>
         감정가계부
       </NavLink>
-      <NavLink to="/happyBank" className={({ isActive }) => `menu-item ${isActive ? 'active' : ''}`}>
+      <NavLink to="/happybank" className={({ isActive }) => `menu-item ${isActive ? 'active' : ''}`}>
         행복통장
       </NavLink>
       <NavLink to="/report" className={({ isActive }) => `menu-item ${isActive ? 'active' : ''}`}>

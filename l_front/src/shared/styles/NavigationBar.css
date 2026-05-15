@@ -25,3 +25,8 @@
   font-style: normal;
   font-weight: 500;
 }
+
+.menu-item.active {
+  color: #131416;
+  border-bottom: 2px solid #131416;
+}
