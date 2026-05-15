@@ -6,6 +6,8 @@ import NavigationBar from './shared/components/NavigationBar'
 import CalendarPage from './features/calendar/CalendarPage';
 import HappyBankPage from './features/happyBank/page'
 import ExpensePage from './features/expense/ExpensePage'
+import LoginPage from './features/login/LoginPage';
+import LoginCallbackPage from './features/login/LoginCallbackPage';
 
 // Header, NavigationBar 가 필요한 화면 
 const MainLayout = () => (
@@ -35,7 +37,8 @@ function App() {
             {/* <Route path="/" element={<CalendarPage />} /> */}
             <Route path='/happyBank' element={<HappyBankPage />} />
           </Route>
-
+          <Route path='/login' element={<LoginPage />} />
+          <Route path='/oauth/callback/kakao' element={<LoginCallbackPage />} />
           <Route path='/expense' element={<ExpensePage />} />
           <Route path="/expense/:id" element={<ExpensePage />} />
         </Routes>
