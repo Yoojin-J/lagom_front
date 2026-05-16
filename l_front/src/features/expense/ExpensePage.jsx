@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import DatePicker from './components/DatePickerExpense';
 import './styles/ExpensePage.css';
 import ExpenseTitle from './components/ExpenseTitle';
@@ -39,71 +39,80 @@ import Satisfied from '../../assets/icons/satisfaction/Satisfied';
 import Excited from '../../assets/icons/satisfaction/Exited';
 
 import ChevronLeft from '../../assets/icons/common/ChevronLeft';
-  
+import ExpenseDelete from './components/ExpenseDelete';
+
 const ExpensePage = () => {
   const location = useLocation();
-  const [type, setType] = useState('INCOME');                   // INCOME or EXPENSE
-  const [category, setCategory] = useState('none');             // 선택된 카테고리
-  const [selectedDate, setSelectedDate] = useState(new Date()); // 선택된 날짜 (이체일시)
-  const [memo, setMemo] = useState("");                         // 메모
-  const [selectedEmo, setSelectedEmo] = useState(null);         // 선택된 감정
-  const [selectedSat, setSelectedSat] = useState(null);         // 선택된 소비 만족도
-  const [isFix, setIsFix] = useState(false);                    // 고정 설정? 
-  const [selectedPeriod, setSelectedPeriod] = useState('day');  // 매일/매주/매달
-  const [selectedCycle, setSelectedCycle] = useState([]);       // 주 언제/달 언제
-  const [startDate, setStartDate] = useState(null);             // 고정 시작 날짜 
-  const [endDate, setEndDate] = useState(null);                 // 고정 종료 날짜
+  const navigate = useNavigate();
+  // 수정, 삭제를 위한 id
+  const { id } = useParams();
+  // navigate로 보낸 state 꺼내기 (데이터가 없을 경우를 대비해 옵셔널 체이닝 ?. 사용)
+  const type = location.state?.type;
+  const editData = location.state?.data;
+  const isEditMode = location.state?.mode === 'edit';
+  const isReEva = location.state?.mode === 'reevaluated';
   const [formData, setFormData] = useState({
     title: '',
-    type: type,
+    type: "INCOME",
     amount: '',
-    date: selectedDate,
-    category: category,
+    paymentAt: new Date(),
+    category: 0,
+    memo: '',
+    emotion: null,
+    evaluation: null,
+    is_recurring: false,
+    repeat_cycle: 'DAILY',
+    repeat_days: [],
+    repeat_start_date: null,
+    repeat_end_date: null,
+    is_reevaluated: true,
   });
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [preEva, setPreEva] = useState(null);
 
 
   // 거래유형에 따른 카테고리 목록
   const categoryOptions = {
-    INCOME: [
-      { value: 'none', label: '카테고리 없음', icon: SystemMore },
-      { value: 'salary', label: '급여', icon: Salary, color: { background: 'var(--Category-Purple-2, #ABD8E3)' } },
-      { value: 'side_income', label: '부수입', icon: SideIncome, color: { background: 'var(--Category-Deep-Blue, #B7CFD6)' } },
-      { value: 'allowance', label: '용돈', icon: Allowance, color: { background: 'var(--Category-Green-2, #7EC88E)' } },
-      { value: 'bonus', label: '상여금', icon: Bonus, color: { background: 'var(--Category-Purple-3, #D6B7FF)' } },
-      { value: 'investment', label: '금융수입', icon: Investment, color: { background: 'var(--Category-Deep-Blue-2, #9FBFC9)' } },
-      { value: 'other_income', label: '기타', icon: SystemMore },
+    "INCOME": [
+      { value: "NONE", label: '카테고리 없음', icon: SystemMore },
+      { value: "SALARY", label: '급여', icon: Salary, color: { background: 'var(--Category-Purple-2, #ABD8E3)' } },
+      { value: "SIDEINCOME", label: '부수입', icon: SideIncome, color: { background: 'var(--Category-Deep-Blue, #B7CFD6)' } },
+      { value: "ALLOWANCE", label: '용돈', icon: Allowance, color: { background: 'var(--Category-Green-2, #7EC88E)' } },
+      { value: "BONUS", label: '상여금', icon: Bonus, color: { background: 'var(--Category-Purple-3, #D6B7FF)' } },
+      { value: "INVESTMENT", label: '금융수입', icon: Investment, color: { background: 'var(--Category-Deep-Blue-2, #9FBFC9)' } },
+      { value: "ETC", label: '기타', icon: SystemMore },
     ],
-    EXPENSE: [
-      { value: 'none', label: '카테고리 없음', icon: SystemMore },
-      { value: 'food', label: '식비', icon: Food, color: { background: 'var(--Category-Blue, #9ED2FA)' } },
-      { value: 'housing', label: '주거/통신', icon: Housing, color: { background: 'var(--Category-Purple, #E2CCFF)' } },
-      { value: 'transport', label: '교통/차량', icon: Transport, color: { background: 'var(--Category-Mint, #B5E2DF)' } },
-      { value: 'medical', label: '의료/건강', icon: Medical, color: { background: 'var(--Category-Green, #A9DAB4)' } },
-      { value: 'leisure', label: '문화/여가', icon: Leisure, color: { background: 'var(--Category-Pink, #FFCAC8)' } },
-      { value: 'shopping', label: '쇼핑', icon: Shopping, color: { background: 'var(--Category-Peach, #F7AFA1)' } },
-      { value: 'beauty', label: '미용', icon: Beauty, color: { background: 'var(--Category-Lavender, #EFCAF2)' } },
-      { value: 'education', label: '교육', icon: Education, color: { background: 'var(--Category-Gray, #CDD1D5)' } },
-      { value: 'other', label: '기타', icon: SystemMore },
+    "EXPENSE": [
+      { value: "NONE", label: '카테고리 없음', icon: SystemMore },
+      { value: "FOOD", label: '식비', icon: Food, color: { background: 'var(--Category-Blue, #9ED2FA)' } },
+      { value: "HOUSING", label: '주거/통신', icon: Housing, color: { background: 'var(--Category-Purple, #E2CCFF)' } },
+      { value: "TRANSPORT", label: '교통/차량', icon: Transport, color: { background: 'var(--Category-Mint, #B5E2DF)' } },
+      { value: "MEDICAL", label: '의료/건강', icon: Medical, color: { background: 'var(--Category-Green, #A9DAB4)' } },
+      { value: "LEISURE", label: '문화/여가', icon: Leisure, color: { background: 'var(--Category-Pink, #FFCAC8)' } },
+      { value: "SHOPPING", label: '쇼핑', icon: Shopping, color: { background: 'var(--Category-Peach, #F7AFA1)' } },
+      { value: "BEAUTY", label: '미용', icon: Beauty, color: { background: 'var(--Category-Lavender, #EFCAF2)' } },
+      { value: "EDUCATION", label: '교육', icon: Education, color: { background: 'var(--Category-Gray, #CDD1D5)' } },
+      { value: "ETC", label: '기타', icon: SystemMore },
     ]
   };
 
   // 감정 목록
   const emotionOptions = [
-    { value: 'happy', label: '기쁨', icon: <Happy /> },
-    { value: 'excitement', label: '설렘', icon: <Excitement /> },
-    { value: 'serenity', label: '평온', icon: <Serenity /> },
-    { value: 'depressed', label: '우울', icon: <Depressed /> },
-    { value: 'stress', label: '스트레스', icon: <Stress /> },
-    { value: 'impulse', label: '충동', icon: <Impulse /> },
+    { value: "HAPPY", label: '기쁨', icon: <Happy /> },
+    { value: "EXCITEMENT", label: '설렘', icon: <Excitement /> },
+    { value: "SERENITY", label: '평온', icon: <Serenity /> },
+    { value: "DEPRESSED", label: '우울', icon: <Depressed /> },
+    { value: "STRESS", label: '스트레스', icon: <Stress /> },
+    { value: "IMPULSE", label: '충동', icon: <Impulse /> },
   ];
 
   // 소비 만족도 목록
   const satisfactionOptions = [
-    { value: 'mad', label: '매우 불만족', percent: '0%', icon: <Mad isActive={selectedSat === 'mad'} /> },
-    { value: 'angry', label: '불만족', percent: '25%', icon: <Angry isActive={selectedSat === 'angry'} /> },
-    { value: 'common', label: '보통', percent: '50%', icon: <Common isActive={selectedSat === 'common'} /> },
-    { value: 'satisfied', label: '만족', percent: '75%', icon: <Satisfied isActive={selectedSat === 'satisfied'} /> },
-    { value: 'excited', label: '매우 만족', percent: '100%', icon: <Excited isActive={selectedSat === 'excited'} /> },
+    { value: 0, label: '매우 불만족', percent: '0%', icon: <Mad isActive={formData.evaluation === 'mad'} /> },
+    { value: 1, label: '불만족', percent: '25%', icon: <Angry isActive={formData.evaluation === 'angry'} /> },
+    { value: 2, label: '보통', percent: '50%', icon: <Common isActive={formData.evaluation === 'common'} /> },
+    { value: 3, label: '만족', percent: '75%', icon: <Satisfied isActive={formData.evaluation === 'satisfied'} /> },
+    { value: 4, label: '매우 만족', percent: '100%', icon: <Excited isActive={formData.evaluation === 'excited'} /> },
   ];
 
   // selectedCycle에서 사용하는 기간 리스트(매주)
@@ -127,34 +136,41 @@ const ExpensePage = () => {
   // navigate로 전달된 state를 formData에 반영 (한 번만 실행되도록)
   // 가계부 페이지에서 INCOME이냐 EXPENSE이냐를 선택하고 오기 때문에
   useEffect(() => {
-    if (location.state?.type) {
+    if (type) {
       setFormData(prev => ({
         ...prev,
-        type: location.state.type   // formData.type 업데이트
+        type: type   // formData.type 업데이트
       }));
-
-      setType(location.state.type);
     }
-  }, [location.state]);   // location.state가 바뀔 때만 실행
 
+    console.log("status: ", type);
+  }, [type]);   // location.state가 바뀔 때만 실행
 
-  // type이 바뀔 때마다 category, memo 초기화 (선택 초기화)
   useEffect(() => {
-    setCategory('none');   // 거래유형 바뀌면 카테고리 선택 초기화
-    setMemo('');
-  }, [type]);
+    // 수정 모드이고 넘어온 데이터가 있다면 state에 세팅
+    if ((isEditMode || isReEva) && editData && Object.keys(editData).length > 0) {
+      console.log("받은 editData: ", editData);
+      setFormData(prev => ({
+        ...prev,
+        ...editData,
+        paymentAt: new Date(editData.paymentAt),
+        repeat_start_date: editData.repeat_start_date ? new Date(editData.repeat_start_date) : null,
+        repeat_end_date: editData.repeat_end_date ? new Date(editData.repeat_end_date) : null,
+      }));
+    }
 
+    if (isReEva) {
+      setPreEva(editData.evaluation);
+    }
 
-  // 매일/매주/매달이 바뀔 때 마다 selectedCycle 초기화
-  useEffect(() => {
-    setSelectedCycle([]);
-  }, [selectedPeriod]);
+    console.log("editData => formData:", formData);
+  }, [editData, isEditMode, isReEva]);
 
 
   // 카테고리와 내역명 옆 아이콘 동기화
   const targetCategory = useMemo(() => {
-    return categoryOptions[type]?.find(item => item.value === category);
-  }, [type, category]);
+    return categoryOptions[formData.type]?.find(item => item.value === formData.category);
+  }, [formData.type, formData.category]);
 
   const IconComponent = useMemo(() => {
     return targetCategory?.icon;
@@ -171,56 +187,94 @@ const ExpensePage = () => {
     }));
   };
 
-  // 이체일시 관리 
-  const handleDateChange = (date) => {
-    setFormData(prev => ({
-      ...prev,
-      date: date
-    }));
+
+  // 삭제하기 모달
+  const handleDeleteModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+
+  // 뒤로가기 
+  const handleBack = () => {
+    navigate(-1);
   };
 
 
   // 전송
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // try {
-    //   const response = await uploadExpense(formData);
-    //   console.log('전송 성공:', response);
-    // } catch (error) {
-    //   console.error('전송 실패:', error);
-    // }
 
-    const data = {
-      ...formData,
-    };
+    // 재평가 모드일 때 + 행복 저금으로 안 가고 저장할 때
+    if (isReEva) {
+      setFormData(prev => ({
+        ...prev,
+        is_reevaluated: true,
+      }));
 
-    // formData에 key, value 값을 추가 
-    if (type === 'EXPENSE') {
-      data.emotion = selectedEmo;
-      data.evaluation = selectedSat;
-    } else if (type === 'INCOME') {
-      data.memo = memo;
+      // 엔드포인트로 보낸 후 함수 끝나야됨 
+      try {
+        // PATCH /expenses/{id}/reevaluate?evaluation=1
+        // const response = await axios.patch(`/expenses/${id}/reevaluate?evaluation=${formData.evaluation}`, {})
+        console.log("보낸 데이터", formData);
+
+        return;
+      } catch (error) {
+        console.log(error)
+        return;
+      }
     }
 
-    if (isFix) {
-      data.period = selectedPeriod;
-      data.cycle = selectedCycle;
-      data.startDate = startDate;
-      data.endDate = endDate;
+    // 가계부 작성 또는 수정 상태 일 때 
+    // 부정적 감정 + 높은 만족도일 시 재평가를 위해 is_reevaluated: false로 바꾸기
+    // 아니면 is_reevaluated를 true로 (기본 true)
+    if ((formData.emotion === 3 || formData.emotion === 4 || formData.emotion === 5) && (formData.evaluation === 75 || formData.evaluation === 100)) {
+      setFormData(prev => ({
+        ...prev,
+        is_reevaluated: false,
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        is_reevaluated: true,
+      }));
     }
 
-    console.log(data);
+    try {
+      if (isEditMode) {
+        // 가계부 수정
+        // const response = await axios.put(`/expense/${id}`, formData);
+        console.log("보낸 데이터", formData);
+
+      } else {
+        // 가계부 작성
+        // const response = await axios.post('/expenses', formData);
+        console.log("보낸 데이터", formData);
+
+      }
+      navigate('/');
+      return;
+    } catch (error) {
+      console.log(error);
+      return;
+    }
+
   };
 
 
 
   return (
     <div className='expense-content'>
+      {isModalOpen &&
+        <ExpenseDelete
+          handleDeleteModal={handleDeleteModal}
+          id={id}
+        />}
       <div className='header'>
-        <ChevronLeft stroke='#B1B8BE' />
-        <div className='delete'>
-          삭제하기
+        <div className='back-btn' onClick={handleBack}>
+          <ChevronLeft stroke='#B1B8BE' />
         </div>
+        {isEditMode && <div className='delete' onClick={handleDeleteModal}>
+          삭제하기
+        </div>}
       </div>
       <form className='contents'>
         <div className='contents-f'>
@@ -235,8 +289,6 @@ const ExpensePage = () => {
 
           {/* ExpenseAmount : 거래유형(type), 금액(amount) */}
           <ExpenseAmount
-            type={type}
-            setType={setType}
             formData={formData}
             setFormData={setFormData}
             handleChange={handleChange}
@@ -244,12 +296,10 @@ const ExpensePage = () => {
 
           {/* ExpenseCategory : 카테고리 설정(category) */}
           <ExpenseCategory
-            category={category}
-            setCategory={setCategory}
-            categoryOptions={categoryOptions}
+            formData={formData}
             setFormData={setFormData}
+            categoryOptions={categoryOptions}
             targetCategory={targetCategory}
-            type={type}
             IconComponent={IconComponent}
           />
 
@@ -258,28 +308,29 @@ const ExpensePage = () => {
             <div className='label'>이체일시</div>
             <div className='input-content'>
               <DatePicker
-                selectedDate={selectedDate}
-                setSelectedDate={setSelectedDate}
-                handleChange={handleDateChange}
+                formData={formData}
+                setFormData={setFormData}
+                datetype={'paymentAt'}
               />
             </div>
           </div>
 
           {/* ExpenseMemo : 메모(memo) */}
           {/* ExpenseEmotion : 감정(selectedEmo), 소비만족도(selectedSat) */}
-          {type === 'INCOME' ?
+          {formData.type === "INCOME" ?
             <ExpenseMemo
-              memo={memo}
-              setMemo={setMemo}
+              formData={formData}
+              setFormData={setFormData}
+              handleChange={handleChange}
             /> :
             <ExpenseEmotion
-              selectedEmo={selectedEmo}
-              setSelectedEmo={setSelectedEmo}
-              selectedSat={selectedSat}
-              setSelectedSat={setSelectedSat}
-              type={type}
+              formData={formData}
+              setFormData={setFormData}
               emotionOptions={emotionOptions}
               satisfactionOptions={satisfactionOptions}
+              isEditMode={isEditMode}
+              isReEva={isReEva}
+              id={id}
             />
           }
         </div>
@@ -287,22 +338,15 @@ const ExpensePage = () => {
         <div className='contents-fix'>
           {/* ExpenseFixToggle : 고정 지출로 설정(isFix) */}
           <ExpenseFixToggle
-            isFix={isFix}
-            setIsFix={setIsFix}
-            type={type}
+            formData={formData}
+            setFormData={setFormData}
           />
 
           {/* ExpenseFixSetting : 매일/매주/매달(selectedPeriod), 날짜설정(selectedCycle), 시작일(startDate), 종료일(endDate) */}
-          {isFix &&
+          {formData.is_recurring &&
             <ExpenseFixSetting
-              selectedPeriod={selectedPeriod}
-              setSelectedPeriod={setSelectedPeriod}
-              selectedCycle={selectedCycle}
-              setSelectedCycle={setSelectedCycle}
-              startDate={startDate}
-              setStartDate={setStartDate}
-              endDate={endDate}
-              setEndDate={setEndDate}
+              formData={formData}
+              setFormData={setFormData}
               weekList={weekList}
             />
           }

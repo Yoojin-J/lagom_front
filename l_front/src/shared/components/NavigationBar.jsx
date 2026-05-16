@@ -3,8 +3,8 @@ import { NavLink } from 'react-router-dom';
 
 function NavigationBar() {
   return (
-    <div className="menu">
-      <NavLink to="/" className={({ isActive }) => `menu-item ${isActive ? 'active' : ''}`}>
+    <div className='menu'>
+      <NavLink to="/calendar" className={({ isActive }) => `menu-item ${isActive ? 'active' : ''}`}>
         감정가계부
       </NavLink>
       <NavLink to="/happybank" className={({ isActive }) => `menu-item ${isActive ? 'active' : ''}`}>

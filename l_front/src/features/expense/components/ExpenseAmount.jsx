@@ -1,29 +1,34 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import DisClosure from '../../../assets/icons/common/DisClosure';
 import Devider from '../../../assets/icons/common/Devider';
 import Delite from '../../../assets/icons/common/Delite';
+import { useOutsideClick } from '../hook/useOutsideClick';
 
 const ExpenseAmount = ({
-  type,
-  setType,
   formData,
   setFormData,
   handleChange
 }) => {
   const [isVisibleT, setIsVisibleT] = useState(false);
+  const dropdownRef = useRef(null);
 
   const HandleType = () => {
     setIsVisibleT(!isVisibleT);
   };
 
   const handleTypeChange = (e) => {
-    const type = e.currentTarget.id;
+    const type = +e.currentTarget.id;
 
-    setType(type);
     setIsVisibleT(!isVisibleT);
     setFormData(prev => ({
       ...prev,
       type: type,
+
+      // type이 바뀔 때 함께 초기화
+      category: 0,
+      memo: '',
+      emotion: null,
+      evaluation: null,
     }));
   };
 
@@ -34,11 +39,15 @@ const ExpenseAmount = ({
     }));
   };
 
+  // 드랍다운 외의 부분 누르면 드랍다운 사라지기
+  useOutsideClick(dropdownRef, () => setIsVisibleT(false));
+
   return (
     <div className='contents2'>
       <div className='type-content'>
         <div className='label'>거래유형</div>
         <div
+          ref={dropdownRef}
           className="dropdown"
         >
           <button
@@ -46,22 +55,22 @@ const ExpenseAmount = ({
             className="dropdown-button"
             onClick={HandleType}
           >
-            {type == "INCOME" ? "수입" : "지출"}
+            {formData.type === "INCOME" ? "수입" : "지출"}
             <DisClosure fill='#E6E8EA' />
           </button>
           {isVisibleT && (
             <ul className="dropdown-list">
               <li
-                key="INCOME"
-                id="INCOME"
+                key={1}
+                id={1}
                 onClick={handleTypeChange}
               >
                 수입
               </li>
               <Devider width={100} />
               <li
-                key="EXPENSE"
-                id="EXPENSE"
+                key={0}
+                id={0}
                 onClick={handleTypeChange}
               >
                 지출

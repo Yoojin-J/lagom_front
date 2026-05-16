@@ -1,8 +1,9 @@
 import React from 'react'
 
 const ExpenseMemo = ({
-  memo,
-  setMemo,
+  formData,
+  setFormData,
+  handleChange,
 }) => {
   return (
     <div className='memo-content'>
@@ -13,8 +14,8 @@ const ExpenseMemo = ({
           id='memo'
           name='memo'
           placeholder='메모할 내용을 적어주세요'
-          value={memo}
-          onChange={(e) => setMemo(e.target.value)}
+          value={formData?.memo}
+          onChange={handleChange}
         ></input>
       </div>
     </div>

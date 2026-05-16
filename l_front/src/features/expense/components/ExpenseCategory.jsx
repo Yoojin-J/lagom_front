@@ -1,17 +1,17 @@
-import React, { useState, Fragment } from 'react'
+import React, { useState, Fragment, useRef } from 'react'
 import DisClosure from '../../../assets/icons/common/DisClosure';
 import ChevronUp from '../../../assets/icons/common/ChevronUp';
+import { useOutsideClick } from '../hook/useOutsideClick';
 
 const ExpenseCategory = ({
-  category,
-  setCategory,
-  categoryOptions,
+  formData,
   setFormData,
+  categoryOptions,
   targetCategory,
-  type,
   IconComponent
 }) => {
   const [isVisibleC, setIsVisibleC] = useState(false);
+  const dropdownRef = useRef(null);
 
   const handleCat = () => {
     setIsVisibleC(!isVisibleC);
@@ -20,7 +20,6 @@ const ExpenseCategory = ({
   const handleCatChange = (e) => {
     const category = e.currentTarget.id;
 
-    setCategory(category);
     setIsVisibleC(!isVisibleC);
     setFormData(prev => ({
       ...prev,
@@ -28,23 +27,27 @@ const ExpenseCategory = ({
     }));
   };
 
+  // 드랍다운 외 클릭시 드랍다운 꺼짐 
+  useOutsideClick(dropdownRef, () => setIsVisibleC(false));
+
   return (
     <div className='category-content'>
       <div className='label'>카테고리 설정</div>
       <div
+        ref={dropdownRef}
         className='category-down'
       >
         {!isVisibleC && <button
           type="button"
-          className={`category-button ${category === 'none' ? '' : 'selected'}`}
+          className={`category-button ${formData.category === 0 ? '' : 'selected'}`}
           onClick={handleCat}
         >
-          {category === 'none' ? '카테고리 없음' : targetCategory?.label || category}
+          {formData.category === 0 ? '카테고리 없음' : targetCategory?.label || formData.category}
           <div className='chevron'><DisClosure fill='#E6E8EA' /></div>
         </button>}
         {isVisibleC && (
           <ul className="category-list">
-            {type && categoryOptions[type].map((cat, index, array) => {
+            {formData.type && categoryOptions[formData.type].map((cat, index, array) => {
               const IconComponent = cat.icon;
 
               return (

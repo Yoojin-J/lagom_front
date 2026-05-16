@@ -1,5 +1,5 @@
-import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
-import { useState } from 'react';
+import { useState } from 'react'
+import { BrowserRouter as Router, Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import './App.css'
 import Header from './shared/components/Header'
 import NavigationBar from './shared/components/NavigationBar'
@@ -8,6 +8,8 @@ import HappyBankPage from './features/happyBank/page'
 import AchievementPage from './features/achievement/page'
 import ReportPage from './features/report/page'
 import ExpensePage from './features/expense/ExpensePage'
+import LoginPage from './features/login/LoginPage';
+import LoginCallbackPage from './features/login/LoginCallbackPage';
 
 const MainLayout = () => (
   <>
@@ -19,18 +21,27 @@ const MainLayout = () => (
 
 function App() {
   const [activeTab, setActiveTab] = useState(0);
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = String(now.getMonth() + 1).padStart(2, '0');
 
   return (
     <div className='app_content'>
       <Router>
         <Routes>
           <Route element={<MainLayout />}>
-            <Route path="/" element={<CalendarPage />} />
-            <Route path='/happybank' element={<HappyBankPage />} />
+
+            <Route path="/" element={<Navigate to={`/calendar/${currentYear}/${currentMonth}`} replace />} />
+            <Route path="/calendar/:year/:month" element={<CalendarPage />} />
+            {/* <Route path="/" element={<CalendarPage />} /> */}
+            <Route path='/happyBank' element={<HappyBankPage />} />
             <Route path='/record' element={<AchievementPage />} />
             <Route path='/report' element={<ReportPage />} />
           </Route>
+          <Route path='/login' element={<LoginPage />} />
+          <Route path='/oauth/callback/kakao' element={<LoginCallbackPage />} />
           <Route path='/expense' element={<ExpensePage />} />
+          <Route path="/expense/:id" element={<ExpensePage />} />
         </Routes>
       </Router>
     </div>

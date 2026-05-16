@@ -7,35 +7,36 @@ import ChevronRight from '../../../assets/icons/common/ChevronRight'
 import ChevronLeft from '../../../assets/icons/common/ChevronLeft'
 
 const DatePickerExpense = ({
-  selectedDate,
-  setSelectedDate,
-  handleChange = () => {},
+  formData,
+  setFormData,
+  datetype,
 }) => {
-  // const [selectedDate, setSelectedDate] = useState(new Date());
   const datePickerRef = useRef(null);
-  const [tempDate, setTempDate] = useState(selectedDate);
+  const [tempDate, setTempDate] = useState(formData[datetype]);
+  const [prevDate, setPrevDate] = useState(new Date());
   const [isOpen, setIsOpen] = useState(false);
 
-  // const handleInternalChange = (date) => {
-  //   setSelectedDate(date);
-  //   handleChange(date);
-  // };
-
   useEffect(() => {
-    console.log(selectedDate);
-  }, [selectedDate]);
+    setTempDate(formData[datetype]);
+    setPrevDate(formData[datetype]);
+  }, [formData[datetype]]);
 
   const handleConfirm = () => {
-    setSelectedDate(tempDate); // 임시 날짜를 확정 날짜로 반영
-    handleChange(tempDate);
+    // 임시 날짜를 확정 날짜로 반영
+    setFormData(prev => ({
+      ...prev,
+      [datetype]: tempDate
+    }))
+
     if (datePickerRef.current) {
       datePickerRef.current.setOpen(false); // 캘린더 강제 닫기
     }
   };
 
   const handleCancel = () => {
-    setTempDate(selectedDate); // 변경사항 초기화
-    handleChange(selectedDate);
+    // 취소 시 이전 날짜로, 임의로 선택한 날짜 이전에 선택한 날짜
+    setTempDate(prevDate);
+
     if (datePickerRef.current) {
       datePickerRef.current.setOpen(false); // 캘린더 강제 닫기
     }
@@ -70,7 +71,7 @@ const DatePickerExpense = ({
         <div
           onClick={() => changeMonth(currentMonth + 1)}   // ← 1년 후
         >
-          <ChevronRight stroke='#75C0D1'/>
+          <ChevronRight stroke='#75C0D1' />
         </div>
       </div>
     );
