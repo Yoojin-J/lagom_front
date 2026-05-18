@@ -16,6 +16,18 @@ const DatePickerExpense = ({
   const [prevDate, setPrevDate] = useState(new Date());
   const [isOpen, setIsOpen] = useState(false);
 
+  const startDate = formData?.repeat_start_date;
+  const getMinDate = () => {
+    // startDate가 없거나 현재 날짜 타입이 종료일(repeat_end_date)이 아니라면 제한 없음
+    if (!startDate || datetype !== 'repeat_end_date') return null;
+
+    // 복사본을 만들어 복사본의 날짜를 변경 (formData 원본 유지)
+    const minDateCopy = new Date(startDate);
+    minDateCopy.setDate(minDateCopy.getDate() + 1);
+    
+    return minDateCopy;
+  };
+
   useEffect(() => {
     setTempDate(formData[datetype]);
     setPrevDate(formData[datetype]);
@@ -93,6 +105,7 @@ const DatePickerExpense = ({
       shouldCloseOnSelect={false}
       fixedHeight={false}
       placeholderText="년/월/일"
+      minDate={getMinDate()}
     >
       <div className='devider' />
       <div className='btn-content'>

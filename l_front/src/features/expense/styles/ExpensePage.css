@@ -993,6 +993,19 @@ input:focus+.clear {
     letter-spacing: -0.8px;
 }
 
+.react-datepicker__day--disabled {
+    color: var(--Gray-30, #B1B8BE);
+    text-align: center;
+
+    /* Body Medium/medium */
+    font-family: "Noto Sans KR";
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 130%;
+    /* 20.8px */
+}
+
 .react-datepicker__month {
     box-sizing: border-box;
     display: flex;

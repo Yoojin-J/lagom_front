@@ -215,7 +215,7 @@ const ExpensePage = () => {
         // PATCH /expenses/{id}/reevaluate?evaluation=1
         // const response = await axios.patch(`/expenses/${id}/reevaluate?evaluation=${formData.evaluation}`, {})
         console.log("보낸 데이터", formData);
-
+        
         return;
       } catch (error) {
         console.log(error)

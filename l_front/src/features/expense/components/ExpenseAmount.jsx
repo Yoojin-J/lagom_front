@@ -17,7 +17,7 @@ const ExpenseAmount = ({
   };
 
   const handleTypeChange = (e) => {
-    const type = +e.currentTarget.id;
+    const type = e.currentTarget.id;
 
     setIsVisibleT(!isVisibleT);
     setFormData(prev => ({
@@ -61,16 +61,16 @@ const ExpenseAmount = ({
           {isVisibleT && (
             <ul className="dropdown-list">
               <li
-                key={1}
-                id={1}
+                key={'INCOME'}
+                id={'INCOME'}
                 onClick={handleTypeChange}
               >
                 수입
               </li>
               <Devider width={100} />
               <li
-                key={0}
-                id={0}
+                key={'EXPENSE'}
+                id={'EXPENSE'}
                 onClick={handleTypeChange}
               >
                 지출
