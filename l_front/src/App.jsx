@@ -26,15 +26,11 @@ function App() {
 
   return (
     <div className='app_content'>
-      {/* <Header />
-      <NavigationBar activeIndex={activeTab} onTabChange={setActiveTab} />
-      {activeTab === 1 && <HappyBankPage />} */}
       <Router>
         <Routes>
           <Route element={<MainLayout />}>
             <Route path="/" element={<Navigate to={`/calendar/${currentYear}/${currentMonth}`} replace />} />
             <Route path="/calendar/:year/:month" element={<CalendarPage />} />
-            {/* <Route path="/" element={<CalendarPage />} /> */}
             <Route path='/happyBank' element={<HappyBankPage />} />
           </Route>
           <Route path='/login' element={<LoginPage />} />
