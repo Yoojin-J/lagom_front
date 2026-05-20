@@ -65,7 +65,6 @@ const ExpensePage = () => {
     repeat_days: [],
     repeat_start_date: null,
     repeat_end_date: null,
-    is_reevaluated: true,
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [preEva, setPreEva] = useState(null);
@@ -205,11 +204,6 @@ const ExpensePage = () => {
 
     // 재평가 모드일 때 + 행복 저금으로 안 가고 저장할 때
     if (isReEva) {
-      setFormData(prev => ({
-        ...prev,
-        is_reevaluated: true,
-      }));
-
       // 엔드포인트로 보낸 후 함수 끝나야됨 
       try {
         // PATCH /expenses/{id}/reevaluate?evaluation=1
@@ -223,20 +217,6 @@ const ExpensePage = () => {
       }
     }
 
-    // 가계부 작성 또는 수정 상태 일 때 
-    // 부정적 감정 + 높은 만족도일 시 재평가를 위해 is_reevaluated: false로 바꾸기
-    // 아니면 is_reevaluated를 true로 (기본 true)
-    if ((formData.emotion === 3 || formData.emotion === 4 || formData.emotion === 5) && (formData.evaluation === 75 || formData.evaluation === 100)) {
-      setFormData(prev => ({
-        ...prev,
-        is_reevaluated: false,
-      }));
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        is_reevaluated: true,
-      }));
-    }
 
     try {
       if (isEditMode) {

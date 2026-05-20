@@ -1,6 +1,5 @@
 import React, { useRef, useEffect, useState, useMemo } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
-// import testTransactions from '../../assets/data/expense3.json';
 import testTransactions from '../../assets/data/expense4.json';
 import testReEvaTransactions from '../../assets/data/expense5.json';
 import testMonth from '../../assets/data/expense6.json';
@@ -19,6 +18,7 @@ import { useLedger } from './hook/useLedger.js';
 import { formatDate } from './hook/dateUtil.js';
 import { useExtendedRange } from './hook/useExtendedRange.js'
 import AlertBanner from './components/AlertBanner.jsx';
+import { getUserIdFromToken } from './hook/auth.js';
 
 
 const CalendarPage = () => {
@@ -58,11 +58,13 @@ const CalendarPage = () => {
 
   // 전체 거래 데이터 불러오기 (한 번만 실행)
   const fetchData = async () => {
+    const userId = getUserIdFromToken();
+
     try {
-      // GET /expenses/calendar/monthly?userId=1&year=2026&month=3
+      // // GET /expenses/calendar/monthly?userId=1&year=2026&month=3
       // const response = await axios.get('/expenses/calendar/weekly', {
       //   params: {
-      //     userId: userId, // 1
+      //     userId: userId,
       //     year: currentYear,
       //     month: currentMonth 
       //   }
@@ -79,6 +81,8 @@ const CalendarPage = () => {
   };
 
   const getWeekData = async () => {
+    const userId = getUserIdFromToken();
+
     try {
       const date = formatDate(selectedDate);
       //GET /expenses/calendar/weekly?userId=1&date=2026-03-21
@@ -96,6 +100,8 @@ const CalendarPage = () => {
     }
   };
   const getDayData = async () => {
+    const userId = getUserIdFromToken();
+
     try {
       const date = formatDate(selectedDate);
       //GET /expenses/daily?userId=1&date=2026-03-21
@@ -114,6 +120,8 @@ const CalendarPage = () => {
   };
 
   const fetchReevaluatedData = async () => {
+    const userId = getUserIdFromToken();
+
     try {
       // 재평가가 필요한 데이터 불러오기 
       //GET /expenses/reevaluation?userId={id}
@@ -124,7 +132,7 @@ const CalendarPage = () => {
       // });
       const res = testReEva;
       setReEvaData(res.items);
-      console.log("재평가대상",res.items);
+      console.log("재평가대상", res.items);
     } catch (error) {
       setReEvaData([]);
     }

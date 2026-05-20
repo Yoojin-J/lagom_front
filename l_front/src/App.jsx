@@ -38,9 +38,9 @@ function App() {
             <Route path='/happyBank' element={<HappyBankPage />} />
           </Route>
           <Route path='/login' element={<LoginPage />} />
-          <Route path='/oauth/callback/kakao' element={<LoginCallbackPage />} />
+          <Route path='/auth/kakao' element={<LoginCallbackPage />} />
           <Route path='/expense' element={<ExpensePage />} />
-          <Route path="/expense/:id" element={<ExpensePage />} />
+          <Route path='/expense/:id' element={<ExpensePage />} />
         </Routes>
       </Router>
     </div>

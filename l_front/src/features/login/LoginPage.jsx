@@ -4,6 +4,17 @@ import kakaoBtn from './styles/KakaoLogin.png';
 import KakaoIcon from '../../assets/icons/login/Kakao';
 
 const LoginPage = () => {
+  // const REST_API_KEY = process.env.REACT_APP_KAKAO_REST_API_KEY;
+  // const REDIRECT_URI = process.env.REACT_APP_KAKAO_REDIRECT_URI;
+
+  // // 카카오 공식 인증 URL 양식
+  // const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
+
+  // const handleLogin = () => {
+  //   // 카카오 로그인 화면으로 이동합니다 (현재 창 전환)
+  //   window.location.href = KAKAO_AUTH_URL;
+  // };
+
   return (
     <div className='login-background'>
       <div className='login-container'>

@@ -32,12 +32,6 @@ const ExpenseEmotion = ({
   };
 
   const goHappyBank = async () => {
-    // is_reevaluated를 true로
-    setFormData((prev) => ({
-      ...prev,
-      is_reevaluated: true
-    }));
-
     // 행복해지는 저금으로 가기전 일단 가계부 저장 (fetch, post)
     try {
       // 재평가 또는 수정이면 put, 아니면 post 
