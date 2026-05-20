@@ -60,7 +60,7 @@ const ExpensePage = () => {
     memo: '',
     emotion: null,
     evaluation: null,
-    is_recurring: false,
+    isRecurring: false,
     repeat_cycle: 'DAILY',
     repeat_days: [],
     repeat_start_date: null,
@@ -323,7 +323,7 @@ const ExpensePage = () => {
           />
 
           {/* ExpenseFixSetting : 매일/매주/매달(selectedPeriod), 날짜설정(selectedCycle), 시작일(startDate), 종료일(endDate) */}
-          {formData.is_recurring &&
+          {formData.isRecurring &&
             <ExpenseFixSetting
               formData={formData}
               setFormData={setFormData}

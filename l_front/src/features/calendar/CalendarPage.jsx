@@ -14,9 +14,7 @@ import GoExpense from './components/GoExpense.jsx';
 import './styles/CalendarPage.css';
 import TransactionHistory from './components/TransactionHistory.jsx';
 import CalendarBody from './components/CalendarBody.jsx';
-import { useLedger } from './hook/useLedger.js';
 import { formatDate } from './hook/dateUtil.js';
-import { useExtendedRange } from './hook/useExtendedRange.js'
 import AlertBanner from './components/AlertBanner.jsx';
 import { getUserIdFromToken } from './hook/auth.js';
 
