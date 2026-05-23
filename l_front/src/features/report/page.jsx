@@ -10,7 +10,7 @@ import './styles/page.css';
 
 function ReportPage() {
   const navigate = useNavigate();
-  const { selectedDate, setSelectedDate, report, isLoading, error } = useMonthlyReport();
+  const { selectedDate, setSelectedDate, report, isLoading, error, emptyMonths } = useMonthlyReport();
   // 넛지 배너 클릭 시 통장 유무에 따라 분기
   const { banks } = useHappyBank();
 
@@ -32,7 +32,7 @@ function ReportPage() {
   return (
     <div className="reportPage">
       <div style={{ marginLeft: '8px' }}>
-        <MonthSelector selectedDate={selectedDate} onChange={setSelectedDate} />
+        <MonthSelector selectedDate={selectedDate} onChange={setSelectedDate} emptyMonths={emptyMonths} />
       </div>
       <ReportSummaryRow totalExpense={totalExpense} emotionCount={emotionCount} />
       <EmotionSpendingSection data={emotionRatio} />

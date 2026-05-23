@@ -95,6 +95,13 @@
   line-height: 130%;
 }
 
+.react-datepicker__month-text--disabled,
+.react-datepicker__month-text[aria-disabled=true] {
+  color: #B1B8BE !important;
+  cursor: default;
+  pointer-events: none;
+}
+
 .react-datepicker__month-text:not([aria-disabled=true]):hover {
   border-radius: 4px;
   background: var(--Secondary-surface, #EDF6F8);

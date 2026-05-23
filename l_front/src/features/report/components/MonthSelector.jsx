@@ -28,7 +28,16 @@ const CustomHeader = ({ date, changeYear }) => {
   );
 };
 
-function MonthSelector({ selectedDate, onChange }) {
+function MonthSelector({ selectedDate, onChange, emptyMonths = new Set() }) {
+  const today = new Date();
+
+  // 미래 월 또는 데이터 없는 월은 선택 불가
+  const filterDate = (date) => {
+    if (date > today) return false;
+    const key = `${date.getFullYear()}-${date.getMonth() + 1}`;
+    return !emptyMonths.has(key);
+  };
+
   return (
     <DatePicker
       locale={ko}
@@ -36,6 +45,8 @@ function MonthSelector({ selectedDate, onChange }) {
       onChange={onChange}
       dateFormat="yyyy년 M월"
       showMonthYearPicker
+      maxDate={today}
+      filterDate={filterDate}
       popperPlacement="bottom-start"
       showPopperArrow={false}
       renderCustomHeader={CustomHeader}

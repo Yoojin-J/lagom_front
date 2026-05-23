@@ -31,9 +31,14 @@ const useMonthlyReport = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isUsingMockData, setIsUsingMockData] = useState(false);
+  // 데이터가 없는 월 추적 (Set<"YYYY-M">), MonthSelector 비활성화에 사용
+  const [emptyMonths, setEmptyMonths] = useState(new Set());
 
   const year = selectedDate.getFullYear();
   const month = selectedDate.getMonth() + 1;
+
+  const markEmpty = (y, m) =>
+    setEmptyMonths((prev) => new Set([...prev, `${y}-${m}`]));
 
   // selectedDate(년/월)가 바뀔 때마다 API 재호출
   useEffect(() => {
@@ -61,12 +66,13 @@ const useMonthlyReport = () => {
           .sort((a, b) => b.avgScore - a.avgScore);
         console.log('감정별 평균 만족도:', satisfactionByEmotion);
 
-        setReport({
-          totalExpense: data.totalExpense ?? 0,       // 이달 총 지출
-          emotionCount: data.emotionCount ?? 0,       // 기록된 감정 건수
-          emotionRatio,                               // 도넛 차트용
-          satisfactionByEmotion,                      // 가로 막대 차트용
-        });
+        const totalExpense = data.totalExpense ?? 0;
+        const emotionCount = data.emotionCount ?? 0;
+
+        // 데이터가 없는 월이면 비활성화 목록에 추가
+        if (totalExpense === 0 && emotionCount === 0) markEmpty(year, month);
+
+        setReport({ totalExpense, emotionCount, emotionRatio, satisfactionByEmotion });
       } catch (err) {
         console.error('월별 리포트 불러오기 실패', err);
         if (ENABLE_REPORT_MOCK_FALLBACK) {
@@ -74,6 +80,8 @@ const useMonthlyReport = () => {
           setReport(MOCK_REPORT);
           setIsUsingMockData(true);
         } else {
+          // API 실패 = 데이터 없음으로 간주
+          markEmpty(year, month);
           setError(err);
           setReport(null);
         }
@@ -94,6 +102,7 @@ const useMonthlyReport = () => {
     isLoading,
     error,
     isUsingMockData,
+    emptyMonths,
   };
 };
 
