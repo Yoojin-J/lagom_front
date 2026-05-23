@@ -5,6 +5,8 @@ import Header from './shared/components/Header'
 import NavigationBar from './shared/components/NavigationBar'
 import CalendarPage from './features/calendar/CalendarPage';
 import HappyBankPage from './features/happyBank/page'
+import AchievementPage from './features/achievement/page'
+import ReportPage from './features/report/page'
 import ExpensePage from './features/expense/ExpensePage'
 import LoginPage from './features/login/LoginPage';
 import LoginCallbackPage from './features/login/LoginCallbackPage';
@@ -35,8 +37,20 @@ function App() {
           {/* 레이아웃이 필요한 서비스 화면들 */}
           <Route element={<MainLayout />}>
             <Route path="/" element={<Navigate to={`/calendar/${currentYear}/${currentMonth}`} replace />} />
+            <Route path="/calendar" element={<Navigate to={`/calendar/${currentYear}/${currentMonth}`} replace />} />
             <Route path="/calendar/:year/:month" element={<CalendarPage />} />
-            <Route path='/happyBank' element={<HappyBankPage />} />
+
+            <Route path='/happybank' element={<HappyBankPage />} />
+            <Route path='/happybank/setup' element={<HappyBankPage />} />
+            <Route path='/happybank/:accountId' element={<HappyBankPage />} />
+            <Route path='/happybank/:accountId/edit' element={<HappyBankPage />} />
+            <Route path='/happybank/:accountId/deposit' element={<HappyBankPage />} />
+            <Route path='/happybank/:accountId/withdraw' element={<HappyBankPage />} />
+
+            <Route path='/record' element={<AchievementPage />} />
+            <Route path='/record/:accountId' element={<AchievementPage />} />
+
+            <Route path='/report' element={<ReportPage />} />
           </Route>
           
           {/* 레이아웃이 필요 없는 서비스 화면들 (가계부/기록 관련) */}
