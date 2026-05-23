@@ -1,36 +1,41 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-// import axios from 'axios';
+import axios from 'axios';
 
 const LoginCallbackPage = () => {
   const navigate = useNavigate();
+  // 🔥 StrictMode 등으로 인해 useEffect가 두 번 실행되어 코드가 깨지는 것을 막는 방패
+  const hasRequested = useRef(false);
 
   useEffect(() => {
-    // 1. 현재 URL의 쿼리 스트링에서 'code' 값 추출
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code');
 
-    if (code) {
-      // 2. 백엔드에게 인가 코드 전달
-      axios.get('http://localhost:8080/auth/kakao', { code })
+    // 1. URL에 코드가 있고, 아직 백엔드에 요청을 보낸 적이 없을 때만 진입
+    if (code && !hasRequested.current) {
+      hasRequested.current = true; // 진입하자마자 스위치를 꺼서 중복 실행 차단
+
+      axios.get(`http://localhost:8080/auth/kakao?code=${code}`)
         .then((response) => {
-          // 3. 백엔드가 준 JWT 토큰 받기 (구조는 백엔드 설계에 따라 다름)
-          const { token } = response.data;
+          // 백엔드가 토큰을 주는 객체 구조를 확인해야 합니다. (예: response.data.token 등)
+          console.log("백엔드 응답 전체 데이터:", response.data);
 
-          // 4. 토큰 저장 (예시: LocalStorage)
-          localStorage.setItem('token', token);
+          const token = response.data.accessToken; // 혹은 백엔드 설계에 맞는 키값 (ex: response.data.accessToken)
 
-          // 5. 로그인 완료 후 메인이나 대시보드로 리다이렉트
-          navigate('/main');
+          if (token) {
+            localStorage.setItem('token', token);
+            console.log("👍 토큰 저장 성공! 메인으로 이동합니다.");
+            navigate('/');
+          } else {
+            console.error("❌ 백엔드 통신은 성공했으나 응답 데이터에 token이 없습니다. 백엔드 리턴 구조를 확인하세요.");
+          }
         })
         .catch((error) => {
-          console.error('카카오 로그인 실패:', error);
-          alert('로그인에 실패했습니다.');
-          navigate('/login');
+          console.error("❌ 백엔드 카카오 로그인 요청 실패:", error);
         });
-    } else {
-      console.error('인가 코드가 URL에 없습니다.');
-      navigate('/login');
+    } else if (!code && !hasRequested.current) {
+      // 코드가 아예 없는 상태로 이 페이지에 진입했을 때만 에러 출력
+      console.error("⚠️ URL에 인가 코드가 존재하지 않습니다.");
     }
   }, [navigate]);
 

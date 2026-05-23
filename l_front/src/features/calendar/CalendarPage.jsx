@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState, useMemo } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
 import testTransactions from '../../assets/data/expense4.json';
 import testReEvaTransactions from '../../assets/data/expense5.json';
 import testMonth from '../../assets/data/expense6.json';
@@ -17,6 +18,7 @@ import CalendarBody from './components/CalendarBody.jsx';
 import { formatDate } from './hook/dateUtil.js';
 import AlertBanner from './components/AlertBanner.jsx';
 import { getUserIdFromToken } from './hook/auth.js';
+import { useDaysMap } from './hook/useDaysMap.js';
 
 
 const CalendarPage = () => {
@@ -51,30 +53,39 @@ const CalendarPage = () => {
   // monthly 데이터
   const [monthData, setMonthData] = useState();
   // weekly 데이터
+  // const [rawWeekData, setRawWeekData] = useState();
+  // const weekData = useDaysMap(rawWeekData);
   const [weekData, setWeekData] = useState();
   const [dayData, setDayData] = useState();
 
   // 전체 거래 데이터 불러오기 (한 번만 실행)
   const fetchData = async () => {
     const userId = getUserIdFromToken();
+    console.log(userId);
 
     try {
-      // // GET /expenses/calendar/monthly?userId=1&year=2026&month=3
-      // const response = await axios.get('/expenses/calendar/weekly', {
-      //   params: {
-      //     userId: userId,
-      //     year: currentYear,
-      //     month: currentMonth 
-      //   }
-      // });
-      // setMonthData(response);
+      // GET /expenses/calendar/monthly?userId=1&year=2026&month=3
+      const response = await axios.get('http://localhost:8080/expenses/calendar/monthly', {
+        params: {
+          userId: userId,
+          year: currentYear,
+          month: currentMonth
+        }
+      });
+      setMonthData({
+        // 값이 없으면 프론트에서 임의로 0이나 빈 배열로 초기화
+        monthIncome: response.data.monthIncome ?? 0,
+        monthExpense: response.data.monthExpense ?? 0,
+        reevaluationCount: response.data.reevaluationCount ?? 0,
+        days: response.data.days || [] // map 에러 방지를 위해 빈 배열 필수!
+      });
+      console.log('전체데이터', response);
 
-      setMonthData(testMonth)
-      console.log("전체데이터불러오기: ", testMonth);
+      // setMonthData(testMonth)
+      // console.log("전체데이터불러오기: ", testMonth);
 
     } catch (error) {
       console.error("거래 데이터 불러오기 실패", error);
-      setRawData([]);
     }
   };
 
@@ -84,15 +95,16 @@ const CalendarPage = () => {
     try {
       const date = formatDate(selectedDate);
       //GET /expenses/calendar/weekly?userId=1&date=2026-03-21
-      //   const response = await axios.get('/expenses/calendar/weekly', {
-      //   params: {
-      //     userId: userId, // 1
-      //     date: date      // '2026-03-21'
-      //   }
-      // });
-      // setWeekData(response);
-      setWeekData(testWeek);
-      console.log("주간데이터가져오기: ", testWeek);
+      const response = await axios.get('http://localhost:8080/expenses/weekly', {
+        params: {
+          userId: userId, // 1
+          date: date      // '2026-03-21'
+        }
+      });
+      console.log('주간 데이터 ', response.data);
+      setWeekData(response.data || []);
+      // setWeekData(testWeek);
+      // console.log("주간데이터가져오기: ", testWeek);
     } catch (error) {
 
     }
@@ -103,15 +115,15 @@ const CalendarPage = () => {
     try {
       const date = formatDate(selectedDate);
       //GET /expenses/daily?userId=1&date=2026-03-21
-      //   const response = await axios.get('/expenses/calendar/daily', {
-      //   params: {
-      //     userId: userId, // 1
-      //     date: date      // '2026-03-21'
-      //   }
-      // });
-      // setDayData(response);
-      setDayData(testDay);
-      console.log("하루 상세 기록: ", testDay);
+      const response = await axios.get('http://localhost:8080/expenses/daily', {
+        params: {
+          userId: userId, // 1
+          date: date      // '2026-03-21'
+        }
+      });
+      setDayData(response.data || []);
+      // setDayData(testDay);
+      // console.log("하루 상세 기록: ", testDay);
     } catch (error) {
 
     }
@@ -123,14 +135,14 @@ const CalendarPage = () => {
     try {
       // 재평가가 필요한 데이터 불러오기 
       //GET /expenses/reevaluation?userId={id}
-      //   const response = await axios.get('/expenses/reevaluation', {
-      //   params: {
-      //     userId: userId, // 1
-      //   }
-      // });
-      const res = testReEva;
-      setReEvaData(res.items);
-      console.log("재평가대상", res.items);
+      const response = await axios.get('http://localhost:8080/expenses/reevaluation', {
+        params: {
+          userId: userId, // 1
+        }
+      });
+      // const response = testReEva;
+      setReEvaData(response?.data.items || []);
+      console.log("재평가대상", response.data.items);
     } catch (error) {
       setReEvaData([]);
     }
@@ -168,6 +180,9 @@ const CalendarPage = () => {
     getDayData();
   }, [selectedDate])
 
+  useEffect(() => {
+    console.log('선택된 날', selectedDate);
+  }, [selectedDate]);
 
 
   // ==================== 월 이동 ====================

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios';
 import DatePicker from './components/DatePickerExpense';
 import './styles/ExpensePage.css';
 import ExpenseTitle from './components/ExpenseTitle';
@@ -40,6 +41,9 @@ import Excited from '../../assets/icons/satisfaction/Exited';
 
 import ChevronLeft from '../../assets/icons/common/ChevronLeft';
 import ExpenseDelete from './components/ExpenseDelete';
+import { getUserIdFromToken } from '../calendar/hook/auth.js';
+import { formatDate } from '../calendar/hook/dateUtil.js';
+
 
 const ExpensePage = () => {
   const location = useLocation();
@@ -56,15 +60,15 @@ const ExpensePage = () => {
     type: "INCOME",
     amount: '',
     paymentAt: new Date(),
-    category: 0,
+    category: "NONE",
     memo: '',
     emotion: null,
     evaluation: null,
     isRecurring: false,
-    repeat_cycle: 'DAILY',
-    repeat_days: [],
-    repeat_start_date: null,
-    repeat_end_date: null,
+    repeatCycle: 'DAILY',
+    repeatDays: [],
+    repeatStartDate: null,
+    repeatEndDate: null,
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [preEva, setPreEva] = useState(null);
@@ -75,34 +79,34 @@ const ExpensePage = () => {
     "INCOME": [
       { value: "NONE", label: '카테고리 없음', icon: SystemMore },
       { value: "SALARY", label: '급여', icon: Salary, color: { background: 'var(--Category-Purple-2, #ABD8E3)' } },
-      { value: "SIDEINCOME", label: '부수입', icon: SideIncome, color: { background: 'var(--Category-Deep-Blue, #B7CFD6)' } },
+      { value: "SIDE_INCOME", label: '부수입', icon: SideIncome, color: { background: 'var(--Category-Deep-Blue, #B7CFD6)' } },
       { value: "ALLOWANCE", label: '용돈', icon: Allowance, color: { background: 'var(--Category-Green-2, #7EC88E)' } },
       { value: "BONUS", label: '상여금', icon: Bonus, color: { background: 'var(--Category-Purple-3, #D6B7FF)' } },
-      { value: "INVESTMENT", label: '금융수입', icon: Investment, color: { background: 'var(--Category-Deep-Blue-2, #9FBFC9)' } },
-      { value: "ETC", label: '기타', icon: SystemMore },
+      { value: "FINANCIAL", label: '금융수입', icon: Investment, color: { background: 'var(--Category-Deep-Blue-2, #9FBFC9)' } },
+      { value: "INCOME_ETC", label: '기타', icon: SystemMore },
     ],
     "EXPENSE": [
       { value: "NONE", label: '카테고리 없음', icon: SystemMore },
       { value: "FOOD", label: '식비', icon: Food, color: { background: 'var(--Category-Blue, #9ED2FA)' } },
       { value: "HOUSING", label: '주거/통신', icon: Housing, color: { background: 'var(--Category-Purple, #E2CCFF)' } },
       { value: "TRANSPORT", label: '교통/차량', icon: Transport, color: { background: 'var(--Category-Mint, #B5E2DF)' } },
-      { value: "MEDICAL", label: '의료/건강', icon: Medical, color: { background: 'var(--Category-Green, #A9DAB4)' } },
-      { value: "LEISURE", label: '문화/여가', icon: Leisure, color: { background: 'var(--Category-Pink, #FFCAC8)' } },
+      { value: "HEALTH", label: '의료/건강', icon: Medical, color: { background: 'var(--Category-Green, #A9DAB4)' } },
+      { value: "CULTURE", label: '문화/여가', icon: Leisure, color: { background: 'var(--Category-Pink, #FFCAC8)' } },
       { value: "SHOPPING", label: '쇼핑', icon: Shopping, color: { background: 'var(--Category-Peach, #F7AFA1)' } },
       { value: "BEAUTY", label: '미용', icon: Beauty, color: { background: 'var(--Category-Lavender, #EFCAF2)' } },
       { value: "EDUCATION", label: '교육', icon: Education, color: { background: 'var(--Category-Gray, #CDD1D5)' } },
-      { value: "ETC", label: '기타', icon: SystemMore },
+      { value: "EXPENSE_ETC", label: '기타', icon: SystemMore },
     ]
   };
 
   // 감정 목록
   const emotionOptions = [
-    { value: "HAPPY", label: '기쁨', icon: <Happy /> },
-    { value: "EXCITEMENT", label: '설렘', icon: <Excitement /> },
-    { value: "SERENITY", label: '평온', icon: <Serenity /> },
+    { value: "JOY", label: '기쁨', icon: <Happy /> },
+    { value: "EXCITED", label: '설렘', icon: <Excitement /> },
+    { value: "CALM", label: '평온', icon: <Serenity /> },
     { value: "DEPRESSED", label: '우울', icon: <Depressed /> },
-    { value: "STRESS", label: '스트레스', icon: <Stress /> },
-    { value: "IMPULSE", label: '충동', icon: <Impulse /> },
+    { value: "STRESSED", label: '스트레스', icon: <Stress /> },
+    { value: "IMPULSIVE", label: '충동', icon: <Impulse /> },
   ];
 
   // 소비 만족도 목록
@@ -153,8 +157,8 @@ const ExpensePage = () => {
         ...prev,
         ...editData,
         paymentAt: new Date(editData.paymentAt),
-        repeat_start_date: editData.repeat_start_date ? new Date(editData.repeat_start_date) : null,
-        repeat_end_date: editData.repeat_end_date ? new Date(editData.repeat_end_date) : null,
+        repeatStartDate: editData.repeatStartDate ? new Date(editData.repeatStartDate) : null,
+        repeatEndDate: editData.repeatEndDate ? new Date(editData.repeatEndDate) : null,
       }));
     }
 
@@ -200,6 +204,23 @@ const ExpensePage = () => {
 
   // 전송
   const handleSubmit = async (e) => {
+    const userId = getUserIdFromToken();
+
+    // 1. formatDate로 구한 날짜 문자열("2026-04-26") 뒤에 "T00:00:00"을 바로 붙여줍니다.
+    const formattedDate = formatDate(formData.paymentAt); // "2026-04-26"
+    const localDateTimeString = formattedDate ? `${formattedDate}T00:00:00` : null; // "2026-04-26T00:00:00"
+
+    // 2. 서버에 보낼 데이터를 그 자리에서 완벽하게 합치기 (날짜 보정 + userId 주입)
+    const submitData = {
+      ...formData,
+      userId: userId,                // 작성 시 필요한 userId 확실하게 주입
+      paymentAt: localDateTimeString // 시차 오류 없는 백엔드 맞춤형 날짜 주입
+    };
+
+    // 3. 컴포넌트 state도 동기화 (필요시)
+    setFormData(submitData);
+
+    console.log('type', location.type);
     e.preventDefault();
 
     // 재평가 모드일 때 + 행복 저금으로 안 가고 저장할 때
@@ -207,7 +228,7 @@ const ExpensePage = () => {
       // 엔드포인트로 보낸 후 함수 끝나야됨 
       try {
         // PATCH /expenses/{id}/reevaluate?evaluation=1
-        // const response = await axios.patch(`/expenses/${id}/reevaluate?evaluation=${formData.evaluation}`, {})
+        const response = await axios.patch(`http://localhost:8080/expenses/${id}/reevaluate?evaluation=${formData.evaluation}`, {})
         console.log("보낸 데이터", formData);
         navigate('/');
         return;
@@ -221,14 +242,13 @@ const ExpensePage = () => {
     try {
       if (isEditMode) {
         // 가계부 수정
-        // const response = await axios.put(`/expense/${id}`, formData);
-        console.log("보낸 데이터", formData);
+        const response = await axios.put(`http://localhost:8080/expenses/${id}`, submitData);
+        console.log("보낸 데이터", submitData);
 
       } else {
         // 가계부 작성
-        // const response = await axios.post('/expenses', formData);
-        console.log("보낸 데이터", formData);
-
+        const response = await axios.post('http://localhost:8080/expenses', submitData);
+        console.log("보낸 데이터", submitData);
       }
       navigate('/');
       return;

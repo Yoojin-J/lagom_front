@@ -1,7 +1,8 @@
-import React, { useState, useRef, useMemo } from 'react'
+import React, { useState, useRef, useMemo, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { formatDate } from '../hook/dateUtil.js';
 import { useDaysMap } from '../hook/useDaysMap.js';
+import { useWeeksMap } from '../hook/useWeeksMap.js';
 
 const CalendarBody = ({
   isWeekView,
@@ -26,7 +27,11 @@ const CalendarBody = ({
   const [translateX, setTranslateX] = useState(0);
 
   const monthdata = useDaysMap(monthData?.days);
-  const weekdata = useDaysMap(weekData?.days);
+  const weekdata = useWeeksMap(weekData);
+
+  useEffect(() => {
+    console.log('CalendarBody monthdata', monthdata);
+  }, [monthdata])
 
   // 드래그 이벤트
   const handleMouseDown = (e) => {

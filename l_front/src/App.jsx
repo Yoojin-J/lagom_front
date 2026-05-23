@@ -8,6 +8,8 @@ import HappyBankPage from './features/happyBank/page'
 import ExpensePage from './features/expense/ExpensePage'
 import LoginPage from './features/login/LoginPage';
 import LoginCallbackPage from './features/login/LoginCallbackPage';
+import { ProtectedRoute } from './shared/components/ProtectedRoute';
+import { PublicRoute } from './shared/components/PublicRoute';
 
 // Header, NavigationBar 가 필요한 화면 
 const MainLayout = () => (
@@ -19,7 +21,6 @@ const MainLayout = () => (
 );
 
 function App() {
-  const [activeTab, setActiveTab] = useState(0);
   const now = new Date();
   const currentYear = now.getFullYear();
   const currentMonth = String(now.getMonth() + 1).padStart(2, '0');
@@ -27,18 +28,32 @@ function App() {
   return (
     <div className='app_content'>
       <Router>
-        <Routes>
+      <Routes>
+        
+        {/* 1. 🔒 로그인 필수 구역 (토큰 없으면 진입 불가) */}
+        <Route element={<ProtectedRoute />}>
+          {/* 레이아웃이 필요한 서비스 화면들 */}
           <Route element={<MainLayout />}>
             <Route path="/" element={<Navigate to={`/calendar/${currentYear}/${currentMonth}`} replace />} />
             <Route path="/calendar/:year/:month" element={<CalendarPage />} />
             <Route path='/happyBank' element={<HappyBankPage />} />
           </Route>
-          <Route path='/login' element={<LoginPage />} />
-          <Route path='/auth/kakao' element={<LoginCallbackPage />} />
+          
+          {/* 레이아웃이 필요 없는 서비스 화면들 (가계부/기록 관련) */}
           <Route path='/expense' element={<ExpensePage />} />
           <Route path='/expense/:id' element={<ExpensePage />} />
-        </Routes>
-      </Router>
+        </Route>
+
+        {/* 2. 🔓 미로그인 전용 구역 (이미 로그인했으면 접근 불가, 메인으로 튕김) */}
+        <Route element={<PublicRoute />}>
+          <Route path='/login' element={<LoginPage />} />
+        </Route>
+
+        {/* 3. 🌐 오픈 구역 (카카오 인증 처리를 위한 통로) */}
+        <Route path='/auth/kakao' element={<LoginCallbackPage />} />
+
+      </Routes>
+    </Router>
     </div>
   )
 }
