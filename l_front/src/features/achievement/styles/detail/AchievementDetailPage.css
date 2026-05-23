@@ -1,4 +1,10 @@
+@keyframes pageFadeIn {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
 .achievementDetailPage {
+  animation: pageFadeIn 0.25s ease-out;
   display: flex;
   flex-direction: column;
   gap: 12px;

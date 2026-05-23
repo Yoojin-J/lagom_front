@@ -1,33 +1,34 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import SavingsProgressPanel from '../../../happyBank/components/SavingsProgressPanel';
 import SavingsRecordList from '../../../happyBank/components/SavingsRecordList';
 import SavingsRecordModal from '../../../happyBank/components/detail/SavingsRecordModal';
+import useArchiveDetail from '../../hooks/useArchiveDetail';
 import '../../styles/detail/AchievementDetailPage.css';
 
-function AchievementDetailPage({ achievement, onBack }) {
+// accountId: URL 파라미터에서 전달
+// rank: 목록 순서 기반 n회차 (location.state로 전달, 없으면 공백 처리)
+// 뒤로가기는 URL 라우팅으로 처리 (브라우저 뒤로가기 or navigate('/record'))
+function AchievementDetailPage({ accountId, rank }) {
   const [selectedRecord, setSelectedRecord] = useState(null);
+  const { detail, isLoading, error } = useArchiveDetail(accountId);
 
-  const { id, name, startDate, endDate, totalAmount, happySavings, becomeSavings, goalType, goalAmount, records = [] } = achievement;
+  if (isLoading) return <div className="achievementDetailPage" />;
+  if (error || !detail) return <div className="achievementDetailPage" />;
 
-  // 브라우저 뒤로가기와 state 내비게이션 연결 -> 전체에서도 적용되게끔 shared hook으로 뺄지?
-  const onBackRef = useRef(onBack);
-  useEffect(() => { onBackRef.current = onBack; }, [onBack]);
-  useEffect(() => {
-    window.history.pushState(null, '');
-    const handler = () => onBackRef.current?.();
-    window.addEventListener('popstate', handler);
-    return () => window.removeEventListener('popstate', handler);
-  }, []);
+  const { name, balance, startDate, endDate, happySavings, becomeSavings, goalType, goalAmount, records = [] } = detail;
+  const rankLabel = rank != null ? `${rank}회차` : '';
 
   return (
     <div className="achievementDetailPage">
       {/* 회차 요약 카드 */}
       <div className="achievementDetailPage__header">
         <div className="achievementDetailPage__headerLeft">
-          <p className="achievementDetailPage__title">{id}회차 행복통장</p>
-          <p className="achievementDetailPage__date">{startDate} – {endDate}</p>
+          <p className="achievementDetailPage__title">{rankLabel} {name}</p>
+          <p className="achievementDetailPage__date">
+            {startDate}{endDate && endDate !== startDate ? ` – ${endDate}` : ''}
+          </p>
         </div>
-        <p className="achievementDetailPage__total">{totalAmount.toLocaleString('ko-KR')}원</p>
+        <p className="achievementDetailPage__total">{balance.toLocaleString('ko-KR')}원</p>
       </div>
 
       {/* 행복저금 / 행복해지는저금 진행바 — SavingsProgressPanel 재사용 */}

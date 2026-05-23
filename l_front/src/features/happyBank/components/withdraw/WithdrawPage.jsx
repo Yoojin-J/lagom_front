@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState } from 'react';
+// record: 부모(page.jsx)가 GET /transactions/random 으로 받아온 단일 거래 기록
 import html2canvas from 'html2canvas';
 import ChevronLeft from '../../../../assets/icons/common/ChevronLeft';
 import stickerImg from '../../../../assets/images/sticker.png';
@@ -71,23 +72,19 @@ function formatReceiptTime(record) {
   return date.toTimeString().slice(0, 8);
 }
 
-function WithdrawPage({ onBack, bankInfo, records = [], onDelete }) {
+// record: GET /transactions/random 에서 받아온 단일 기록 (부모에서 주입)
+function WithdrawPage({ onBack, bankInfo, record, onDelete }) {
   const exportRef = useRef(null);
   const isDownloadingRef = useRef(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const randomRecord = useMemo(() => {
-    if (records.length === 0) return null;
-    return records[Math.floor(Math.random() * records.length)];
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
   const barcodePattern = useMemo(
-    () => (randomRecord ? makeBarcodePattern(randomRecord.id) : []),
-    [randomRecord]
+    () => (record ? makeBarcodePattern(record.id) : []),
+    [record]
   );
 
   const handleDownload = async () => {
-    if (!exportRef.current || !randomRecord || isDownloadingRef.current) return;
+    if (!exportRef.current || !record || isDownloadingRef.current) return;
 
     isDownloadingRef.current = true;
 
@@ -99,7 +96,7 @@ function WithdrawPage({ onBack, bankInfo, records = [], onDelete }) {
       });
 
       const link = document.createElement('a');
-      const safeDate = String(randomRecord.date ?? 'receipt').replace(/[^\w-]+/g, '-');
+      const safeDate = String(record.date ?? 'receipt').replace(/[^\w-]+/g, '-');
       link.download = `lagom-receipt-${safeDate}.png`;
       link.href = canvas.toDataURL('image/png');
       link.click();
@@ -119,14 +116,14 @@ function WithdrawPage({ onBack, bankInfo, records = [], onDelete }) {
       </h2>
 
       <p className="withdrawPage__receiptDate">
-        {formatReceiptDate(randomRecord.date)}
+        {formatReceiptDate(record.date)}
       </p>
 
       <div className="withdrawPage__infoRows">
         <div className="withdrawPage__infoRow">
           <span className="withdrawPage__infoLabel">저금유형</span>
           <span className="withdrawPage__infoValue">
-            {TYPE_LABEL[randomRecord.type] ?? '행복저금'}
+            {TYPE_LABEL[record.type] ?? '행복저금'}
           </span>
         </div>
         <div className="withdrawPage__infoRow">
@@ -139,7 +136,7 @@ function WithdrawPage({ onBack, bankInfo, records = [], onDelete }) {
         <div className="withdrawPage__infoRow">
           <span className="withdrawPage__infoLabel">저금시간</span>
           <span className="withdrawPage__infoValue">
-            {formatReceiptTime(randomRecord)}
+            {formatReceiptTime(record)}
           </span>
         </div>
       </div>
@@ -149,7 +146,7 @@ function WithdrawPage({ onBack, bankInfo, records = [], onDelete }) {
       <div className="withdrawPage__infoRows">
         <div className="withdrawPage__infoRow">
           <span className="withdrawPage__infoLabel">입금 내용</span>
-          <span className="withdrawPage__infoValue">{randomRecord.memo}</span>
+          <span className="withdrawPage__infoValue">{record.memo}</span>
         </div>
       </div>
 
@@ -159,7 +156,7 @@ function WithdrawPage({ onBack, bankInfo, records = [], onDelete }) {
         <div className="withdrawPage__infoRow">
           <span className="withdrawPage__infoLabel">태그작성</span>
           <span className="withdrawPage__infoValue">
-            {randomRecord.hashtag || '-'}
+            {record.hashtag || '-'}
           </span>
         </div>
       </div>
@@ -169,7 +166,7 @@ function WithdrawPage({ onBack, bankInfo, records = [], onDelete }) {
       <div className="withdrawPage__total">
         <span className="withdrawPage__totalLabel">TOTAL</span>
         <span className="withdrawPage__totalAmount">
-          ₩{Number(randomRecord.amount ?? 0).toLocaleString()}
+          ₩{Number(record.amount ?? 0).toLocaleString()}
         </span>
       </div>
 
@@ -185,7 +182,7 @@ function WithdrawPage({ onBack, bankInfo, records = [], onDelete }) {
     </>
   );
 
-  if (!randomRecord) return null;
+  if (!record) return null;
 
   return (
     <div className="withdrawPage">
@@ -237,7 +234,7 @@ function WithdrawPage({ onBack, bankInfo, records = [], onDelete }) {
               <button className="deleteBankModal__btn deleteBankModal__btn--cancel" type="button" onClick={() => setShowDeleteModal(false)}>
                 취소
               </button>
-              <button className="deleteBankModal__btn deleteBankModal__btn--delete" type="button" onClick={() => { setShowDeleteModal(false); onDelete?.(randomRecord.id); }}>
+              <button className="deleteBankModal__btn deleteBankModal__btn--delete" type="button" onClick={() => { setShowDeleteModal(false); onDelete?.(record.id); }}>
                 삭제하기
               </button>
             </div>

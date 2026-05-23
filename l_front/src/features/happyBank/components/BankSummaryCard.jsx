@@ -3,17 +3,27 @@ import SystemMore from '../../../assets/icons/common/SystemMore';
 import '../styles/BankSummaryCard.css';
 
 // 목표 기간 기준일 때 경과일, 남은 일수, D-day 등을 계산
+// startDate 없으면 오늘을 기준으로 계산
 function calcPeriodInfo(startDate, goalDate) {
-  const start = new Date(startDate.replace(/\./g, '-'));
+  if (!goalDate) return null;
+  const formatDate = (date) => date.toISOString().slice(0, 10).replace(/-/g, '.');
   const end = new Date(goalDate.replace(/\./g, '-'));
   const today = new Date();
-  // 최솟값 1로 막아 0으로 나누는 상황 방지
-  const totalDays = Math.max(Math.floor((end - start) / (1000 * 60 * 60 * 24)), 1);
-  // 시작일 당일을 1일로 카운트, totalDays 범위로 만듦
-  const daysElapsed = Math.min(Math.max(Math.floor((today - start) / (1000 * 60 * 60 * 24)) + 1, 1), totalDays);
-  // 남은 일수가 음수가 되지 않도록 처리
   const daysRemaining = Math.max(Math.floor((end - today) / (1000 * 60 * 60 * 24)), 0);
-  const formatDate = (date) => date.toISOString().slice(0, 10).replace(/-/g, '.');
+
+  if (!startDate) {
+    return {
+      totalDays: null,
+      daysElapsed: null,
+      daysRemaining,
+      endDate: formatDate(end),
+      startDate: null,
+    };
+  }
+
+  const start = new Date(startDate.replace(/\./g, '-'));
+  const totalDays = Math.max(Math.floor((end - start) / (1000 * 60 * 60 * 24)), 1);
+  const daysElapsed = Math.min(Math.max(Math.floor((today - start) / (1000 * 60 * 60 * 24)) + 1, 1), totalDays);
 
   return {
     totalDays,
@@ -29,7 +39,7 @@ function calcPeriodInfo(startDate, goalDate) {
 // - 상세: onClick 없음 → 클릭 불가 (cursor 스타일도 제거)
 function BankSummaryCard({ bankInfo, onDeposit, onWithdraw, onEdit, onClick }) {
   const { name, currentAmount, goalType, goalAmount, goalDate, startDate } = bankInfo;
-  const periodInfo = goalType === 'period' ? calcPeriodInfo(startDate, goalDate) : null;
+  const periodInfo = (goalType === 'period' && goalDate) ? calcPeriodInfo(startDate, goalDate) : null;
 
   return (
     <div className="bankSummaryCard" onClick={onClick} style={onClick ? { cursor: 'pointer' } : undefined}>
@@ -52,15 +62,19 @@ function BankSummaryCard({ bankInfo, onDeposit, onWithdraw, onEdit, onClick }) {
       </div>
 
       {/* 목표 유형에 따라 표시 내용이 달라짐 */}
-      {goalType === 'period' ? (
+      {goalType === 'period' && periodInfo ? (
         <div className="bankSummaryCard__periodRow">
           <div className="bankSummaryCard__amounts">
-            <span className="bankSummaryCard__current">{periodInfo.daysElapsed}</span>
-            <span className="bankSummaryCard__goal">/ {periodInfo.totalDays}일</span>
+            {periodInfo.daysElapsed != null && (
+              <>
+                <span className="bankSummaryCard__current">{periodInfo.daysElapsed}</span>
+                <span className="bankSummaryCard__goal">/ {periodInfo.totalDays}일</span>
+              </>
+            )}
             <span className="bankSummaryCard__dday">D-{periodInfo.daysRemaining}</span>
           </div>
           <span className="bankSummaryCard__dateRange">
-            {periodInfo.startDate} - {periodInfo.endDate}
+            {periodInfo.startDate ? `${periodInfo.startDate} - ` : ''}{periodInfo.endDate}
           </span>
         </div>
       ) : (

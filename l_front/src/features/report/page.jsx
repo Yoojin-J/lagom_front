@@ -5,21 +5,29 @@ import EmotionSpendingSection from './components/emotion/EmotionSpendingSection'
 import EmotionSatisfactionSection from './components/correlation/EmotionSatisfactionSection';
 import HappyBankNudgeBanner from './components/summary/HappyBankNudgeBanner';
 import useMonthlyReport from './hooks/useMonthlyReport';
+import useHappyBank from '../happyBank/hooks/useHappyBank';
 import './styles/page.css';
 
 function ReportPage() {
   const navigate = useNavigate();
-  const { selectedDate, setSelectedDate, report } = useMonthlyReport();
-  const { totalExpense, emotionCount, emotionRatio, satisfactionByEmotion, hasNegativeWarning } = report;
+  const { selectedDate, setSelectedDate, report, isLoading, error } = useMonthlyReport();
+  // 넛지 배너 클릭 시 통장 유무에 따라 분기
+  const { banks } = useHappyBank();
 
   const handleNudgeBanner = () => {
-    const banks = JSON.parse(localStorage.getItem('lagom_banks') ?? '[]');
     if (banks.length === 0) {
-      navigate('/happybank');
+      // 통장이 없으면 개설 화면으로
+      navigate('/happybank/setup');
     } else {
-      navigate('/happybank', { state: { initialView: 'deposit', bankId: banks[0].id, defaultType: 'become' } });
+      // 통장이 있으면 첫 번째 통장의 저금 화면으로, 기본값 '행복해지는 저금'
+      navigate(`/happybank/${banks[0].id}/deposit`, { state: { initialType: 'become' } });
     }
   };
+
+  if (isLoading) return <div className="reportPage" />;
+  if (error || !report) return <div className="reportPage" />;
+
+  const { totalExpense, emotionCount, emotionRatio, satisfactionByEmotion } = report;
 
   return (
     <div className="reportPage">
@@ -29,9 +37,7 @@ function ReportPage() {
       <ReportSummaryRow totalExpense={totalExpense} emotionCount={emotionCount} />
       <EmotionSpendingSection data={emotionRatio} />
       <EmotionSatisfactionSection data={satisfactionByEmotion} />
-      {hasNegativeWarning && (
-        <HappyBankNudgeBanner onPress={handleNudgeBanner} />
-      )}
+      <HappyBankNudgeBanner onPress={handleNudgeBanner} />
     </div>
   );
 }

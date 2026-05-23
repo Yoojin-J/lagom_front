@@ -8,7 +8,8 @@ import MemoInput from './MemoInput';
 import SavingsTypeSelect from './SavingsTypeSelect';
 import '../../styles/deposit/DepositPage.css';
 
-function DepositPage({ onComplete, onAddRecord, onBack, bankName = '행복통장', initialType = 'happy' }) {
+// accountId: 저금할 통장 ID (POST /transactions/deposit 에 필요)
+function DepositPage({ accountId, onComplete, onBack, bankName = '행복통장', initialType = 'happy' }) {
   const [type, setType] = useState(initialType);
   const [amount, setAmount] = useState('');
   const [memo, setMemo] = useState('');
@@ -22,19 +23,8 @@ function DepositPage({ onComplete, onAddRecord, onBack, bankName = '행복통장
       return;
     }
 
-    const hashtag = tags.map((tag) => `#${tag}`).join(' ');
-    const record = {
-      id: Date.now(),
-      createdAt: new Date().toISOString(), // API 연동 시 서버 응답값으로 교체 예정
-      type,
-      amount: Number(amount),
-      memo,
-      hashtag,
-      date: new Date().toISOString().slice(0, 10).replace(/-/g, '.'),
-    };
-
-    await handleSubmit(record);
-    onAddRecord?.(record);
+    // tags 배열을 그대로 전달 (API에서 List<String> 형태로 처리)
+    await handleSubmit(accountId, { type, amount, memo, tags });
     onComplete?.();
   };
 

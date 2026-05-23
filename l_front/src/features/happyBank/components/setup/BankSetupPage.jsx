@@ -164,9 +164,8 @@ function BankSetupPage({ mode = 'create', initialData, onComplete, onCompleteAnd
         {isEditingName ? (
           <div className="bankSetupPage__nameEditArea">
             <div
-              className={`bankSetupPage__nameInputRow ${
-                nameError ? 'bankSetupPage__nameInputRow--error' : ''
-              }`}
+              className={`bankSetupPage__nameInputRow ${nameError ? 'bankSetupPage__nameInputRow--error' : ''
+                }`}
             >
               <input
                 ref={inputRef}
@@ -179,9 +178,8 @@ function BankSetupPage({ mode = 'create', initialData, onComplete, onCompleteAnd
               />
               <div className="bankSetupPage__nameMeta">
                 <span
-                  className={`bankSetupPage__nameCount ${
-                    nameError ? 'bankSetupPage__nameCount--error' : ''
-                  }`}
+                  className={`bankSetupPage__nameCount ${nameError ? 'bankSetupPage__nameCount--error' : ''
+                    }`}
                 >
                   {bankName.length}/{MAX_NAME_LENGTH}
                 </span>

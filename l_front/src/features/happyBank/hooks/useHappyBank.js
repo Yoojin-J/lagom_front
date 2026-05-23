@@ -1,68 +1,137 @@
-import { useState } from 'react';
-import { DEFAULT_BANK_NAME } from '../constants/setup';
+import { useState, useEffect, useCallback } from 'react';
+import axios from 'axios';
 
-// 통장 목록을 저장하는 localStorage 키
-const STORAGE_KEY = 'lagom_banks';
+const BASE_URL = 'http://localhost:8080';
 
-const load = () => {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
+const getHeader = () => {
+  const token = localStorage.getItem('accessToken');
+  return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
-const save = (data) => localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+// 백엔드 goalType(AMOUNT/PERIOD) → 프론트엔드(amount/period) 변환
+const mapGoalType = (type) => (type === 'AMOUNT' ? 'amount' : 'period');
+
+// 백엔드 Account 응답 → 프론트엔드 bank 객체 변환
+const mapAccount = (a) => ({
+  id: a.accountId ?? a.id,
+  name: a.name,
+  balance: a.balance ?? 0,           // 총 잔액 (currentAmount 역할)
+  goalType: mapGoalType(a.goalType),
+  goalAmount: a.goalAmount ?? null,
+  goalDate: a.endDate ?? null,       // 백엔드 endDate → 프론트 goalDate
+  startDate: a.createdAt ?? null,
+  isCompleted: a.isCompleted ?? false,
+});
 
 const useHappyBank = () => {
-  const [banks, setBanks] = useState(load);
+  const [banks, setBanks] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const createBank = ({ name, goalType, goalAmount, goalDate }) => {
-    const today = new Date().toISOString().slice(0, 10).replace(/-/g, '.');
-    // id는 생성 시각(ms)으로 부여 — 고유성 보장 및 useSavingsRecords와 키 공유
-    const id = Date.now();
-    setBanks((prev) => {
-      const isDefault = name === DEFAULT_BANK_NAME;
-      let resolvedName = name;
-      // 기본 이름('행복통장')으로 통장을 여러 개 만들 경우 자동으로 번호를 붙임
-      // 예: 행복통장 → 행복통장2 → 행복통장3
-      if (isDefault) {
-        const defaultCount = prev.filter(
-          (b) => b.name === DEFAULT_BANK_NAME || /^행복통장\d+$/.test(b.name)
-        ).length;
-        resolvedName = defaultCount === 0 ? DEFAULT_BANK_NAME : `${DEFAULT_BANK_NAME}${defaultCount + 1}`;
-      }
-      const next = [...prev, { id, name: resolvedName, goalType, goalAmount: Number(goalAmount), goalDate, startDate: today }];
-      save(next);
-      return next;
-    });
-    // 생성된 통장 id를 반환해 호출부에서 바로 해당 통장으로 이동할 수 있게 함
-    return id;
-  };
+  // GET /accounts - 통장 목록 조회
+  const fetchBanks = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const { data } = await axios.get(`${BASE_URL}/accounts`, {
+        headers: getHeader(),
+        params: { userId: 3 },
+      });
+      console.log('통장 목록 응답:', data);
+      setBanks(Array.isArray(data) ? data.map(mapAccount) : []);
+    } catch (err) {
+      console.error('통장 목록 불러오기 실패', err);
+      setError(err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
-  const updateBank = (id, { name, goalType, goalAmount, goalDate }) => {
-    setBanks((prev) => {
-      const next = prev.map((b) =>
-        b.id === id
-          ? { ...b, name, goalType, goalAmount: Number(goalAmount), goalDate }
-          : b
+  useEffect(() => {
+    fetchBanks();
+  }, [fetchBanks]);
+
+  // POST /accounts - 통장 생성
+  // goalType: 'amount'|'period', goalAmount, goalDate(endDate)
+  const createBank = async ({ name, goalType, goalAmount, goalDate }) => {
+    try {
+      const { data } = await axios.post(
+        `${BASE_URL}/accounts`,
+        null,
+        {
+          headers: getHeader(),
+          params: {
+            userId: 3,
+            name,
+            goalType: goalType === 'amount' ? 'AMOUNT' : 'PERIOD',
+            goalAmount: goalType === 'amount' ? Number(goalAmount) : null,
+            endDate: goalType === 'period' ? goalDate.replaceAll('.', '-') : null,
+          },
+        }
       );
-      save(next);
-      return next;
-    });
+      console.log('통장 생성 응답:', data);
+      const newId = data.accountId ?? data.id ?? data;
+      await fetchBanks(); // 목록 갱신
+      return newId;
+    } catch (err) {
+      console.error('통장 생성 실패', err);
+      throw err;
+    }
   };
 
-  const deleteBank = (id) => {
-    setBanks((prev) => {
-      const next = prev.filter((b) => b.id !== id);
-      save(next);
-      return next;
-    });
+  // PUT /accounts/{id} - 통장 수정
+  const updateBank = async (id, { name, goalType, goalAmount, goalDate }) => {
+    try {
+      await axios.put(
+        `${BASE_URL}/accounts/${id}`,
+        {
+          name,
+          goalType: goalType === 'amount' ? 'AMOUNT' : 'PERIOD',
+          goalAmount: goalType === 'amount' ? Number(goalAmount) : null,
+          endDate: goalType === 'period' ? goalDate?.replaceAll('.', '-') : null,
+        },
+        { headers: getHeader() }
+      );
+      await fetchBanks();
+    } catch (err) {
+      console.error('통장 수정 실패', err);
+      throw err;
+    }
   };
 
-  // hasBank: 통장이 하나라도 있는지 여부 — 메인 화면에서 빈 상태/목록 분기에 사용
-  return { banks, hasBank: banks.length > 0, createBank, updateBank, deleteBank };
+  // DELETE /accounts/{id} - 통장 삭제
+  const deleteBank = async (id) => {
+    try {
+      await axios.delete(`${BASE_URL}/accounts/${id}`, { headers: getHeader() });
+      await fetchBanks();
+    } catch (err) {
+      console.error('통장 삭제 실패', err);
+      throw err;
+    }
+  };
+
+  // PATCH /accounts/{id}/complete - 통장 완료 처리
+  const completeBank = async (id) => {
+    try {
+      await axios.patch(`${BASE_URL}/accounts/${id}/complete`, {}, { headers: getHeader() });
+      await fetchBanks();
+    } catch (err) {
+      console.error('통장 완료 처리 실패', err);
+      throw err;
+    }
+  };
+
+  return {
+    banks,
+    hasBank: banks.length > 0,
+    isLoading,
+    error,
+    fetchBanks,
+    createBank,
+    updateBank,
+    deleteBank,
+    completeBank,
+  };
 };
 
 export default useHappyBank;

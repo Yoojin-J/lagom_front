@@ -1,6 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import useAchievements from '../achievement/hooks/useAchievements';
+import { useEffect, useState } from 'react';
+import { useLocation, useMatch, useNavigate, useParams } from 'react-router-dom';
 import AddBankButton from './components/AddBankButton';
 import BankStartCard from './components/BankStartCard';
 import BankSummaryCard from './components/BankSummaryCard';
@@ -14,61 +13,67 @@ import SavingsRecordList from './components/SavingsRecordList';
 import GoalAchievedModal from './components/detail/GoalAchievedModal';
 import SavingsRecordModal from './components/detail/SavingsRecordModal';
 import useHappyBank from './hooks/useHappyBank';
-import useSavingsRecords from './hooks/useSavingsRecords';
+import useBankDetail from './hooks/useBankDetail';
+import useWithdraw from './hooks/useWithdraw';
 import './styles/page.css';
 
+const showUnimplementedAlert = (message) => {
+  window.alert(message);
+};
+
 // 목표 달성 여부 판단
-// - 목표 금액: 현재 저금액이 목표 금액 이상이면 달성
-// - 목표 기간: 오늘이 만기일 이후면 달성
-function calcIsGoalReached(bank, currentAmount) {
-  const { goalType, goalAmount, goalDate } = bank;
+// - 금액형: balance가 goalAmount 이상이면 달성
+// - 기간형: 오늘이 만기일 이후면 달성
+function calcIsGoalReached(bank) {
+  if (!bank) return false;
+  const { goalType, goalAmount, goalDate, balance } = bank;
   if (goalType === 'amount') {
-    return currentAmount >= (goalAmount ?? 0) && (goalAmount ?? 0) > 0;
+    return balance >= (goalAmount ?? 0) && (goalAmount ?? 0) > 0;
   }
   return goalDate ? new Date() >= new Date(goalDate.replace(/\./g, '-')) : false;
 }
 
-// 통장 상세 뷰 
-// 통장 상세 화면에서만 사용하는 서브 컴포넌트
-// 기록 합산, 목표 달성 감지 등 상세 화면 전용 로직을 분리해 page.jsx 복잡도를 낮춤
-function BankDetailView({ bank, records, onBack, onDeposit, onWithdraw, onEdit, onComplete }) {
+// ── 통장 상세 뷰 ──────────────────────────────────────────────
+// GET /accounts/{accountId} 로 통장 정보 + 거래 내역을 받아 렌더링
+function BankDetailView({ accountId, bankSummary, onComplete }) {
+  const navigate = useNavigate();
+  const { bank: bankDetail, records, isLoading, error } = useBankDetail(accountId);
+  // 목록 API 응답(goalType, goalAmount, goalDate)과 상세 API 응답(거래내역)을 합침
+  const bank = bankDetail ? { ...bankSummary, ...bankDetail } : null;
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [showGoalModal, setShowGoalModal] = useState(false);
+  const [showWithdrawEmpty, setShowWithdrawEmpty] = useState(false);
 
-  const happySavings = records.filter((r) => r.type === 'happy').reduce((s, r) => s + r.amount, 0);
-  const becomeSavings = records.filter((r) => r.type === 'become').reduce((s, r) => s + r.amount, 0);
-  const currentAmount = happySavings + becomeSavings;
-  // SavingsProgressPanel에 행복저금/행복해지는저금 금액도 같이 넘겨야 해서 bank 객체를 확장
-  const enrichedBank = { ...bank, currentAmount, happySavings, becomeSavings };
-  const isGoalReached = calcIsGoalReached(bank, currentAmount);
+  const isGoalReached = calcIsGoalReached(bank);
 
-  // 목표 달성 시 모달을 자동으로 띄움
-  // 기록이 추가될 때마다 isGoalReached가 재계산되어 실시간으로 감지됨
+  // 목표 달성 감지 시 모달 자동 표시
   useEffect(() => {
     if (isGoalReached) setShowGoalModal(true);
   }, [isGoalReached]);
 
-  // 브라우저 뒤로가기와 state 내비게이션 연결
-  // 마운트 시 history 항목 추가 → 뒤로가기 누르면 onBack 호출
-  const onBackRef = useRef(onBack);
-  useEffect(() => { onBackRef.current = onBack; }, [onBack]);
-  useEffect(() => {
-    window.history.pushState(null, '');
-    const handler = () => onBackRef.current?.();
-    window.addEventListener('popstate', handler);
-    return () => window.removeEventListener('popstate', handler);
-  }, []);
+  if (isLoading) return <div className="happyBankPage" />;
+  if (error || !bank) return <div className="happyBankPage" />;
+
+  const handleWithdraw = () => {
+    if (records.length === 0) setShowWithdrawEmpty(true);
+    else navigate(`/happybank/${accountId}/withdraw`);
+  };
 
   return (
     <div className="happyBankPage">
-      <BankSummaryCard bankInfo={enrichedBank} onDeposit={onDeposit} onWithdraw={onWithdraw} onEdit={onEdit} />
+      <BankSummaryCard
+        bankInfo={{ ...bank, currentAmount: bank.balance }}
+        onDeposit={() => navigate(`/happybank/${accountId}/deposit`)}
+        onWithdraw={handleWithdraw}
+        onEdit={() => navigate(`/happybank/${accountId}/edit`, { state: { bank } })}
+      />
       {records.length === 0 ? (
         <EmptyBankState />
       ) : (
         <>
           <SavingsProgressPanel
-            happySavings={happySavings}
-            becomeSavings={becomeSavings}
+            happySavings={bank.happySavings}
+            becomeSavings={bank.becomeSavings}
             goalAmount={bank.goalAmount}
             goalType={bank.goalType}
           />
@@ -81,177 +86,201 @@ function BankDetailView({ bank, records, onBack, onDeposit, onWithdraw, onEdit, 
       {showGoalModal && (
         <GoalAchievedModal
           bankName={bank.name}
-          onConfirm={() => { setShowGoalModal(false); onComplete(); onBack(); }}
+          onConfirm={async () => {
+            try {
+              await onComplete(accountId);
+              setShowGoalModal(false);
+              navigate('/happybank');
+            } catch (err) {
+              console.error('통장 완료 처리 실패', err);
+            }
+          }}
           onClose={() => setShowGoalModal(false)}
+        />
+      )}
+      {showWithdrawEmpty && (
+        <WithdrawEmptyModal
+          onBack={() => setShowWithdrawEmpty(false)}
+          onDeposit={() => {
+            setShowWithdrawEmpty(false);
+            navigate(`/happybank/${accountId}/deposit`);
+          }}
         />
       )}
     </div>
   );
 }
 
-// 메인 페이지
-// 화면 전환은 react-router 대신 currentView 상태로 관리
-// 이유: 행복통장 내 화면들이 모두 /happyBank 경로 안에서 동작하므로 URL 변경 없이 뷰만 전환
-function HappyBankPage() {
-  const location = useLocation();
-  const { banks, hasBank, createBank, updateBank, deleteBank } = useHappyBank();
-  const { addRecord, getRecords, removeRecord, resetRecords } = useSavingsRecords();
-  const { addAchievement } = useAchievements();
+// ── 행복 인출 뷰 ──────────────────────────────────────────────
+// GET /transactions/withdraw?accountId={id} 로 랜덤 기록을 받아 WithdrawPage에 전달
+function BankWithdrawView({ accountId, bankName, nickName }) {
+  const navigate = useNavigate();
+  const { record, isLoading, isEmpty, deleteRecord } = useWithdraw(accountId);
 
-  // currentView: 'main' | 'setup' | 'edit' | 'deposit' | 'withdraw' | 'detail'
-  const [currentView, setCurrentView] = useState('main');
-  const [selectedBankId, setSelectedBankId] = useState(null);
-  const [depositInitialType, setDepositInitialType] = useState('happy');
-  // 저금 기록이 없을 때 행복인출 시 빈 상태 모달 표시 여부
-  const [showWithdrawEmpty, setShowWithdrawEmpty] = useState(false);
-
-  // 리포트 페이지 넛지 배너에서 진입 시 초기 뷰 설정
+  // 기록이 없으면 상세 페이지로 돌아가 빈 상태 안내
   useEffect(() => {
-    const state = location.state;
-    if (!state) return;
-    if (state.initialView === 'setup') {
-      setCurrentView('setup');
-    } else if (state.initialView === 'deposit' && state.bankId) {
-      setSelectedBankId(state.bankId);
-      setDepositInitialType(state.defaultType ?? 'happy');
-      setCurrentView('deposit');
+    if (!isLoading && isEmpty) {
+      navigate(`/happybank/${accountId}`, { replace: true });
     }
-  }, []);
+  }, [isLoading, isEmpty, accountId, navigate]);
 
-  const selectedBank = banks.find((b) => b.id === selectedBankId) ?? null;
+  if (isLoading || !record) return <div className="happyBankPageOverlay" />;
 
-  // 통장 완료 처리: 성취기록관에 저장 후 통장과 기록을 모두 삭제
-  const handleComplete = (bankId) => {
-    const bank = banks.find((b) => b.id === bankId);
-    addAchievement({ bankInfo: bank, records: getRecords(bankId) });
-    deleteBank(bankId);
-    resetRecords(bankId);
-  };
+  return (
+    <div className="happyBankPageOverlay">
+      <WithdrawPage
+        bankInfo={{ name: bankName, userName: nickName ?? record.nickname }}
+        record={record}
+        onBack={() => navigate(`/happybank/${accountId}`)}
+        onDelete={async (recordId) => {
+          try {
+            await deleteRecord(recordId);
+            navigate(`/happybank/${accountId}`);
+          } catch (err) {
+            console.error('거래 기록 삭제 실패', err);
+            showUnimplementedAlert(err.message);
+          }
+        }}
+      />
+    </div>
+  );
+}
 
-  // 통장 개설 / 수정
-  if (currentView === 'setup' || currentView === 'edit') {
+// ── 메인 페이지 ───────────────────────────────────────────────
+// useMatch 로 현재 URL 패턴을 감지해 적절한 뷰 컴포넌트를 렌더링
+// 오버레이 뷰(setup/edit/deposit/withdraw)는 position:fixed 로 헤더/내비를 덮음
+function HappyBankPage() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { accountId } = useParams();
+
+  // URL 패턴 매칭
+  const matchSetup = useMatch('/happybank/setup');
+  const matchEdit = useMatch('/happybank/:accountId/edit');
+  const matchDeposit = useMatch('/happybank/:accountId/deposit');
+  const matchWithdraw = useMatch('/happybank/:accountId/withdraw');
+  const matchDetail = useMatch('/happybank/:accountId');
+
+  const { banks, hasBank, createBank, updateBank, deleteBank, completeBank } = useHappyBank();
+  // useDeposit은 DepositPage 내부에서 직접 사용
+
+  // ── 통장 생성 / 수정 화면 ──
+  if (matchSetup || matchEdit) {
+    const editId = matchEdit?.params?.accountId;
+    // 수정 모드: 상세 화면에서 navigate 시 location.state로 bank 전달
+    const editBank = location.state?.bank ?? banks.find((b) => String(b.id) === editId) ?? null;
+
     return (
       <div className="happyBankPageOverlay">
         <BankSetupPage
-          mode={currentView === 'edit' ? 'edit' : 'create'}
-          initialData={selectedBank}
-          onComplete={(bankData) => {
-            if (currentView === 'edit') updateBank(selectedBankId, bankData);
-            else createBank(bankData);
-            setCurrentView('main');
+          mode={matchEdit ? 'edit' : 'create'}
+          initialData={editBank}
+          onComplete={async (bankData) => {
+            try {
+              if (matchEdit) {
+                await updateBank(editId, bankData);
+                navigate(`/happybank/${editId}`);
+              } else {
+                const newId = await createBank(bankData);
+                navigate(`/happybank/${newId}`);
+              }
+            } catch (err) {
+              console.error('통장 저장 실패', err);
+            }
           }}
-          // 개설 직후 바로 저금하기로 넘어가는 경로 (수정 모드에선 없음)
-          onCompleteAndDeposit={currentView === 'setup' ? (bankData) => {
-            const bankId = createBank(bankData);
-            setSelectedBankId(bankId);
-            setCurrentView('deposit');
-          } : undefined}
-          onDelete={() => {
-            deleteBank(selectedBankId);
-            setSelectedBankId(null);
-            setCurrentView('main');
-          }}
-          onBack={() => setCurrentView('main')}
+          // 개설 완료 후 바로 저금 화면으로 이동 (생성 모드에서만)
+          onCompleteAndDeposit={
+            matchSetup
+              ? async (bankData) => {
+                  try {
+                    const newId = await createBank(bankData);
+                    navigate(`/happybank/${newId}/deposit`, { state: { initialType: 'happy' } });
+                  } catch (err) {
+                    console.error('통장 생성 후 저금 이동 실패', err);
+                  }
+                }
+              : undefined
+          }
+          onDelete={
+            matchEdit
+              ? async () => {
+                  try {
+                    await deleteBank(editId);
+                    navigate('/happybank');
+                  } catch (err) {
+                    console.error('통장 삭제 실패', err);
+                    showUnimplementedAlert(err.message);
+                  }
+                }
+              : undefined
+          }
+          onBack={() => navigate(matchEdit ? `/happybank/${editId}` : '/happybank')}
         />
       </div>
     );
   }
 
-  // 행복인출
-  if (currentView === 'withdraw' && selectedBank) {
-    return (
-      <div className="happyBankPageOverlay">
-        <WithdrawPage
-          bankInfo={{ ...selectedBank, userName: '김슈니' }} // TODO: 로그인 후 실제 닉네임으로 교체
-          records={getRecords(selectedBankId)}
-          onBack={() => setCurrentView('detail')}
-          // 기록 삭제 후 상세 화면으로 복귀
-          onDelete={(recordId) => { removeRecord(selectedBankId, recordId); setCurrentView('detail'); }}
-        />
-      </div>
-    );
-  }
+  // ── 저금하기 화면 ──
+  if (matchDeposit) {
+    const depId = matchDeposit.params.accountId;
+    const depBank = banks.find((b) => String(b.id) === depId);
+    // 넛지 배너에서 진입 시 location.state로 initialType 전달 가능
+    const initialType = location.state?.initialType ?? 'happy';
 
-  // 저금하기
-  if (currentView === 'deposit') {
     return (
       <div className="happyBankPageOverlay">
         <DepositPage
-          bankName={selectedBank?.name ?? '행복통장'}
-          initialType={depositInitialType}
-          onAddRecord={(record) => addRecord(selectedBankId, record)}
-          onComplete={() => { setDepositInitialType('happy'); setCurrentView('detail'); }}
-          onBack={() => { setDepositInitialType('happy'); setCurrentView('detail'); }}
+          accountId={depId}
+          bankName={depBank?.name ?? '행복통장'}
+          initialType={initialType}
+          onComplete={() => navigate(`/happybank/${depId}`)}
+          onBack={() => navigate(`/happybank/${depId}`)}
         />
       </div>
     );
   }
 
-  // 통장 상세
-  if (currentView === 'detail' && selectedBank) {
-    const detailRecords = getRecords(selectedBankId);
+  // ── 행복 인출 화면 ──
+  if (matchWithdraw) {
+    const wdId = matchWithdraw.params.accountId;
+    const wdBank = banks.find((b) => String(b.id) === wdId);
+
     return (
-      <>
-        <BankDetailView
-          bank={selectedBank}
-          records={detailRecords}
-          onBack={() => { setSelectedBankId(null); setCurrentView('main'); }}
-          onDeposit={() => setCurrentView('deposit')}
-          onWithdraw={() => {
-            // 저금 기록이 없으면 인출 대신 안내 모달 표시 -> TODO: 백엔드 연동 시 변경가능성 있음
-            if (detailRecords.length === 0) setShowWithdrawEmpty(true);
-            else setCurrentView('withdraw');
-          }}
-          onEdit={() => setCurrentView('edit')}
-          onComplete={() => { handleComplete(selectedBankId); setSelectedBankId(null); setCurrentView('main'); }}
-        />
-        {showWithdrawEmpty && (
-          <WithdrawEmptyModal
-            onBack={() => setShowWithdrawEmpty(false)}
-            onDeposit={() => { setShowWithdrawEmpty(false); setCurrentView('deposit'); }}
-          />
-        )}
-      </>
+      <BankWithdrawView
+        accountId={wdId}
+        bankName={wdBank?.name ?? '행복통장'}
+      />
     );
   }
 
-  // 통장 없음: 첫 통장 생성 유도 화면
+  // ── 통장 상세 화면 ──
+  if (matchDetail && accountId) {
+    const summaryBank = banks.find((b) => String(b.id) === accountId) ?? null;
+    return <BankDetailView accountId={accountId} bankSummary={summaryBank} onComplete={completeBank} />;
+  }
+
+  // ── 통장 목록 / 빈 상태 화면 ──
   if (!hasBank) {
     return (
       <div className="happyBankPage">
-        <BankStartCard onClick={() => setCurrentView('setup')} />
+        <BankStartCard onClick={() => navigate('/happybank/setup')} />
       </div>
     );
   }
 
-  // 통장 목록
   return (
     <div className="happyBankPage">
-      {banks.map((bank) => {
-        const records = getRecords(bank.id);
-        const currentAmount = records.reduce((sum, r) => sum + r.amount, 0);
-        return (
-          <BankSummaryCard
-            key={bank.id}
-            bankInfo={{ ...bank, currentAmount }}
-            onClick={() => { setSelectedBankId(bank.id); setCurrentView('detail'); }}
-            onDeposit={() => { setSelectedBankId(bank.id); setCurrentView('deposit'); }}
-            onWithdraw={() => {
-              setSelectedBankId(bank.id);
-              if (records.length === 0) setShowWithdrawEmpty(true);
-              else setCurrentView('withdraw');
-            }}
-            onEdit={() => { setSelectedBankId(bank.id); setCurrentView('edit'); }}
-          />
-        );
-      })}
-      <AddBankButton onClick={() => setCurrentView('setup')} />
-      {showWithdrawEmpty && (
-        <WithdrawEmptyModal
-          onBack={() => setShowWithdrawEmpty(false)}
-          onDeposit={() => { setShowWithdrawEmpty(false); setCurrentView('deposit'); }}
+      {banks.map((bank) => (
+        <BankSummaryCard
+          key={bank.id}
+          bankInfo={{ ...bank, currentAmount: bank.balance }}
+          onClick={() => navigate(`/happybank/${bank.id}`)}
+          onDeposit={() => navigate(`/happybank/${bank.id}/deposit`)}
+          onWithdraw={() => navigate(`/happybank/${bank.id}/withdraw`)}
+          onEdit={() => navigate(`/happybank/${bank.id}/edit`, { state: { bank } })}
         />
-      )}
+      ))}
+      <AddBankButton onClick={() => navigate('/happybank/setup')} />
     </div>
   );
 }

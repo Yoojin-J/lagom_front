@@ -11,16 +11,16 @@ import ExpensePage from './features/expense/ExpensePage'
 import LoginPage from './features/login/LoginPage';
 import LoginCallbackPage from './features/login/LoginCallbackPage';
 
+// Header, NavigationBar 가 필요한 화면 
 const MainLayout = () => (
   <>
     <Header />
     <NavigationBar />
-    <Outlet />
+    <Outlet /> {/* 이 자리에 자식 컴포넌트들이 렌더링됨 */}
   </>
 );
 
 function App() {
-  const [activeTab, setActiveTab] = useState(0);
   const now = new Date();
   const currentYear = now.getFullYear();
   const currentMonth = String(now.getMonth() + 1).padStart(2, '0');
@@ -30,12 +30,20 @@ function App() {
       <Router>
         <Routes>
           <Route element={<MainLayout />}>
-
-            <Route path="/" element={<Navigate to={`/calendar/${currentYear}/${currentMonth}`} replace />} />
+            {/*<Route path="/" element={<Navigate to={`/calendar/${currentYear}/${currentMonth}`} replace />} />*/}
+            <Route path="/calendar" element={<Navigate to={`/calendar/${currentYear}/${currentMonth}`} replace />} />
             <Route path="/calendar/:year/:month" element={<CalendarPage />} />
-            {/* <Route path="/" element={<CalendarPage />} /> */}
-            <Route path='/happyBank' element={<HappyBankPage />} />
+
+            <Route path='/happybank' element={<HappyBankPage />} />
+            <Route path='/happybank/setup' element={<HappyBankPage />} />
+            <Route path='/happybank/:accountId' element={<HappyBankPage />} />
+            <Route path='/happybank/:accountId/edit' element={<HappyBankPage />} />
+            <Route path='/happybank/:accountId/deposit' element={<HappyBankPage />} />
+            <Route path='/happybank/:accountId/withdraw' element={<HappyBankPage />} />
+
             <Route path='/record' element={<AchievementPage />} />
+            <Route path='/record/:accountId' element={<AchievementPage />} />
+
             <Route path='/report' element={<ReportPage />} />
           </Route>
           <Route path='/login' element={<LoginPage />} />
