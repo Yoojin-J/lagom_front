@@ -30,8 +30,7 @@ function App() {
       <Router>
         <Routes>
           <Route element={<MainLayout />}>
-            {/*<Route path="/" element={<Navigate to={`/calendar/${currentYear}/${currentMonth}`} replace />} />*/}
-            <Route path="/calendar" element={<Navigate to={`/calendar/${currentYear}/${currentMonth}`} replace />} />
+            <Route path="/" element={<Navigate to={`/calendar/${currentYear}/${currentMonth}`} replace />} />
             <Route path="/calendar/:year/:month" element={<CalendarPage />} />
 
             <Route path='/happybank' element={<HappyBankPage />} />
