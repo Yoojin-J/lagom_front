@@ -1,7 +1,9 @@
 import React from 'react'
+import axios from 'axios';
 import ChevronRight from '../../../assets/icons/common/ChevronRight';
 import { useNavigate } from 'react-router-dom';
 import { getUserIdFromToken } from '../../calendar/hook/auth.js';
+import { formatDate } from '../../calendar/hook/dateUtil.js';
 
 
 const ExpenseEmotion = ({
@@ -49,18 +51,23 @@ const ExpenseEmotion = ({
 
     // 3. 컴포넌트 state도 동기화 (필요시)
     setFormData(submitData);
-
     // 행복해지는 저금으로 가기전 일단 가계부 저장
     try {
       if (isReEva) {
         // 재평가
-        await axios.patch(`http://localhost:8080/expenses/${id}/reevaluate?evaluation=${formData.evaluation}`, {})
+        await axios.patch(`http://localhost:8080/expenses/${id}/reevaluate?evaluation=${submitData.evaluation}`, {})
+        console.log('가계부 저장 재평가', submitData);
+
       } else if (isEditMode) {
         // 수정
         await axios.put(`http://localhost:8080/expenses/${id}`, submitData);
+        console.log('가계부 저장 수정', submitData);
+
       } else {
         // 가계부 작성
-        await axios.post('http://localhost:8080/', submitData);
+        await axios.post('http://localhost:8080/expenses', submitData);
+        console.log('가계부 저장 작성', submitData);
+
       }
     } catch (error) {
       console.log(error);
