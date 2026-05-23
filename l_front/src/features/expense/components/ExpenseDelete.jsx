@@ -1,30 +1,31 @@
 import React from 'react'
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import '../styles/ExpenseDelete.css'
 
 const ExpenseDelete = ({
   handleDeleteModal,
   id,
 }) => {
+  const navigate = useNavigate();
 
   const deleteExpense = async (id) => {
-    // try {
-    //   // 1. 백엔드(json-server)에 DELETE 요청 전송
-    //   const response = await axios.delete(`http://localhost:8080/expense/${id}`);
+    try {
+      // 1. 백엔드(json-server)에 DELETE 요청 전송
+      const response = await axios.delete(`http://localhost:8080/expenses/${id}`);
 
-    //   if (response.status === 200 || response.status === 204) {
-    //     console.log(`${id}번 게시물이 삭제되었습니다.`);
+      if (response.status === 200 || response.status === 204) {
+        console.log(`${id}번 게시물이 삭제되었습니다.`);
+        navigate('/calendar');
 
-    //        navigate('/calendar');
+        return true;
+      }
+    } catch (error) {
+      console.error('삭제 요청 중 오류 발생:', error);
+      alert('삭제에 실패했습니다.');
+      return false;
+    }
 
-
-    //     return true;
-    //   }
-    // } catch (error) {
-    //   console.error('삭제 요청 중 오류 발생:', error);
-    //   alert('삭제에 실패했습니다.');
-    //   return false;
-    // }
-    
     console.log("삭제되었습니다");
   };
 
@@ -37,7 +38,7 @@ const ExpenseDelete = ({
         </div>
         <div className='modal-btn-contents'>
           <div className='cancel' onClick={handleDeleteModal}>취소</div>
-          <div className='confirm' onClick={() => {deleteExpense(id)}}>삭제하기</div>
+          <div className='confirm' onClick={() => { deleteExpense(id) }}>삭제하기</div>
         </div>
       </div>
     </div>
