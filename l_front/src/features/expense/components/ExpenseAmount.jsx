@@ -25,7 +25,7 @@ const ExpenseAmount = ({
       type: type,
 
       // type이 바뀔 때 함께 초기화
-      category: 0,
+      category: "NONE",
       memo: '',
       emotion: null,
       evaluation: null,

@@ -32,9 +32,9 @@ const TransactionHistory = ({
 }) => {
   const navigate = useNavigate();
   const newData = (item) => ({
-      ...item,
-      paymentAt: selectedDate,
-    });
+    ...item,
+    paymentAt: selectedDate,
+  });
 
 
   const goEdit = (item) => {
@@ -42,41 +42,42 @@ const TransactionHistory = ({
 
     // 첫 번째 인자는 이동할 경로, 
     // 두 번째 인자의 state 속성에 보낼 객체를 담습니다.
-    navigate(`/expense/${item.expenseId}`, { 
-      state: { 
-        data: daydata, 
-        mode: 'edit' 
-      } 
+    navigate(`/expense/${item.expenseId}`, {
+      state: {
+        data: daydata,
+        mode: 'edit'
+      }
     });
-    
+
     console.log(item);
   };
 
   const category = {
     "NONE": { label: '카테고리 없음', icon: <SystemMore width={24} height={24} />, color: { background: 'var(--Category-Light-pink, rgba(255, 176, 173, 0.20))' } },
     "SALARY": { label: '급여', icon: <Salary width={24} height={24} />, color: { background: 'var(--Category-Purple-2, #ABD8E3)' } },
-    "SIDEINCOME": { label: '부수입', icon: <SideIncome width={24} height={24} />, color: { background: 'var(--Category-Deep-Blue, #B7CFD6)' } },
+    "SIDE_INCOME": { label: '부수입', icon: <SideIncome width={24} height={24} />, color: { background: 'var(--Category-Deep-Blue, #B7CFD6)' } },
     "ALLOWANCE": { label: '용돈', icon: <Allowance width={24} height={24} />, color: { background: 'var(--Category-Green-2, #7EC88E)' } },
     "BONUS": { label: '상여금', icon: <Bonus width={24} height={24} />, color: { background: 'var(--Category-Purple-3, #D6B7FF)' } },
-    "INVESTMENT": { label: '금융수입', icon: <Investment width={24} height={24} />, color: { background: 'var(--Category-Deep-Blue-2, #9FBFC9)' } },
-    "ETC": { label: '기타', icon: <SystemMore width={24} height={24} /> },
+    "FINANCIAL": { label: '금융수입', icon: <Investment width={24} height={24} />, color: { background: 'var(--Category-Deep-Blue-2, #9FBFC9)' } },
+    "INCOME_ETC": { label: '기타', icon: <SystemMore width={24} height={24} />, color: { background: 'var(--Category-Light-pink, rgba(255, 176, 173, 0.20))'} },
     "FOOD": { label: '식비', icon: <Food width={24} height={24} />, color: { background: 'var(--Category-Blue, #9ED2FA)' } },
     "HOUSING": { label: '주거/통신', icon: <Housing width={24} height={24} />, color: { background: 'var(--Category-Purple, #E2CCFF)' } },
     "TRANSPORT": { label: '교통/차량', icon: <Transport width={24} height={24} />, color: { background: 'var(--Category-Mint, #B5E2DF)' } },
-    "MEDICAL": { label: '의료/건강', icon: <Medical width={24} height={24} />, color: { background: 'var(--Category-Green, #A9DAB4)' } },
-    "LEISURE": { label: '문화/여가', icon: <Leisure width={24} height={24} />, color: { background: 'var(--Category-Pink, #FFCAC8)' } },
+    "HEALTH": { label: '의료/건강', icon: <Medical width={24} height={24} />, color: { background: 'var(--Category-Green, #A9DAB4)' } },
+    "CULTURE": { label: '문화/여가', icon: <Leisure width={24} height={24} />, color: { background: 'var(--Category-Pink, #FFCAC8)' } },
     "SHOPPING": { label: '쇼핑', icon: <Shopping width={24} height={24} />, color: { background: 'var(--Category-Peach, #F7AFA1)' } },
     "BEAUTY": { label: '미용', icon: <Beauty width={24} height={24} />, color: { background: 'var(--Category-Lavender, #EFCAF2)' } },
     "EDUCATION": { label: '교육', icon: <Education width={24} height={24} />, color: { background: 'var(--Category-Gray, #CDD1D5)' } },
+    "EXPENSE_ETC": { label: '카테고리 없음', icon: <SystemMore width={24} height={24} />, color: { background: 'var(--Category-Light-pink, rgba(255, 176, 173, 0.20))' } },
   };
 
   const emotion = {
-    "HAPPY": { label: '기쁨', icon: <Happy width={12} height={12} /> },
-    "EXCITEMENT": { label: '설렘', icon: <Excitement width={12} height={12} /> },
-    "SERENITY": { label: '평온', icon: <Serenity width={12} height={12} /> },
+    "JOY": { label: '기쁨', icon: <Happy width={12} height={12} /> },
+    "EXCITED": { label: '설렘', icon: <Excitement width={12} height={12} /> },
+    "CALM": { label: '평온', icon: <Serenity width={12} height={12} /> },
     "DEPRESSED": { label: '우울', icon: <Depressed width={12} height={12} /> },
-    "STRESS": { label: '스트레스', icon: <Stress width={12} height={12} /> },
-    "IMPULSE": { label: '충동', icon: <Impulse width={12} height={12} /> },
+    "STRESSED": { label: '스트레스', icon: <Stress width={12} height={12} /> },
+    "IMPULSIVE": { label: '충동', icon: <Impulse width={12} height={12} /> },
   };
 
   const satisfaction = {
@@ -84,8 +85,8 @@ const TransactionHistory = ({
     1: { label: '불만족', icon: <Angry /> },
     2: { label: '보통', icon: <Common /> },
     3: { label: '만족', icon: <Satisfied /> },
-    4: {label: '매우 만족', icon: <Excited /> },
-  }; 
+    4: { label: '매우 만족', icon: <Excited /> },
+  };
 
   const getCategory = (categoryName) => {
     return category[categoryName];

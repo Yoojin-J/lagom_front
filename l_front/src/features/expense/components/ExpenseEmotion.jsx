@@ -1,6 +1,10 @@
 import React from 'react'
+import axios from 'axios';
 import ChevronRight from '../../../assets/icons/common/ChevronRight';
 import { useNavigate } from 'react-router-dom';
+import { getUserIdFromToken } from '../../calendar/hook/auth.js';
+import { formatDate } from '../../calendar/hook/dateUtil.js';
+
 
 const ExpenseEmotion = ({
   formData,
@@ -32,13 +36,38 @@ const ExpenseEmotion = ({
   };
 
   const goHappyBank = async () => {
-    // 행복해지는 저금으로 가기전 일단 가계부 저장 (fetch, post)
+    const userId = getUserIdFromToken();
+
+    // 1. formatDate로 구한 날짜 문자열("2026-04-26") 뒤에 "T00:00:00"을 바로 붙여줍니다.
+    const formattedDate = formatDate(formData.paymentAt); // "2026-04-26"
+    const localDateTimeString = formattedDate ? `${formattedDate}T00:00:00` : null; // "2026-04-26T00:00:00"
+
+    // 2. 서버에 보낼 데이터를 그 자리에서 완벽하게 합치기 (날짜 보정 + userId 주입)
+    const submitData = {
+      ...formData,
+      userId: userId,                // 작성 시 필요한 userId 확실하게 주입
+      paymentAt: localDateTimeString // 시차 오류 없는 백엔드 맞춤형 날짜 주입
+    };
+
+    // 3. 컴포넌트 state도 동기화 (필요시)
+    setFormData(submitData);
+    // 행복해지는 저금으로 가기전 일단 가계부 저장
     try {
-      // 재평가 또는 수정이면 put, 아니면 post 
-      if (isReEva || isEditMode) {
-        const response = await axios.put(`http://localhost:8080/update/${id}`, formData);
+      if (isReEva) {
+        // 재평가
+        await axios.patch(`http://localhost:8080/expenses/${id}/reevaluate?evaluation=${submitData.evaluation}`, {})
+        console.log('가계부 저장 재평가', submitData);
+
+      } else if (isEditMode) {
+        // 수정
+        await axios.put(`http://localhost:8080/expenses/${id}`, submitData);
+        console.log('가계부 저장 수정', submitData);
+
       } else {
-        const response = await axios.post('http://localhost:8080/', formData);
+        // 가계부 작성
+        await axios.post('http://localhost:8080/expenses', submitData);
+        console.log('가계부 저장 작성', submitData);
+
       }
     } catch (error) {
       console.log(error);
@@ -81,7 +110,7 @@ const ExpenseEmotion = ({
           })}
         </ul>
       </div>
-      {(formData.emotion === 3 || formData.emotion === 4 || formData.emotion === 5) && (formData.evaluation === 0 || formData.evaluation === 25) &&
+      {(formData.emotion === "DEPRESSED" || formData.emotion === "STRESSED" || formData.emotion === "IMPULSIVE") && (formData.evaluation === 0 || formData.evaluation === 1) &&
         <div className='alert-banner' onClick={goHappyBank}>
           {!isReEva ?
             <div className='alert-text'>

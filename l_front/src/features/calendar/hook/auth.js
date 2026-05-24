@@ -1,4 +1,4 @@
-// import { jwtDecode } from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 export const getUserIdFromToken = () => {
   const token = localStorage.getItem('token');
@@ -6,7 +6,8 @@ export const getUserIdFromToken = () => {
 
   try {
     const decoded = jwtDecode(token);
-    return decoded.userId; // 백엔드가 심어놓은 key 이름
+    console.log("디코딩된 전체 payload:", decoded);
+    return decoded.sub; // 백엔드가 심어놓은 key 이름
   } catch (error) {
     console.error("토큰 디코딩 실패:", error);
     return null;

@@ -16,10 +16,10 @@ const DatePickerExpense = ({
   const [prevDate, setPrevDate] = useState(new Date());
   const [isOpen, setIsOpen] = useState(false);
 
-  const startDate = formData?.repeat_start_date;
+  const startDate = formData?.repeatStartDate;
   const getMinDate = () => {
     // startDate가 없거나 현재 날짜 타입이 종료일(repeat_end_date)이 아니라면 제한 없음
-    if (!startDate || datetype !== 'repeat_end_date') return null;
+    if (!startDate || datetype !== 'repeatEndDate') return null;
 
     // 복사본을 만들어 복사본의 날짜를 변경 (formData 원본 유지)
     const minDateCopy = new Date(startDate);
@@ -43,6 +43,8 @@ const DatePickerExpense = ({
     if (datePickerRef.current) {
       datePickerRef.current.setOpen(false); // 캘린더 강제 닫기
     }
+
+    console.log('tempDate: ', tempDate);
   };
 
   const handleCancel = () => {

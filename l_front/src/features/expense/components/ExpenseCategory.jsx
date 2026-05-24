@@ -39,10 +39,10 @@ const ExpenseCategory = ({
       >
         {!isVisibleC && <button
           type="button"
-          className={`category-button ${formData.category === 0 ? '' : 'selected'}`}
+          className={`category-button ${formData.category === "NONE" ? '' : 'selected'}`}
           onClick={handleCat}
         >
-          {formData.category === 0 ? '카테고리 없음' : targetCategory?.label || formData.category}
+          {formData.category === "NONE" ? '카테고리 없음' : targetCategory?.label || formData.category}
           <div className='chevron'><DisClosure fill='#E6E8EA' /></div>
         </button>}
         {isVisibleC && (
