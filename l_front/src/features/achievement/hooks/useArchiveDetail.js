@@ -50,7 +50,7 @@ const useArchiveDetail = (accountId) => {
     try {
       const { data } = await axios.get(`${BASE_URL}/archives/${accountId}`, {
         headers: getHeader(),
-        params: { userId: 3 },
+        params: { userId: 3 }, // TODO: 로그인 연동 후 JWT에서 추출한 userId로 교체
       });
       console.log(`성취기록 상세 응답 (id: ${accountId}):`, data);
 

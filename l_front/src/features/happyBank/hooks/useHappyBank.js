@@ -35,7 +35,7 @@ const useHappyBank = () => {
     try {
       const { data } = await axios.get(`${BASE_URL}/accounts`, {
         headers: getHeader(),
-        params: { userId: 3 },
+        params: { userId: 3 }, // TODO: 로그인 연동 후 JWT에서 추출한 userId로 교체
       });
       console.log('통장 목록 응답:', data);
       setBanks(Array.isArray(data) ? data.map(mapAccount) : []);

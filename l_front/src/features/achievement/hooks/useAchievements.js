@@ -43,7 +43,7 @@ const useAchievements = () => {
     try {
       const { data } = await axios.get(`${BASE_URL}/archives`, {
         headers: getHeader(),
-        params: { userId: 3 },
+        params: { userId: 3 }, // TODO: 로그인 연동 후 JWT에서 추출한 userId로 교체
       });
       console.log('성취기록 목록 응답:', data);
       // createdAt 기준 오름차순 정렬 후 rank(회차) 부여

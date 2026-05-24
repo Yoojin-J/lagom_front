@@ -49,7 +49,7 @@ const useMonthlyReport = () => {
       try {
         const token = localStorage.getItem('accessToken'); // TODO: 로그인 구현 후 키 이름 확인
         const { data } = await axios.get(`${BASE_URL}/reports/monthly`, {
-          params: { year, month, userId: 3 },
+          params: { year, month, userId: 3 }, // TODO: 로그인 연동 후 JWT에서 추출한 userId로 교체
           headers: token ? { Authorization: `Bearer ${token}` } : {},
         });
         console.log(`월별 리포트 응답 (${year}년 ${month}월):`, data);

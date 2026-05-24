@@ -20,7 +20,7 @@ const useDeposit = () => {
       const { data } = await axios.post(
         `${BASE_URL}/transactions/deposit`,
         {
-          userId: 3,
+          userId: 3, // TODO: 로그인 연동 후 JWT에서 추출한 userId로 교체
           accountId: Number(accountId),
           type: type === 'happy' ? 'HAPPY' : 'RECOVER',
           amount: Number(amount),
