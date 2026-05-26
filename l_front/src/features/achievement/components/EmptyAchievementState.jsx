@@ -5,7 +5,6 @@ import Clover2 from '../../../assets/icons/happybank/Clover2';
 function EmptyAchievementState() {
   return (
     <div className="emptyAchievementState">
-      <span className="emptyAchievementState__icon" />
       <Clover2 width={37} height={37} fill="#B1B8BE" />
       <p className="emptyAchievementState__text">완료된 저금 기록이 없습니다</p>
     </div>

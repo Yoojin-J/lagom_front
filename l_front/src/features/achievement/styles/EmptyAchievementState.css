@@ -7,18 +7,6 @@
   flex: 1;
 }
 
-.emptyAchievementState__icon {
-  display: block;
-  width: 44px;
-  height: 44px;
-  aspect-ratio: 1 / 1;
-  background-color: var(--Gray-30, #B1B8BE);
-  opacity: 0.75;
-  -webkit-mask: url('../../../assets/Clover2.svg') center / contain no-repeat;
-  mask: url('../../../assets/Clover2.svg') center / contain no-repeat;
-  margin-bottom: 4px;
-}
-
 .emptyAchievementState__text {
   margin: 0;
   color: var(--Gray-30, #B1B8BE);

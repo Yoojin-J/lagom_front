@@ -50,17 +50,6 @@
   gap: 12px;
 }
 
-.emptyBankState__clover {
-  display: block;
-  width: 44px;
-  height: 44px;
-  aspect-ratio: 1 / 1;
-  background-color: var(--Gray-30, #B1B8BE);
-  opacity: 0.75;
-  -webkit-mask: url('../../../assets/Clover2.svg') center / contain no-repeat;
-  mask: url('../../../assets/Clover2.svg') center / contain no-repeat;
-}
-
 .emptyBankState__message {
 color: var(--Gray-30, #B1B8BE);
 

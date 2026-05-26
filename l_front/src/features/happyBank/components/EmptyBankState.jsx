@@ -10,7 +10,6 @@ function EmptyBankState({ onSetup }) {
       {onSetup && <AddBankButton onClick={onSetup} />}
 
       <div className="emptyBankState__content">
-        <span className="emptyBankState__clover" aria-hidden="true" />
         <Clover2 width={37} height={37} fill="#B1B8BE" />
         <p className="emptyBankState__message">첫 행복의 순간을 기록해보세요!</p>
       </div>
