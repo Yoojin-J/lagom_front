@@ -25,7 +25,17 @@ function ReportPage() {
   };
 
   if (isLoading) return <div className="reportPage" />;
-  if (error || !report) return <div className="reportPage" />;
+
+  if (error || !report) return (
+    <div className="reportPage">
+      <div style={{ marginLeft: '8px' }}>
+        <MonthSelector selectedDate={selectedDate} onChange={setSelectedDate} availableMonths={availableMonths} />
+      </div>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '12px', paddingTop: '80px' }}>
+        <p style={{ margin: 0, color: '#B1B8BE', fontFamily: 'Pretendard', fontSize: '14px', fontStyle: 'normal', fontWeight: 500, lineHeight: '130%' }}>이 달의 기록이 없습니다</p>
+      </div>
+    </div>
+  );
 
   const { totalExpense, emotionCount, emotionRatio, satisfactionByEmotion } = report;
 

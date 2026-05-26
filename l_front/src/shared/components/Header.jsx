@@ -1,5 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
+import Settings from '../../assets/icons/common/Settings';
 import "../styles/Header.css";
 
 const Header = () => {
@@ -11,7 +12,7 @@ const Header = () => {
         logo
       </div>
       <div className='setting' onClick={() => navigate('/setting')} style={{ cursor: 'pointer' }}>
-        설정
+        <Settings />
       </div>
     </div>
   )
