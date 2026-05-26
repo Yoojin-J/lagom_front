@@ -28,14 +28,16 @@ const CustomHeader = ({ date, changeYear }) => {
   );
 };
 
-function MonthSelector({ selectedDate, onChange, emptyMonths = new Set() }) {
+function MonthSelector({ selectedDate, onChange, availableMonths = null }) {
   const today = new Date();
 
-  // 미래 월 또는 데이터 없는 월은 선택 불가
+  // 미래 월은 항상 비활성화
+  // availableMonths가 로드된 경우 목록에 없는 월도 비활성화
   const filterDate = (date) => {
     if (date > today) return false;
+    if (availableMonths === null) return true; // 로딩 중엔 모두 활성화
     const key = `${date.getFullYear()}-${date.getMonth() + 1}`;
-    return !emptyMonths.has(key);
+    return availableMonths.has(key);
   };
 
   return (

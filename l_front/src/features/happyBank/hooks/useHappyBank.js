@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
+import { getUserIdFromToken } from '../../calendar/hook/auth';
 
 const BASE_URL = 'http://localhost:8080';
 
 const getHeader = () => {
-  const token = localStorage.getItem('accessToken');
+  const token = localStorage.getItem('token');
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
@@ -35,7 +36,7 @@ const useHappyBank = () => {
     try {
       const { data } = await axios.get(`${BASE_URL}/accounts`, {
         headers: getHeader(),
-        params: { userId: 3 }, // TODO: 로그인 연동 후 JWT에서 추출한 userId로 교체
+        params: { userId: getUserIdFromToken() },
       });
       console.log('통장 목록 응답:', data);
       setBanks(Array.isArray(data) ? data.map(mapAccount) : []);
@@ -61,7 +62,7 @@ const useHappyBank = () => {
         {
           headers: getHeader(),
           params: {
-            userId: 3,
+            userId: getUserIdFromToken(),
             name,
             goalType: goalType === 'amount' ? 'AMOUNT' : 'PERIOD',
             goalAmount: goalType === 'amount' ? Number(goalAmount) : null,

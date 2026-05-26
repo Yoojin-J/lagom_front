@@ -4,7 +4,7 @@ import axios from 'axios';
 const BASE_URL = 'http://localhost:8080';
 
 const getHeader = () => {
-  const token = localStorage.getItem('accessToken');
+  const token = localStorage.getItem('token');
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 

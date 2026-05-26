@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
+import { getUserIdFromToken } from '../../calendar/hook/auth';
 
 const BASE_URL = 'http://localhost:8080';
 
 const getHeader = () => {
-  const token = localStorage.getItem('accessToken');
+  const token = localStorage.getItem('token');
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
@@ -50,7 +51,7 @@ const useArchiveDetail = (accountId) => {
     try {
       const { data } = await axios.get(`${BASE_URL}/archives/${accountId}`, {
         headers: getHeader(),
-        params: { userId: 3 }, // TODO: 로그인 연동 후 JWT에서 추출한 userId로 교체
+        params: { userId: getUserIdFromToken() },
       });
       console.log(`성취기록 상세 응답 (id: ${accountId}):`, data);
 

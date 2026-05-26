@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import axios from 'axios';
+import { getUserIdFromToken } from '../../calendar/hook/auth';
 
 const BASE_URL = 'http://localhost:8080';
 
 const getHeader = () => {
-  const token = localStorage.getItem('accessToken');
+  const token = localStorage.getItem('token');
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
@@ -20,7 +21,7 @@ const useDeposit = () => {
       const { data } = await axios.post(
         `${BASE_URL}/transactions/deposit`,
         {
-          userId: 3, // TODO: 로그인 연동 후 JWT에서 추출한 userId로 교체
+          userId: getUserIdFromToken(),
           accountId: Number(accountId),
           type: type === 'happy' ? 'HAPPY' : 'RECOVER',
           amount: Number(amount),

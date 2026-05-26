@@ -12,6 +12,7 @@ import LoginPage from './features/login/LoginPage';
 import LoginCallbackPage from './features/login/LoginCallbackPage';
 import { ProtectedRoute } from './shared/components/ProtectedRoute';
 import { PublicRoute } from './shared/components/PublicRoute';
+import SettingPage from './features/setting/page';
 
 // Header, NavigationBar 가 필요한 화면 
 const MainLayout = () => (
@@ -51,6 +52,7 @@ function App() {
             <Route path='/record/:accountId' element={<AchievementPage />} />
 
             <Route path='/report' element={<ReportPage />} />
+            <Route path='/setting' element={<SettingPage />} />
           </Route>
           
           {/* 레이아웃이 필요 없는 서비스 화면들 (가계부/기록 관련) */}
