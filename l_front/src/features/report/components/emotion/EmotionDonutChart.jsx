@@ -16,8 +16,8 @@ function EmotionDonutChart({ data }) {
           dataKey="ratio"
           cx={50}
           cy={50}
-          innerRadius={28}
-          outerRadius={44}
+          innerRadius={32}
+          outerRadius={50}
           startAngle={90}
           endAngle={-270}
           strokeWidth={0}
