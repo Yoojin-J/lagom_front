@@ -38,7 +38,8 @@ function calcPeriodInfo(startDate, goalDate) {
 // - 목록: onClick 전달 → 카드 전체 클릭으로 상세 이동
 // - 상세: onClick 없음 → 클릭 불가 (cursor 스타일도 제거)
 function BankSummaryCard({ bankInfo, onDeposit, onWithdraw, onEdit, onClick }) {
-  const { name, currentAmount, goalType, goalAmount, goalDate, startDate } = bankInfo;
+  const { name, displayName, currentAmount, goalType, goalAmount, goalDate, startDate } = bankInfo;
+  const displayedName = displayName ?? name;
   const periodInfo = (goalType === 'period' && goalDate) ? calcPeriodInfo(startDate, goalDate) : null;
 
   return (
@@ -48,7 +49,7 @@ function BankSummaryCard({ bankInfo, onDeposit, onWithdraw, onEdit, onClick }) {
           <span className="bankSummaryCard__iconWrap">
             <Clover2 width={12.6} height={13.2} fill="#FFF" />
           </span>
-          <span className="bankSummaryCard__name">{name}</span>
+          <span className="bankSummaryCard__name">{displayedName}</span>
         </div>
         {/* 카드 클릭과 수정 버튼 클릭이 겹치지 않도록 stopPropagation 처리 */}
         <button

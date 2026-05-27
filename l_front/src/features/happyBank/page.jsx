@@ -85,7 +85,7 @@ function BankDetailView({ accountId, bankSummary, onComplete }) {
       )}
       {showGoalModal && (
         <GoalAchievedModal
-          bankName={bank.name}
+          bankName={bank.displayName ?? bank.name}
           onConfirm={async () => {
             try {
               await onComplete(accountId);
@@ -231,7 +231,7 @@ function HappyBankPage() {
       <div className="happyBankPageOverlay">
         <DepositPage
           accountId={depId}
-          bankName={depBank?.name ?? '행복통장'}
+          bankName={depBank?.displayName ?? depBank?.name ?? '행복통장'}
           initialType={initialType}
           onComplete={() => navigate(`/happybank/${depId}`)}
           onBack={() => navigate(`/happybank/${depId}`)}
@@ -248,7 +248,7 @@ function HappyBankPage() {
     return (
       <BankWithdrawView
         accountId={wdId}
-        bankName={wdBank?.name ?? '행복통장'}
+        bankName={wdBank?.displayName ?? wdBank?.name ?? '행복통장'}
       />
     );
   }

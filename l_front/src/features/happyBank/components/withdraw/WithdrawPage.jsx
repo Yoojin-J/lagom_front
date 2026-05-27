@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'react';
 // record: 부모(page.jsx)가 GET /transactions/random 으로 받아온 단일 거래 기록
-import html2canvas from 'html2canvas';
+import { toPng } from 'html-to-image';
 import ChevronLeft from '../../../../assets/icons/common/ChevronLeft';
 import stickerImg from '../../../../assets/images/sticker.png';
 import '../../styles/withdraw/WithdrawPage.css';
@@ -48,6 +48,7 @@ function makeBarcodePattern(seed) {
   return pattern.slice(offset).concat(pattern.slice(0, offset));
 }
 
+
 const TYPE_LABEL = {
   happy: '행복저금',
   become: '행복해지는 저금',
@@ -89,16 +90,14 @@ function WithdrawPage({ onBack, bankInfo, record, onDelete }) {
     isDownloadingRef.current = true;
 
     try {
-      const canvas = await html2canvas(exportRef.current, {
-        backgroundColor: null,
-        scale: Math.max(window.devicePixelRatio || 1, 2),
-        useCORS: true,
+      const dataUrl = await toPng(exportRef.current, {
+        pixelRatio: Math.max(window.devicePixelRatio || 1, 2),
       });
 
       const link = document.createElement('a');
       const safeDate = String(record.date ?? 'receipt').replace(/[^\w-]+/g, '-');
       link.download = `lagom-receipt-${safeDate}.png`;
-      link.href = canvas.toDataURL('image/png');
+      link.href = dataUrl;
       link.click();
     } catch (error) {
       console.error('Failed to download receipt PNG.', error);
@@ -107,7 +106,7 @@ function WithdrawPage({ onBack, bankInfo, record, onDelete }) {
     }
   };
 
-  const renderReceiptContent = (exportMode = false) => (
+  const renderReceiptContent = () => (
     <>
       <h2 className="withdrawPage__receiptTitle">
         Lagom&apos;s
@@ -141,7 +140,7 @@ function WithdrawPage({ onBack, bankInfo, record, onDelete }) {
         </div>
       </div>
 
-      <div className={exportMode ? 'withdrawPage__dashed withdrawPage__dashed--export' : 'withdrawPage__dashed'} />
+      <div className="withdrawPage__dashed" />
 
       <div className="withdrawPage__infoRows">
         <div className="withdrawPage__infoRow">
@@ -150,7 +149,7 @@ function WithdrawPage({ onBack, bankInfo, record, onDelete }) {
         </div>
       </div>
 
-      <div className={exportMode ? 'withdrawPage__dashed withdrawPage__dashed--export' : 'withdrawPage__dashed'} />
+      <div className="withdrawPage__dashed" />
 
       <div className="withdrawPage__infoRows">
         <div className="withdrawPage__infoRow">
@@ -161,7 +160,7 @@ function WithdrawPage({ onBack, bankInfo, record, onDelete }) {
         </div>
       </div>
 
-      <div className={exportMode ? 'withdrawPage__dashed withdrawPage__dashed--export' : 'withdrawPage__dashed'} />
+      <div className="withdrawPage__dashed" />
 
       <div className="withdrawPage__total">
         <span className="withdrawPage__totalLabel">TOTAL</span>
@@ -209,7 +208,26 @@ function WithdrawPage({ onBack, bankInfo, record, onDelete }) {
             aria-hidden="true"
           />
           <div className="withdrawPage__receipt">
-            {renderReceiptContent(false)}
+            {renderReceiptContent()}
+          </div>
+        </div>
+      </div>
+
+      {/* 다운로드 전용 캡처 영역 — 화면에 보이지 않음 */}
+      <div style={{ position: 'fixed', left: '-9999px', top: 0, pointerEvents: 'none' }}>
+        <div
+          ref={exportRef}
+          style={{ background: '#ffb0ad', padding: '26px 25px 16px', width: '376px', boxSizing: 'border-box' }}
+        >
+          <div className="withdrawPage__receiptOuter" style={{ maxWidth: '326px' }}>
+            <img
+              className="withdrawPage__stickerImg"
+              src={stickerImg}
+              alt=""
+            />
+            <div className="withdrawPage__receipt">
+              {renderReceiptContent()}
+            </div>
           </div>
         </div>
       </div>
@@ -242,22 +260,6 @@ function WithdrawPage({ onBack, bankInfo, record, onDelete }) {
         </div>
       )}
 
-      <div className="withdrawPage__exportCapture" aria-hidden="true">
-        <div className="withdrawPage__exportCanvas" ref={exportRef}>
-          <div className="withdrawPage__receiptOuter withdrawPage__receiptOuter--export">
-            <img
-              className="withdrawPage__stickerImg withdrawPage__stickerImg--export"
-              src={stickerImg}
-              alt=""
-            />
-            <div className="withdrawPage__receiptTopExport" />
-            <div className="withdrawPage__receipt withdrawPage__receipt--export">
-              {renderReceiptContent(true)}
-            </div>
-            <div className="withdrawPage__receiptBottomExport" />
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
