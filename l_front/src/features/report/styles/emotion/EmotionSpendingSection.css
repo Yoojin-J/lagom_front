@@ -89,7 +89,7 @@
 .emotionSpendingSection__insight {
   display: flex;
   gap: 4px;
-  align-items: center;
+  align-items: flex-start;
   color: var(--Gray-60, #6D7882);
 
   /* Body Medium/small */

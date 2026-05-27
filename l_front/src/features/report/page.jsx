@@ -39,13 +39,21 @@ function ReportPage() {
 
   const { totalExpense, emotionCount, emotionRatio, satisfactionByEmotion } = report;
 
+  //비율 차이 계산 (%)
+  const insightRate = (() => {
+    if (!emotionRatio || emotionRatio.length < 2) return null;
+    const avgRatio = emotionRatio.reduce((sum, e) => sum + e.ratio, 0) / emotionRatio.length;
+    if (avgRatio === 0) return null;
+    return Math.round(((emotionRatio[0].ratio - avgRatio) / avgRatio) * 100);
+  })();
+
   return (
     <div className="reportPage">
       <div style={{ marginLeft: '8px' }}>
         <MonthSelector selectedDate={selectedDate} onChange={setSelectedDate} availableMonths={availableMonths} />
       </div>
       <ReportSummaryRow totalExpense={totalExpense} emotionCount={emotionCount} />
-      <EmotionSpendingSection data={emotionRatio} />
+      <EmotionSpendingSection data={emotionRatio} insightRate={insightRate} />
       <EmotionSatisfactionSection data={satisfactionByEmotion} />
       <HappyBankNudgeBanner onPress={handleNudgeBanner} />
     </div>

@@ -16,14 +16,14 @@ function EmotionSpendingSection({ data, insightRate }) {
         <EmotionLegendList data={data} />
       </div>
       <Divider width={299} />
-      {dominant && (
+      {dominant && insightRate !== null && (
         <p className="emotionSpendingSection__insight">
           <Feedback width={24} height={24} stroke="#268097" fill="#EDF6F8" />
-          {dominant.emotion} 상태일 때 지출이 평균 대비 {' '}
-          <span className="emotionSpendingSection__insightHighlight">
-            +{insightRate ?? 'n'}%
-          </span>{' '}
-          높아요
+          <span>
+            {dominant.emotion} 상태일 때 지출이 평균 대비{' '}
+            <span className="emotionSpendingSection__insightHighlight">+{insightRate}%</span>
+            {' '}높아요
+          </span>
         </p>
       )}
     </div>

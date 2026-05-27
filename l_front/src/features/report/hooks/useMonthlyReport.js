@@ -4,6 +4,16 @@ import { getUserIdFromToken } from '../../calendar/hook/auth';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+const EMOTION_LABEL = {
+  CALM: '평온',
+  DEPRESSED: '우울',
+  EXCITED: '설렘',
+  IMPULSIVE: '충동',
+  JOY: '기쁨',
+  STRESSED: '스트레스',
+};
+const toKorean = (key) => EMOTION_LABEL[key] ?? key;
+
 const useMonthlyReport = () => {
   const [selectedDate, setSelectedDate] = useState(new Date()); // 선택된 월 (DatePicker 연동)
   const [report, setReport] = useState(null);                   // API 응답 데이터
@@ -57,12 +67,17 @@ const useMonthlyReport = () => {
         });
         console.log(`월별 리포트 응답 (${year}년 ${month}월):`, data);
 
-        const emotionRatio = Object.entries(data.emotionExpenseRatio ?? {})
-          .map(([emotion, ratio]) => ({ emotion, ratio }))
+        const sorted = Object.entries(data.emotionExpenseRatio ?? {})
+          .map(([emotion, ratio]) => ({ emotion: toKorean(emotion), ratio }))
           .sort((a, b) => b.ratio - a.ratio);
 
+        const top4 = sorted.slice(0, 4);
+        const rest = sorted.slice(4);
+        const etcRatio = rest.reduce((sum, e) => sum + e.ratio, 0);
+        const emotionRatio = etcRatio > 0 ? [...top4, { emotion: '기타', ratio: etcRatio }] : top4;
+
         const satisfactionByEmotion = Object.entries(data.emotionAvgEvaluation ?? {})
-          .map(([emotion, avgScore]) => ({ emotion, avgScore }))
+          .map(([emotion, avgScore]) => ({ emotion: toKorean(emotion), avgScore }))
           .sort((a, b) => b.avgScore - a.avgScore);
 
         setReport({
