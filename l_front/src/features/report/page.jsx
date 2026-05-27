@@ -39,13 +39,20 @@ function ReportPage() {
 
   const { totalExpense, emotionCount, emotionRatio, satisfactionByEmotion } = report;
 
-  //비율 차이 계산 (%)
+  // 비율 차이 계산 (%)
   const insightRate = (() => {
     if (!emotionRatio || emotionRatio.length < 2) return null;
     const avgRatio = emotionRatio.reduce((sum, e) => sum + e.ratio, 0) / emotionRatio.length;
     if (avgRatio === 0) return null;
     return Math.round(((emotionRatio[0].ratio - avgRatio) / avgRatio) * 100);
   })();
+
+  // 부정 감정이 긍정 감정보다 비율이 높을 때만 넛지 배너 표시
+  const NEGATIVE_EMOTIONS = new Set(['우울', '스트레스', '충동']);
+  const POSITIVE_EMOTIONS = new Set(['기쁨', '평온', '설렘']);
+  const negativeRatio = emotionRatio.filter((e) => NEGATIVE_EMOTIONS.has(e.emotion)).reduce((s, e) => s + e.ratio, 0);
+  const positiveRatio = emotionRatio.filter((e) => POSITIVE_EMOTIONS.has(e.emotion)).reduce((s, e) => s + e.ratio, 0);
+  const showNudgeBanner = negativeRatio > positiveRatio;
 
   return (
     <div className="reportPage">
@@ -54,8 +61,8 @@ function ReportPage() {
       </div>
       <ReportSummaryRow totalExpense={totalExpense} emotionCount={emotionCount} />
       <EmotionSpendingSection data={emotionRatio} insightRate={insightRate} />
-      <EmotionSatisfactionSection data={satisfactionByEmotion} />
-      <HappyBankNudgeBanner onPress={handleNudgeBanner} />
+      {satisfactionByEmotion.length > 0 && <EmotionSatisfactionSection data={satisfactionByEmotion} />}
+      {showNudgeBanner && <HappyBankNudgeBanner onPress={handleNudgeBanner} />}
     </div>
   );
 }

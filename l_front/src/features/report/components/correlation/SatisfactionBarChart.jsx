@@ -46,7 +46,7 @@ function SatisfactionBarChart({ data }) {
         width={62}
         interval={0}
       />
-      <Bar dataKey="avgScore" radius={[100, 100, 100, 100]} barSize={18} background={{ fill: '#F4F5F6', radius: 100 }}>
+      <Bar dataKey="avgScore" radius={[100, 100, 100, 100]} barSize={18} minPointSize={24} background={{ fill: '#F4F5F6', radius: 100 }}>
         {data.map((entry, index) => (
           <Cell key={entry.emotion} fill={RATIO_COLORS[index] ?? RATIO_COLORS[RATIO_COLORS.length - 1]} />
         ))}
