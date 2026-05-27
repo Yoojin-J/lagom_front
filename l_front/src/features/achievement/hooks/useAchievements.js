@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { getUserIdFromToken } from '../../calendar/hook/auth';
 
-const BASE_URL = 'http://localhost:8080';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const getHeader = () => {
   const token = localStorage.getItem('token');
@@ -11,12 +11,14 @@ const getHeader = () => {
 
 // LocalDateTime("2026-05-19T14:30:00") → "2026.05.19"
 const formatDate = (dateStr) => {
-  if (!dateStr) return '';
+  if (!dateStr) 
+    return '';
   return String(dateStr).slice(0, 10).replace(/-/g, '.');
 };
 
 // 백엔드 goalType(AMOUNT/PERIOD) → 프론트엔드(amount/period) 변환
-const mapGoalType = (type) => (type === 'AMOUNT' ? 'amount' : 'period');
+const mapGoalType = (type) => 
+  (type === 'AMOUNT' ? 'amount' : 'period');
 
 // ArchiveResponse → 프론트엔드 achievement 객체 변환 (목록용)
 // rank: 목록에서 계산한 순서 (1회차, 2회차 표시용)

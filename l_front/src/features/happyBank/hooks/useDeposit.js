@@ -2,7 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { getUserIdFromToken } from '../../calendar/hook/auth';
 
-const BASE_URL = 'http://localhost:8080';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const getHeader = () => {
   const token = localStorage.getItem('token');

@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { getUserIdFromToken } from '../../calendar/hook/auth';
 
-const BASE_URL = 'http://localhost:8080';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const getHeader = () => {
   const token = localStorage.getItem('token');
@@ -39,7 +39,15 @@ const useHappyBank = () => {
         params: { userId: getUserIdFromToken() },
       });
       console.log('통장 목록 응답:', data);
-      setBanks(Array.isArray(data) ? data.map(mapAccount) : []);
+      const mapped = Array.isArray(data) ? data.map(mapAccount) : [];
+      // 같은 이름이 여러 개면 첫 번째는 그대로, 이후부터 "이름2", "이름3"...
+      const nameCount = {};
+      const withDisplayName = mapped.map((bank) => {
+        nameCount[bank.name] = (nameCount[bank.name] ?? 0) + 1;
+        const count = nameCount[bank.name];
+        return { ...bank, displayName: count === 1 ? bank.name : `${bank.name}${count}` };
+      });
+      setBanks(withDisplayName);
     } catch (err) {
       console.error('통장 목록 불러오기 실패', err);
       setError(err);

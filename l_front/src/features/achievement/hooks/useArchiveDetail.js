@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { getUserIdFromToken } from '../../calendar/hook/auth';
 
-const BASE_URL = 'http://localhost:8080';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const getHeader = () => {
   const token = localStorage.getItem('token');
@@ -10,12 +10,18 @@ const getHeader = () => {
 };
 
 const formatDate = (dateStr) => {
-  if (!dateStr) return '';
+  if (!dateStr) 
+    return '';
+
   const d = new Date(dateStr);
-  if (isNaN(d)) return String(dateStr).slice(0, 10).replace(/-/g, '.');
+
+  if (isNaN(d)) 
+    return String(dateStr).slice(0, 10).replace(/-/g, '.');
+
   const yyyy = d.getFullYear();
   const mm = String(d.getMonth() + 1).padStart(2, '0');
   const dd = String(d.getDate()).padStart(2, '0');
+
   return `${yyyy}.${mm}.${dd}`;
 };
 
@@ -45,9 +51,12 @@ const useArchiveDetail = (accountId) => {
   const [error, setError] = useState(null);
 
   const fetchDetail = useCallback(async () => {
-    if (!accountId) return;
+    if (!accountId) 
+      return;
+
     setIsLoading(true);
     setError(null);
+    
     try {
       const { data } = await axios.get(`${BASE_URL}/archives/${accountId}`, {
         headers: getHeader(),

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:8080';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const getHeader = () => {
   const token = localStorage.getItem('token');
@@ -69,7 +69,10 @@ const useBankDetail = (accountId) => {
 
       const txList = data.transactions ?? data.transactionList ?? [];
       console.log('거래 내역:', txList);
-      setRecords(txList.map(mapTransaction));
+      const sorted = [...txList].sort(
+        (a, b) => new Date(b.createdAt ?? b.date ?? 0) - new Date(a.createdAt ?? a.date ?? 0)
+      );
+      setRecords(sorted.map(mapTransaction));
     } catch (err) {
       console.error('통장 상세 불러오기 실패', err);
       setError(err);
