@@ -76,6 +76,11 @@ const useArchiveDetail = (accountId) => {
         .filter((r) => r.type === 'become')
         .reduce((s, r) => s + r.amount, 0);
 
+      // AMOUNT 타입은 endDate가 null이므로 마지막 거래 날짜를 완료일로 사용
+      const lastRecordDate = records.length > 0
+        ? records.reduce((latest, r) => (r.date > latest ? r.date : latest), records[0].date)
+        : null;
+
       setDetail({
         id: data.accountId,
         name: data.name,
@@ -84,7 +89,7 @@ const useArchiveDetail = (accountId) => {
         goalAmount: data.goalAmount ?? null,
         goalDate: data.endDate ? formatDate(data.endDate) : null,
         startDate: formatDate(data.createdAt),
-        endDate: data.endDate ? formatDate(data.endDate) : null,
+        endDate: data.endDate ? formatDate(data.endDate) : lastRecordDate,
         happySavings,
         becomeSavings,
         records,

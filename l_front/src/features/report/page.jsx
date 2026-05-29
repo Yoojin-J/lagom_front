@@ -26,7 +26,7 @@ function ReportPage() {
 
   if (isLoading) return <div className="reportPage" />;
 
-  if (error || !report) return (
+  if (error || !report || report.emotionRatio.length === 0) return (
     <div className="reportPage">
       <div style={{ marginLeft: '8px' }}>
         <MonthSelector selectedDate={selectedDate} onChange={setSelectedDate} availableMonths={availableMonths} />
@@ -39,7 +39,7 @@ function ReportPage() {
 
   const { totalExpense, emotionCount, emotionRatio, satisfactionByEmotion } = report;
 
-  // 비율 차이 계산 (%)
+  // 지배 감정의 지출 비율이 평균 대비 얼마나 높은지 (상대적 초과율)
   const insightRate = (() => {
     if (!emotionRatio || emotionRatio.length < 2) return null;
     const avgRatio = emotionRatio.reduce((sum, e) => sum + e.ratio, 0) / emotionRatio.length;

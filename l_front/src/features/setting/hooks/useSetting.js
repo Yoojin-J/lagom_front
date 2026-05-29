@@ -7,6 +7,7 @@ const getHeader = () => {
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
+
 // PATCH /users/me/nickname - 닉네임 수정
 export const updateNickname = async (nickname) => {
   const { data } = await axios.patch(
@@ -17,13 +18,21 @@ export const updateNickname = async (nickname) => {
   return data;
 };
 
-// 로그아웃 - 프론트에서 토큰 삭제
+// 로그아웃 - 프론트에서 토큰 삭제 (닉네임은 userId별로 보존)
 export const logout = () => {
   localStorage.removeItem('token');
 };
 
 // DELETE /users/me - 회원 탈퇴
 export const deleteAccount = async () => {
+  const token = localStorage.getItem('token');
   await axios.delete(`${BASE_URL}/users/me`, { headers: getHeader() });
+  if (token) {
+    try {
+      const { jwtDecode } = await import('jwt-decode');
+      const { sub } = jwtDecode(token);
+      localStorage.removeItem(`nickname_${sub}`);
+    } catch { /* ignore */ }
+  }
   localStorage.removeItem('token');
 };

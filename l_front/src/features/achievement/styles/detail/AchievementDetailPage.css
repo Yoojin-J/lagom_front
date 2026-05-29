@@ -43,6 +43,7 @@
 
 .achievementDetailPage__date {
   margin: 0;
+  text-align: left;
   color: var(--Gray-60, #6D7882);
   font-family: Pretendard;
   font-size: 13px;
