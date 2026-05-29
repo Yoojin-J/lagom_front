@@ -13,6 +13,7 @@
   background: #ffb0ad;
   font-family: Pretendard, var(--sans);
   box-sizing: border-box;
+  margin: 0 auto;
 }
 
 .withdrawPage__captureArea {

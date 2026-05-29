@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { getUserIdFromToken } from '../../calendar/hook/auth';
+import { DEFAULT_BANK_NAME } from '../constants/setup';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -60,9 +61,19 @@ const useHappyBank = () => {
     fetchBanks();
   }, [fetchBanks]);
 
+  // 같은 이름이 이미 있으면 '이름2', '이름3' ... 으로 고유 이름 생성
+  const generateUniqueName = (baseName) => {
+    if (banks.length === 0) return baseName;
+    const existing = new Set(banks.map((b) => b.name));
+    let counter = banks.length + 1;
+    while (existing.has(`${baseName}${counter}`)) counter++;
+    return `${baseName}${counter}`;
+  };
+
   // POST /accounts - 통장 생성
   // goalType: 'amount'|'period', goalAmount, goalDate(endDate)
   const createBank = async ({ name, goalType, goalAmount, goalDate }) => {
+    const uniqueName = name === DEFAULT_BANK_NAME ? generateUniqueName(name) : name;
     try {
       const { data } = await axios.post(
         `${BASE_URL}/accounts`,
@@ -71,7 +82,7 @@ const useHappyBank = () => {
           headers: getHeader(),
           params: {
             userId: getUserIdFromToken(),
-            name,
+            name: uniqueName,
             goalType: goalType === 'amount' ? 'AMOUNT' : 'PERIOD',
             goalAmount: goalType === 'amount' ? Number(goalAmount) : null,
             endDate: goalType === 'period' ? goalDate.replaceAll('.', '-') : null,

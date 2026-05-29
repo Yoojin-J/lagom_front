@@ -3,14 +3,15 @@ import Feedback from '../../../../assets/icons/common/Feedback';
 import '../../styles/deposit/AmountInput.css';
 import Delite from '../../../../assets/icons/common/Delite';
 
-const MAX_AMOUNT = 10_000_000;
+const MIN_AMOUNT = 100;
+const MAX_AMOUNT = 100_000;
 
 function AmountInput({ value, onChange }) {
   const [isFocused, setIsFocused] = useState(false);
   const [isTouched, setIsTouched] = useState(false);
 
   const numeric = value ? Number(value) : 0;
-  const hasError = isTouched && !isFocused && (!value || numeric === 0);
+  const hasError = isTouched && !isFocused && (!value || numeric < MIN_AMOUNT);
   const formatted = value ? numeric.toLocaleString('ko-KR') : '';
 
   const handleChange = (e) => {
@@ -65,13 +66,13 @@ function AmountInput({ value, onChange }) {
 
         {isFocused && (
           <p className="amountInput__helper">
-            1원부터 {(MAX_AMOUNT / 10000).toLocaleString()}만원까지 저금할 수 있어요
+            {MIN_AMOUNT.toLocaleString()}원부터 {(MAX_AMOUNT / 10000).toLocaleString()}만원까지 저금할 수 있어요
           </p>
         )}
         {hasError && (
           <p className="amountInput__error">
             <Feedback className="amountInput__errorIcon" />
-            1원부터 {(MAX_AMOUNT / 10000).toLocaleString()}만원까지 저금할 수 있어요
+            {MIN_AMOUNT.toLocaleString()}원부터 {(MAX_AMOUNT / 10000).toLocaleString()}만원까지 저금할 수 있어요
           </p>
         )}
       </div>

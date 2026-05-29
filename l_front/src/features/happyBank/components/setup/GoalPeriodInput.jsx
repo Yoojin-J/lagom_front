@@ -9,8 +9,13 @@ import '../../../expense/styles/ExpensePage.css';
 import '../../styles/setup/GoalPeriodInput.css';
 
 const toDate = (v) => (v ? new Date(v.replace(/\./g, '-')) : null);
-const toStoreFormat = (date) =>
-  date ? date.toISOString().slice(0, 10).replace(/-/g, '.') : '';
+const toStoreFormat = (date) => {
+  if (!date) return '';
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}.${m}.${d}`;
+};
 
 const CustomInput = forwardRef(({ value, onClick, placeholder }, ref) => (
   <div className={`custom-input ${value ? '' : 'none'}`} onClick={onClick} ref={ref}>
@@ -66,11 +71,10 @@ function GoalPeriodInput({ value, onChange }) {
           dateFormat="yyyy년 MM월 dd일"
           minDate={tomorrow}
           placeholderText="년/월/일"
-          popperPlacement="auto"
+          popperPlacement="bottom-start"
           showPopperArrow={false}
           shouldCloseOnSelect={false}
           fixedHeight={false}
-          popperProps={{ strategy: 'fixed' }}
           popperClassName="date-picker-popper"
           wrapperClassName="date-picker-wrapper"
           renderCustomHeader={CustomHeader}

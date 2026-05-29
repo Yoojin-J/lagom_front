@@ -14,10 +14,13 @@
   animation: pageSlideIn 0.25s ease-out;
   display: flex;
   flex-direction: column;
+  width: 375px;
+  max-width: 100%;
   min-height: 100vh;
   background: #fff;
   box-sizing: border-box;
   text-align: left;
+  margin: 0 auto;
 }
 
 .depositPage__header {

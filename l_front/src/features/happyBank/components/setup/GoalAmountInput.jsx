@@ -4,7 +4,7 @@ import Delite from '../../../../assets/icons/common/Delite';
 import Feedback from '../../../../assets/icons/common/Feedback';
 import { GOAL_AMOUNT_MAX, GOAL_AMOUNT_MIN } from '../../constants/setup';
 
-const AMOUNT_GUIDE_TEXT = '1원부터 nn만원까지 저금할 수 있어요';
+const AMOUNT_GUIDE_TEXT = '100원부터 100만원까지 설정할 수 있어요';
 
 function GoalAmountInput({ value, onChange }) {
   const [isFocused, setIsFocused] = useState(false);
@@ -45,9 +45,8 @@ function GoalAmountInput({ value, onChange }) {
     <div className="goalAmountInput">
       <label className="goalAmountInput__label">목표금액</label>
       <div
-        className={`goalAmountInput__wrapper ${
-          isFocused ? 'goalAmountInput__wrapper--focused' : ''
-        } ${showError ? 'goalAmountInput__wrapper--error' : ''}`}
+        className={`goalAmountInput__wrapper ${isFocused ? 'goalAmountInput__wrapper--focused' : ''
+          } ${showError ? 'goalAmountInput__wrapper--error' : ''}`}
       >
         <div className="goalAmountInput__fieldRow">
           <input
@@ -80,7 +79,7 @@ function GoalAmountInput({ value, onChange }) {
 
       {showError ? (
         <p className="goalAmountInput__message goalAmountInput__message--error">
-            <Feedback />
+          <Feedback />
           <span>{AMOUNT_GUIDE_TEXT}</span>
         </p>
       ) : (

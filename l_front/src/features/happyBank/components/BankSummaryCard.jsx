@@ -6,9 +6,15 @@ import '../styles/BankSummaryCard.css';
 // startDate 없으면 오늘을 기준으로 계산
 function calcPeriodInfo(startDate, goalDate) {
   if (!goalDate) return null;
-  const formatDate = (date) => date.toISOString().slice(0, 10).replace(/-/g, '.');
-  const end = new Date(goalDate.replace(/\./g, '-'));
+  const formatDate = (date) => {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}.${m}.${d}`;
+  };
+  const end = new Date(goalDate.replace(/\./g, '-') + 'T00:00:00');
   const today = new Date();
+  today.setHours(0, 0, 0, 0);
   const daysRemaining = Math.max(Math.floor((end - today) / (1000 * 60 * 60 * 24)), 0);
 
   if (!startDate) {
@@ -21,7 +27,7 @@ function calcPeriodInfo(startDate, goalDate) {
     };
   }
 
-  const start = new Date(startDate.replace(/\./g, '-'));
+  const start = new Date(startDate.replace(/\./g, '-') + 'T00:00:00');
   const totalDays = Math.max(Math.floor((end - start) / (1000 * 60 * 60 * 24)), 1);
   const daysElapsed = Math.min(Math.max(Math.floor((today - start) / (1000 * 60 * 60 * 24)) + 1, 1), totalDays);
 

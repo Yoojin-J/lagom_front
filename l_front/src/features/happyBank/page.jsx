@@ -30,7 +30,7 @@ function calcIsGoalReached(bank) {
   if (goalType === 'amount') {
     return balance >= (goalAmount ?? 0) && (goalAmount ?? 0) > 0;
   }
-  return goalDate ? new Date() >= new Date(goalDate.replace(/\./g, '-')) : false;
+  return goalDate ? new Date() >= new Date(goalDate.replace(/\./g, '-') + 'T00:00:00') : false;
 }
 
 // ── 통장 상세 뷰 ──────────────────────────────────────────────
@@ -55,7 +55,8 @@ function BankDetailView({ accountId, bankSummary, onComplete }) {
   if (error || !bank) return <div className="happyBankPage" />;
 
   const handleWithdraw = () => {
-    if (records.length === 0) setShowWithdrawEmpty(true);
+    const hasHappyRecords = records.some((r) => r.type === 'happy');
+    if (!hasHappyRecords) setShowWithdrawEmpty(true);
     else navigate(`/happybank/${accountId}/withdraw`);
   };
 
@@ -234,7 +235,7 @@ function HappyBankPage() {
           bankName={depBank?.displayName ?? depBank?.name ?? '행복통장'}
           initialType={initialType}
           onComplete={() => navigate(`/happybank/${depId}`)}
-          onBack={() => navigate(`/happybank/${depId}`)}
+          onBack={() => navigate(-1)}
         />
       </div>
     );
