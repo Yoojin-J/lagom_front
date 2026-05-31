@@ -72,6 +72,7 @@ const ExpensePage = () => {
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [preEva, setPreEva] = useState(null);
+  const [disable, setDisable] = useState(true);
 
 
   // 거래유형에 따른 카테고리 목록
@@ -169,6 +170,13 @@ const ExpensePage = () => {
     console.log("editData => formData:", formData);
   }, [editData, isEditMode, isReEva]);
 
+  useEffect(() => {
+    if(formData.amount == '' || formData.category == 'NONE') {
+      setDisable(true);
+    } else {
+      setDisable(false);
+    }
+  }, [formData.category, formData.amount]);
 
   // 카테고리와 내역명 옆 아이콘 동기화
   const targetCategory = useMemo(() => {
@@ -353,7 +361,8 @@ const ExpensePage = () => {
         </div>
         <button
           type='submit'
-          className='submit-btn'
+          className={`submit-btn ${disable ? 'disable' : ''}`}
+          disabled={disable}
           onClick={handleSubmit}
         >
           확인
