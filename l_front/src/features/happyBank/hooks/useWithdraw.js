@@ -47,14 +47,14 @@ const useWithdraw = (accountId) => {
       });
     } catch (err) {
       const status = err.response?.status;
-      // 404는 기록 없음, 500 이상은 서버 에러로 구분
-      if (status === 404 || status === 400) {
+      // 백엔드가 기록 없을 때 RuntimeException("empty") → 500 반환하므로 함께 처리
+      if (status === 404 || status === 400 || status === 500) {
         console.warn('행복 인출 - 기록 없음:', err.response?.data ?? err.message);
         setIsEmpty(true);
       } else {
         console.error('행복 인출 실패 (서버 에러):', err.response?.data ?? err.message);
+        setError(err);
       }
-      setError(err);
     } finally {
       setIsLoading(false);
     }

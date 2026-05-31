@@ -15,7 +15,7 @@ function AchievementDetailPage({ accountId, rank }) {
   if (isLoading) return <div className="achievementDetailPage" />;
   if (error || !detail) return <div className="achievementDetailPage" />;
 
-  const { name, balance, startDate, endDate, happySavings, becomeSavings, goalType, goalAmount, records = [] } = detail;
+  const { balance, startDate, endDate, happySavings, becomeSavings, goalType, goalAmount, records = [] } = detail;
   const rankLabel = rank != null ? `${rank}회차` : '';
 
   return (
@@ -23,7 +23,7 @@ function AchievementDetailPage({ accountId, rank }) {
       {/* 회차 요약 카드 */}
       <div className="achievementDetailPage__header">
         <div className="achievementDetailPage__headerLeft">
-          <p className="achievementDetailPage__title">{rankLabel} {name}</p>
+          <p className="achievementDetailPage__title">{rankLabel} 행복통장</p>
           <p className="achievementDetailPage__date">
             {startDate}{endDate && endDate !== startDate ? ` – ${endDate}` : ''}
           </p>

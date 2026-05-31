@@ -116,16 +116,26 @@ function BankDetailView({ accountId, bankSummary, onComplete }) {
 // GET /transactions/withdraw?accountId={id} 로 랜덤 기록을 받아 WithdrawPage에 전달
 function BankWithdrawView({ accountId, bankName, nickName }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const { record, isLoading, isEmpty, deleteRecord } = useWithdraw(accountId);
+  const fromList = location.state?.fromList ?? false;
+  const backPath = fromList ? '/happybank' : `/happybank/${accountId}`;
 
-  // 기록이 없으면 상세 페이지로 돌아가 빈 상태 안내
-  useEffect(() => {
-    if (!isLoading && isEmpty) {
-      navigate(`/happybank/${accountId}`, { replace: true });
-    }
-  }, [isLoading, isEmpty, accountId, navigate]);
+  if (isLoading) return <div className="happyBankPageOverlay" />;
 
-  if (isLoading || !record) return <div className="happyBankPageOverlay" />;
+  // 기록 없음 → navigate 없이 현재 오버레이 위에 모달만 표시
+  if (isEmpty) {
+    return (
+      <div className="happyBankPageOverlay">
+        <WithdrawEmptyModal
+          onBack={() => navigate(backPath, { replace: true })}
+          onDeposit={() => navigate(`/happybank/${accountId}/deposit`)}
+        />
+      </div>
+    );
+  }
+
+  if (!record) return <div className="happyBankPageOverlay" />;
 
   return (
     <div className="happyBankPageOverlay">
@@ -277,7 +287,7 @@ function HappyBankPage() {
           bankInfo={{ ...bank, currentAmount: bank.balance }}
           onClick={() => navigate(`/happybank/${bank.id}`)}
           onDeposit={() => navigate(`/happybank/${bank.id}/deposit`)}
-          onWithdraw={() => navigate(`/happybank/${bank.id}/withdraw`)}
+          onWithdraw={() => navigate(`/happybank/${bank.id}/withdraw`, { state: { fromList: true } })}
           onEdit={() => navigate(`/happybank/${bank.id}/edit`, { state: { bank } })}
         />
       ))}

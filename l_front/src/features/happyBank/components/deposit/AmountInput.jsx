@@ -4,7 +4,7 @@ import '../../styles/deposit/AmountInput.css';
 import Delite from '../../../../assets/icons/common/Delite';
 
 const MIN_AMOUNT = 100;
-const MAX_AMOUNT = 100_000;
+const MAX_AMOUNT = 1_000_000;
 
 function AmountInput({ value, onChange }) {
   const [isFocused, setIsFocused] = useState(false);

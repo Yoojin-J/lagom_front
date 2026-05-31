@@ -5,12 +5,12 @@ import '../styles/AchievementListItem.css';
 // balance: 총 저금액 (백엔드 balance 필드)
 // endDate: PERIOD형 목표 날짜 (AMOUNT형은 null)
 function AchievementListItem({ achievement, onClick }) {
-  const { rank, name, startDate, endDate, balance } = achievement;
+  const { rank, startDate, endDate, balance } = achievement;
 
   return (
     <button className="achievementListItem" type="button" onClick={onClick}>
       <div className="achievementListItem__left">
-        <p className="achievementListItem__title">{rank}회차 {name}</p>
+        <p className="achievementListItem__title">{rank}회차 행복통장</p>
         <p className="achievementListItem__date">
           {startDate}{endDate && endDate !== startDate ? ` – ${endDate}` : ''}
         </p>
