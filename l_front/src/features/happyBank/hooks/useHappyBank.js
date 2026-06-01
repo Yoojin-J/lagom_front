@@ -13,6 +13,12 @@ const getHeader = () => {
 // 백엔드 goalType(AMOUNT/PERIOD) → 프론트엔드(amount/period) 변환
 const mapGoalType = (type) => (type === 'AMOUNT' ? 'amount' : 'period');
 
+// "2026-05-01T14:30:00" → "2026.05.01"
+const formatDate = (dateStr) => {
+  if (!dateStr) return null;
+  return String(dateStr).slice(0, 10).replace(/-/g, '.');
+};
+
 // 백엔드 Account 응답 → 프론트엔드 bank 객체 변환
 const mapAccount = (a) => ({
   id: a.accountId ?? a.id,
@@ -21,7 +27,7 @@ const mapAccount = (a) => ({
   goalType: mapGoalType(a.goalType),
   goalAmount: a.goalAmount ?? null,
   goalDate: a.endDate ?? null,       // 백엔드 endDate → 프론트 goalDate
-  startDate: a.createdAt ?? null,
+  startDate: formatDate(a.createdAt),
   isCompleted: a.isCompleted ?? false,
 });
 

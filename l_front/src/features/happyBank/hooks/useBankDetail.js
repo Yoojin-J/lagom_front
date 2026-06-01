@@ -62,7 +62,7 @@ const useBankDetail = (accountId) => {
         ...(data.goalType && { goalType: data.goalType === 'PERIOD' ? 'period' : 'amount' }),
         ...(data.goalAmount != null && { goalAmount: data.goalAmount }),
         ...(data.endDate && { goalDate: data.endDate }),
-        startDate: data.createdAt ?? null,
+        startDate: data.createdAt ? formatDate(data.createdAt) : null,
         happySavings: data.happyTotal ?? data.happySavings ?? data.happyAmount ?? 0,
         becomeSavings: data.recoverTotal ?? data.becomeSavings ?? data.recoverAmount ?? 0,
       });

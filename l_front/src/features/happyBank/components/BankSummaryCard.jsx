@@ -28,7 +28,7 @@ function calcPeriodInfo(startDate, goalDate) {
   }
 
   const start = new Date(startDate.replace(/\./g, '-') + 'T00:00:00');
-  const totalDays = Math.max(Math.floor((end - start) / (1000 * 60 * 60 * 24)), 1);
+  const totalDays = Math.max(Math.floor((end - start) / (1000 * 60 * 60 * 24)) + 1, 1);
   const daysElapsed = Math.min(Math.max(Math.floor((today - start) / (1000 * 60 * 60 * 24)) + 1, 1), totalDays);
 
   return {

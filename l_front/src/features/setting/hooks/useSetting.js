@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -29,7 +30,6 @@ export const deleteAccount = async () => {
   await axios.delete(`${BASE_URL}/users/me`, { headers: getHeader() });
   if (token) {
     try {
-      const { jwtDecode } = await import('jwt-decode');
       const { sub } = jwtDecode(token);
       localStorage.removeItem(`nickname_${sub}`);
     } catch { /* ignore */ }

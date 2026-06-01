@@ -64,7 +64,7 @@
 
 .goalPeriodInput__placeholder {
   color: var(--Gray-30, #B1B8BE);
-  font-family: "Noto Sans KR";
+  font-family: Pretendard;
   font-size: 24px;
   font-style: normal;
   font-weight: 500;
@@ -73,7 +73,7 @@
 
 .goalPeriodInput__value {
   color: #131416;
-  font-family: "Noto Sans KR";
+  font-family: Pretendard;
   font-size: 24px;
   font-style: normal;
   font-weight: 500;
