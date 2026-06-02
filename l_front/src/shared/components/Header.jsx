@@ -9,7 +9,7 @@ const Header = () => {
   return (
     <div className='Header'>
       <div className='logo'>
-        logo
+        Happeach
       </div>
       <div className='setting' onClick={() => navigate('/setting')} style={{ cursor: 'pointer' }}>
         <Settings />
