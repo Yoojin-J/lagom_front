@@ -1,5 +1,3 @@
-import React from 'react'
-
 const ChevronRight = ({ stroke = "white" }) => {
     return (
         <svg
@@ -9,7 +7,7 @@ const ChevronRight = ({ stroke = "white" }) => {
             viewBox="0 0 24 24"
             fill="none"
         >
-            <path d="M9 18L15 12L9 6" stroke={stroke} stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M9 18L15 12L9 6" stroke={stroke} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
     )
 }
