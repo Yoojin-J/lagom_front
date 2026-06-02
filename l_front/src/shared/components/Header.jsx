@@ -1,6 +1,6 @@
-import React from 'react'
 import { useNavigate } from 'react-router-dom';
 import Settings from '../../assets/icons/common/Settings';
+import logo from '../../assets/logo.svg';
 import "../styles/Header.css";
 
 const Header = () => {
@@ -9,7 +9,7 @@ const Header = () => {
   return (
     <div className='Header'>
       <div className='logo'>
-        Happeach
+        <img src={logo} alt="logo" />
       </div>
       <div className='setting' onClick={() => navigate('/setting')} style={{ cursor: 'pointer' }}>
         <Settings />

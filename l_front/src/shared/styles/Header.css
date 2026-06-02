@@ -6,9 +6,7 @@
     padding: 5px 16px 0 16px;
 }
 
-.logo {
-    font-family: Pretendard, sans-serif;
-    font-size: 18px;
-    font-weight: 700;
-    color: #FFB0AD;
+.logo img {
+    width: 100px;
+    padding: 8px;
 }
