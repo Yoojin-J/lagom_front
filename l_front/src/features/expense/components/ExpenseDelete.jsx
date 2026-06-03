@@ -3,6 +3,8 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import '../styles/ExpenseDelete.css'
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const ExpenseDelete = ({
   handleDeleteModal,
   id,
@@ -12,7 +14,7 @@ const ExpenseDelete = ({
   const deleteExpense = async (id) => {
     try {
       // 1. 백엔드(json-server)에 DELETE 요청 전송
-      const response = await axios.delete(`http://localhost:8080/expenses/${id}`);
+      const response = await axios.delete(`${BASE_URL}/expenses/${id}`);
 
       if (response.status === 200 || response.status === 204) {
         console.log(`${id}번 게시물이 삭제되었습니다.`);

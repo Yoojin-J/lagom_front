@@ -2,6 +2,8 @@ import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const LoginCallbackPage = () => {
   const navigate = useNavigate();
   // 🔥 StrictMode 등으로 인해 useEffect가 두 번 실행되어 코드가 깨지는 것을 막는 방패
@@ -15,7 +17,7 @@ const LoginCallbackPage = () => {
     if (code && !hasRequested.current) {
       hasRequested.current = true; // 진입하자마자 스위치를 꺼서 중복 실행 차단
 
-      axios.get(`http://localhost:8080/auth/kakao?code=${code}`)
+      axios.get(`${BASE_URL}/auth/kakao?code=${code}`)
         .then((response) => {
           // 백엔드가 토큰을 주는 객체 구조를 확인해야 합니다. (예: response.data.token 등)
           console.log("백엔드 응답 전체 데이터:", response.data);

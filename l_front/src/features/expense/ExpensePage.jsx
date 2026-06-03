@@ -44,6 +44,7 @@ import ExpenseDelete from './components/ExpenseDelete';
 import { getUserIdFromToken } from '../calendar/hook/auth.js';
 import { formatDate } from '../calendar/hook/dateUtil.js';
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const ExpensePage = () => {
   const location = useLocation();
@@ -236,7 +237,7 @@ const ExpensePage = () => {
       // 엔드포인트로 보낸 후 함수 끝나야됨 
       try {
         // PATCH /expenses/{id}/reevaluate?evaluation=1
-        const response = await axios.patch(`http://localhost:8080/expenses/${id}/reevaluate?evaluation=${formData.evaluation}`, {})
+        const response = await axios.patch(`${BASE_URL}/expenses/${id}/reevaluate?evaluation=${formData.evaluation}`, {})
         console.log("보낸 데이터", formData);
         navigate('/');
         return;
@@ -250,12 +251,12 @@ const ExpensePage = () => {
     try {
       if (isEditMode) {
         // 가계부 수정
-        const response = await axios.put(`http://localhost:8080/expenses/${id}`, submitData);
+        const response = await axios.put(`${BASE_URL}/expenses/${id}`, submitData);
         console.log("보낸 데이터", submitData);
 
       } else {
         // 가계부 작성
-        const response = await axios.post('http://localhost:8080/expenses', submitData);
+        const response = await axios.post(`${BASE_URL}/expenses`, submitData);
         console.log("보낸 데이터", submitData);
       }
       navigate('/');

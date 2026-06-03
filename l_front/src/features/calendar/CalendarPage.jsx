@@ -20,6 +20,7 @@ import AlertBanner from './components/AlertBanner.jsx';
 import { getUserIdFromToken } from './hook/auth.js';
 import { useDaysMap } from './hook/useDaysMap.js';
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const CalendarPage = () => {
   const navigate = useNavigate();
@@ -53,8 +54,6 @@ const CalendarPage = () => {
   // monthly 데이터
   const [monthData, setMonthData] = useState();
   // weekly 데이터
-  // const [rawWeekData, setRawWeekData] = useState();
-  // const weekData = useDaysMap(rawWeekData);
   const [weekData, setWeekData] = useState();
   const [dayData, setDayData] = useState();
 
@@ -65,7 +64,7 @@ const CalendarPage = () => {
 
     try {
       // GET /expenses/calendar/monthly?userId=1&year=2026&month=3
-      const response = await axios.get('http://localhost:8080/expenses/calendar/monthly', {
+      const response = await axios.get(`${BASE_URL}/expenses/calendar/monthly`, {
         params: {
           userId: userId,
           year: currentYear,
@@ -79,11 +78,6 @@ const CalendarPage = () => {
         reevaluationCount: response.data.reevaluationCount ?? 0,
         days: response.data.days || [] // map 에러 방지를 위해 빈 배열 필수!
       });
-      console.log('전체데이터', response);
-
-      // setMonthData(testMonth)
-      // console.log("전체데이터불러오기: ", testMonth);
-
     } catch (error) {
       console.error("거래 데이터 불러오기 실패", error);
     }
@@ -95,7 +89,7 @@ const CalendarPage = () => {
     try {
       const date = formatDate(selectedDate);
       //GET /expenses/calendar/weekly?userId=1&date=2026-03-21
-      const response = await axios.get('http://localhost:8080/expenses/weekly', {
+      const response = await axios.get(`${BASE_URL}/expenses/weekly`, {
         params: {
           userId: userId, // 1
           date: date      // '2026-03-21'
@@ -103,8 +97,6 @@ const CalendarPage = () => {
       });
       console.log('주간 데이터 ', response.data);
       setWeekData(response.data || []);
-      // setWeekData(testWeek);
-      // console.log("주간데이터가져오기: ", testWeek);
     } catch (error) {
 
     }
@@ -115,15 +107,13 @@ const CalendarPage = () => {
     try {
       const date = formatDate(selectedDate);
       //GET /expenses/daily?userId=1&date=2026-03-21
-      const response = await axios.get('http://localhost:8080/expenses/daily', {
+      const response = await axios.get(`${BASE_URL}/expenses/daily`, {
         params: {
           userId: userId, // 1
           date: date      // '2026-03-21'
         }
       });
       setDayData(response.data || []);
-      // setDayData(testDay);
-      // console.log("하루 상세 기록: ", testDay);
     } catch (error) {
 
     }
@@ -135,7 +125,7 @@ const CalendarPage = () => {
     try {
       // 재평가가 필요한 데이터 불러오기 
       //GET /expenses/reevaluation?userId={id}
-      const response = await axios.get('http://localhost:8080/expenses/reevaluation', {
+      const response = await axios.get(`${BASE_URL}/expenses/reevaluation`, {
         params: {
           userId: userId, // 1
         }

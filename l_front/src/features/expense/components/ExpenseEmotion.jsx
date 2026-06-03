@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { getUserIdFromToken } from '../../calendar/hook/auth.js';
 import { formatDate } from '../../calendar/hook/dateUtil.js';
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const ExpenseEmotion = ({
   formData,
@@ -19,7 +20,6 @@ const ExpenseEmotion = ({
 
   const handleEmotion = (val) => {
     // 이미 선택된 걸 다시 누르면 null로 초기화(해제), 아니면 새로운 값 세팅
-    // setSelectedEmo((prev) => (prev === val ? null : val));
     setFormData((prev) => ({
       ...prev,
       emotion: prev.emotion === val ? null : val
@@ -28,7 +28,6 @@ const ExpenseEmotion = ({
 
   const handleSatisfaction = (val) => {
     // 이미 선택된 걸 다시 누르면 null로 초기화(해제), 아니면 새로운 값 세팅
-    // setSelectedSat((prev) => (prev === val ? null : val));
     setFormData((prev) => ({
       ...prev, //
       evaluation: prev.evaluation === val ? null : val
@@ -55,17 +54,17 @@ const ExpenseEmotion = ({
     try {
       if (isReEva) {
         // 재평가
-        await axios.patch(`http://localhost:8080/expenses/${id}/reevaluate?evaluation=${submitData.evaluation}`, {})
+        await axios.patch(`${BASE_URL}/expenses/${id}/reevaluate?evaluation=${submitData.evaluation}`, {})
         console.log('가계부 저장 재평가', submitData);
 
       } else if (isEditMode) {
         // 수정
-        await axios.put(`http://localhost:8080/expenses/${id}`, submitData);
+        await axios.put(`${BASE_URL}/expenses/${id}`, submitData);
         console.log('가계부 저장 수정', submitData);
 
       } else {
         // 가계부 작성
-        await axios.post('http://localhost:8080/expenses', submitData);
+        await axios.post('${BASE_URL}/expenses', submitData);
         console.log('가계부 저장 작성', submitData);
 
       }
